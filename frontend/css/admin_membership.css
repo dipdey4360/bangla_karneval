@@ -1,0 +1,25 @@
+.admin-board-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin:24px 0; }
+.admin-board-card { border:1px solid #e8decb; border-radius:8px; padding:16px; overflow-wrap:anywhere; }
+.admin-board-card img { width:100%; height:140px; object-fit:cover; border-radius:6px; margin-bottom:12px; }
+.admin-board-card h3 { font-size:1rem; }
+.membership-admin-form { max-width:700px; }
+.membership-admin-form h2 { font-size:1.3rem; margin:20px 0; }
+.membership-admin-actions { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.membership-admin-message { margin:16px 0; white-space:pre-wrap; }
+#board-message:not(:empty) { padding:12px 16px; border:1px solid #b8cadc; border-radius:6px; background:#eef5fc; color:#163b61; }
+#board-message[data-state="success"] { background:#edf8ef; border-color:#9ecba8; color:#205b2f; }
+#board-message[data-state="error"] { background:#fff0f0; border-color:#e0aaaa; color:#912b2b; }
+.board-admin-preview { width:160px; height:140px; object-fit:cover; margin-top:12px; }
+.board-admin-preview[hidden] { display:none; }
+.membership-application { border:1px solid #e8decb; border-radius:8px; padding:20px; margin:16px 0; overflow-wrap:anywhere; }
+.membership-application h3 { font-size:1.1rem; margin-bottom:8px; }
+.membership-application p { margin-bottom:8px; }
+.membership-review-dialog { margin:auto; padding:28px; width:min(650px,calc(100% - 24px)); max-height:90vh; overflow:auto; border:0; border-radius:12px; }
+.membership-review-dialog::backdrop { background:rgba(0,0,0,.6); }
+.membership-review-dialog h2 { font-size:1.4rem; flex:1; }
+#membership-review-details { margin:20px 0; }
+.membership-detail { display:grid; grid-template-columns:150px 1fr; gap:12px; border-bottom:1px solid #eee; padding:8px 0; white-space:pre-wrap; overflow-wrap:anywhere; }
+.membership-verification { display:flex; gap:10px; align-items:center; margin:16px 0; }
+#membership-status-filter { max-width:240px; margin:16px 0; }
+@media(max-width:768px) { .admin-board-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .membership-detail { grid-template-columns:1fr; gap:4px; } }
+@media(max-width:480px) { .admin-board-grid { grid-template-columns:1fr; } .membership-review-dialog { padding:20px; } }

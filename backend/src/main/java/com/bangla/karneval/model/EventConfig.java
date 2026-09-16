@@ -36,6 +36,11 @@ public class EventConfig {
 
     private Boolean registrationEnabled = true;
 
+    @Column(columnDefinition = "TEXT") private String membershipBenefits;
+    @Column(precision = 10, scale = 2) private BigDecimal membershipSingleFee;
+    @Column(precision = 10, scale = 2) private BigDecimal membershipCoupleFee;
+    @Column(columnDefinition = "TEXT") private String membershipPaymentInstructions;
+
     @Column(length = 30)  private String contactPhone;
     @Column(length = 150) private String contactEmail;
     @Column(length = 30)  private String contactWhatsapp;

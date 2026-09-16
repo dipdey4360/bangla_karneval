@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bangla-karneval-db
+    environment:
+      POSTGRES_DB: banglakarneval
+      POSTGRES_USER: ${DB_USERNAME:?Set DB_USERNAME in .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/1-init.sql
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bangla-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bangla-karneval-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/banglakarneval
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:?Set DB_USERNAME in .env}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME:?Set MAIL_USERNAME in .env}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD:?Set MAIL_PASSWORD in .env}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      APP_UPLOAD_DIR: /app/uploads/sponsors
+    ports:
+      - "8084:8080"
+    volumes:
+      - ./frontend:/app/static
+      - gallery_uploads:/app/static/assets/images/gallery
+      - sponsor_uploads:/app/uploads/sponsors
+      - board_uploads:/app/uploads/board
+    restart: unless-stopped
+    networks:
+      - bangla-network
+
+volumes:
+  postgres_data:
+  gallery_uploads:
+  sponsor_uploads:
+  board_uploads:
+
+networks:
+  bangla-network:
+    driver: bridge

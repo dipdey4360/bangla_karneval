@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/admin_dashboard.css">
     <link rel="stylesheet" href="css/admin_sponsors.css">
+    <link rel="stylesheet" href="css/admin_membership.css?v=member-visibility-1">
     <link rel="icon" href="assets/images/favicon.ico">
 </head>
 <!-- ── Change Password Modal ──────────────────────────────── -->
@@ -118,6 +119,8 @@
                 Messages
                 <span class="msg-badge" id="msg-unread-badge" style="display:none"></span>
             </a>
+            <a href="#" onclick="switchTab('board', this)"><span class="nav-icon">👥</span> Board Members</a>
+            <a href="#" onclick="switchTab('members', this)"><span class="nav-icon">🤝</span> Memberships</a>
             <a href="#" onclick="switchTab('config', this)">
                 <span class="nav-icon">⚙️</span> Config
             </a>
@@ -379,6 +382,45 @@
         </div>
 
 
+        <div id="tab-board" class="tab-pane">
+            <div class="dashboard-header"><h1>Our Board Members</h1></div>
+            <div class="section-card">
+                <p>Manage the six positions shown on About Us. Positions 1–3 are the first row; 4–6 are the second row on desktop.</p>
+                <div id="admin-board-grid" class="admin-board-grid"></div>
+                <form id="board-member-form" class="membership-admin-form">
+                    <h2 id="board-editor-title">Edit board position 1</h2>
+                    <div class="form-group"><label class="form-label" for="board-slot">Position</label><select class="form-select" id="board-slot"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
+                    <div class="form-group"><label class="form-label" for="board-name">Name *</label><input class="form-input" id="board-name" maxlength="100" required></div>
+                    <div class="form-group"><label class="form-label" for="board-designation">Designation *</label><input class="form-input" id="board-designation" placeholder="e.g. President or Vice President" maxlength="100" required></div>
+                    <div class="form-group"><label class="form-label" for="board-image">Photo (JPEG or PNG, up to 5 MB and 16 megapixels)</label><input class="form-input" id="board-image" type="file" accept="image/jpeg,image/png"><img id="board-image-preview" class="board-admin-preview" alt="Selected board member photo" hidden></div>
+                    <label><input type="checkbox" id="board-remove-image"> Remove current photo</label>
+                    <div id="board-message" class="membership-admin-message" role="status"></div>
+                    <div class="membership-admin-actions"><button class="btn btn-primary" type="submit">Save board member</button><button class="btn btn-outline" id="board-clear" type="button">Clear this position</button></div>
+                </form>
+            </div>
+        </div>
+        <div id="tab-members" class="tab-pane">
+            <div class="dashboard-header"><h1>Memberships</h1><button class="btn btn-outline" type="button" id="members-refresh">Refresh applications</button></div>
+            <div class="section-card">
+                <h2>Applications and approved members</h2>
+                <p>Only approved members who chose to display their names appear publicly. Name visibility is selected by the applicant. Verify the bank transfer or PayPal payment before approval.</p>
+                <label class="form-label" for="membership-status-filter">Status</label><select class="form-select" id="membership-status-filter"><option value="ALL">All applications</option><option value="PENDING">Pending</option><option value="APPROVED">Approved</option><option value="REJECTED">Rejected</option></select>
+                <div id="membership-admin-message" class="membership-admin-message" role="status"></div>
+                <div id="membership-applications"></div>
+            </div>
+            <div class="section-card">
+                <form id="membership-settings-form" class="membership-admin-form">
+                    <h2>Public membership information</h2>
+                    <div class="form-group"><label class="form-label" for="membership-benefits-edit">Benefits (one bullet per line) *</label><textarea class="form-textarea" id="membership-benefits-edit" maxlength="4000" required></textarea></div>
+                    <div class="form-group"><label class="form-label" for="membership-single-edit">Single membership (€ / year) *</label><input class="form-input" id="membership-single-edit" type="number" min="0.01" max="99999999.99" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label" for="membership-couple-edit">Couple membership (€ / year) *</label><input class="form-input" id="membership-couple-edit" type="number" min="0.01" max="99999999.99" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label" for="membership-payment-edit">Bank transfer / PayPal instructions</label><textarea class="form-textarea" id="membership-payment-edit" maxlength="2000" placeholder="Enter your bank and PayPal details, plus the reference applicants should use."></textarea></div>
+                    <p>Fee changes apply to new applications. Existing applications keep their submitted fee.</p>
+                    <div id="membership-settings-admin-message" class="membership-admin-message" role="status"></div>
+                    <button type="submit" class="btn btn-primary">Save membership information</button>
+                </form>
+            </div>
+        </div>
         <!-- ─── TAB: CONFIG ─── -->
         <div id="tab-config" class="tab-pane">
             <div class="dashboard-header">
@@ -714,10 +756,23 @@
 </div>
 
 
+<dialog id="membership-review-dialog" class="membership-review-dialog" aria-labelledby="membership-review-title">
+    <div class="membership-admin-actions"><h2 id="membership-review-title">Review membership</h2><button type="button" class="btn btn-outline" id="membership-review-close">Close</button></div>
+    <div id="membership-review-details"></div>
+    <form id="membership-review-form">
+        <div class="form-group"><label class="form-label" for="membership-decision">Decision</label><select id="membership-decision" class="form-select"><option value="APPROVED">Accept membership</option><option value="REJECTED">Reject application</option></select></div>
+        <label class="membership-verification"><input type="checkbox" id="membership-payment-verified"> I have verified the membership payment.</label>
+        <p>To approve: verify the payment, tick the checkbox above, then click “Save decision and send email”. Selecting a decision alone does not save it. Names appear after approval only when the applicant chose public visibility.</p>
+        <div class="form-group"><label class="form-label" for="membership-decision-note">Message to applicant (included in email)</label><textarea class="form-textarea" id="membership-decision-note" maxlength="2000" rows="3"></textarea></div>
+        <div id="membership-review-message" class="membership-admin-message" role="status"></div>
+        <button class="btn btn-primary" type="submit">Save decision and send email</button>
+    </form>
+</dialog>
 <script src="js/common.js"></script>
 <script src="js/admin_dashboard.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script src="js/admin_sponsors.js"></script>
+<script src="js/admin_membership.js?v=member-visibility-1"></script>
 
 <script>
     /* ══════════════════════════════════════════════════════════════
@@ -974,6 +1029,8 @@
         if (name === 'gallery-mgmt') loadGalleryYears();
         if (name === 'sponsors') { if (!sponsorsLoaded) loadSponsors(); loadPerformerStatus(); }
         if (name === 'messages') { loadMessages(); loadUnreadCount(); }
+        if (name === 'board') loadBoardAdmin();
+        if (name === 'members') loadMembershipAdmin();
         if (name === 'config')       { loadConfig(); loadEventYears(); loadButtonVisibility(); }
     }
 

@@ -18,11 +18,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -39,6 +41,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/api/board-members", "GET"),
+                                new AntPathRequestMatcher("/api/members", "GET"),
+                                new AntPathRequestMatcher("/api/membership/settings", "GET"),
+                                new AntPathRequestMatcher("/api/membership/applications", "POST")
+                        ).permitAll()
 
                         // ── Static frontend files ──────────────────────────────
                         .requestMatchers(
@@ -79,7 +88,13 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/v3/api-docs/**")
                         ).permitAll()
 
-                        // ── Everything else requires JWT ───────────────────────
+                        // Public exceptions above are matched before admin rules.
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/api/admin/**"),
+                                new AntPathRequestMatcher("/api/contact/admin/**")
+                        ).hasRole("ADMIN")
+
+                        // ── Remaining endpoints require authentication ────────
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);

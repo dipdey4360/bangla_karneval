@@ -47,6 +47,30 @@
                 </div>
             </section>
 
+            <section class="board-section" aria-labelledby="board-heading">
+                <div class="container">
+                    <h2 class="section-title" id="board-heading">Our Board Members</h2>
+                    <p class="membership-intro">Meet the people helping our community grow.</p>
+                    <div id="board-grid" class="board-grid" aria-live="polite"><p>Loading board members…</p></div>
+                </div>
+            </section>
+
+            <section class="members-section" aria-labelledby="members-heading">
+                <div class="container">
+                    <h2 class="section-title" id="members-heading">Our Members</h2>
+                    <div id="members-grid" class="members-grid" aria-live="polite"><p>Loading members…</p></div>
+                    <div class="membership-benefits">
+                        <h3>Benefits of Membership</h3>
+                        <ul id="membership-benefits-list"></ul>
+                        <div class="membership-prices">
+                            <p><strong id="single-fee">€25.00</strong> / year <span>Single membership</span></p>
+                            <p><strong id="couple-fee">€30.00</strong> / year <span>Couple membership</span></p>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="membership-apply" disabled>Apply for Membership</button>
+                        <p id="membership-settings-message" role="status">Loading membership details…</p>
+                    </div>
+                </div>
+            </section>
             <section class="about-stats">
                 <div class="container">
                     <div class="stats-grid">
@@ -70,41 +94,51 @@
                 </div>
             </section>
 
-            <section class="team-section">
-                <div class="container">
-                    <h2 class="section-title">Our Team</h2>
-                    <div class="team-grid">
-                        <div class="team-card">
-                            <div class="team-avatar">👤</div>
-                            <h4>Event Director</h4>
-                            <p>Bangla Karneval</p>
-                        </div>
-                        <div class="team-card">
-                            <div class="team-avatar">👤</div>
-                            <h4>Cultural Coordinator</h4>
-                            <p>Bangla Karneval</p>
-                        </div>
-                        <div class="team-card">
-                            <div class="team-avatar">👤</div>
-                            <h4>Food & Catering</h4>
-                            <p>Bangla Karneval</p>
-                        </div>
-                        <div class="team-card">
-                            <div class="team-avatar">👤</div>
-                            <h4>Logistics Manager</h4>
-                            <p>Bangla Karneval</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
         </main>
         <div id="footer-container"></div>
     </div>
+    <dialog id="membership-dialog" class="membership-dialog" aria-labelledby="membership-dialog-title">
+        <div class="membership-dialog-heading">
+            <h2 id="membership-dialog-title">Apply for Membership</h2>
+            <button type="button" class="membership-close" id="membership-close" aria-label="Close membership form">×</button>
+        </div>
+        <p>Submit your details for board review. We will email you with the decision.</p>
+        <form id="membership-form">
+            <div class="membership-form-grid">
+                <div class="form-group"><label class="form-label" for="m-name">Full name *</label><input class="form-input" id="m-name" name="name" maxlength="100" autocomplete="name" required></div>
+                <div class="form-group"><label class="form-label" for="m-dob">Date of birth *</label><input class="form-input" id="m-dob" name="dateOfBirth" type="date" autocomplete="bday" required></div>
+                <div class="form-group"><label class="form-label" for="m-email">Email address *</label><input class="form-input" id="m-email" name="email" type="email" maxlength="150" autocomplete="email" required></div>
+                <div class="form-group"><label class="form-label" for="m-phone">Phone number *</label><input class="form-input" id="m-phone" name="phone" type="tel" maxlength="30" autocomplete="tel" required></div>
+            </div>
+            <div class="form-group"><label class="form-label" for="m-address">Address *</label><textarea class="form-textarea" id="m-address" name="address" maxlength="500" rows="2" autocomplete="street-address" required></textarea></div>
+            <div class="membership-form-grid">
+                <div class="form-group"><label class="form-label" for="m-type">Membership *</label><select class="form-select" id="m-type" name="membershipType"><option value="SINGLE">Single</option><option value="COUPLE">Couple</option></select></div>
+            </div>
+            <fieldset id="m-partner-group" hidden disabled>
+                <legend>Partner’s details</legend>
+                <div class="membership-form-grid">
+                    <div class="form-group"><label class="form-label" for="m-partner">Partner’s full name *</label><input class="form-input" id="m-partner" name="partnerName" maxlength="100" autocomplete="section-partner name" required></div>
+                    <div class="form-group"><label class="form-label" for="m-partner-dob">Partner’s date of birth *</label><input class="form-input" id="m-partner-dob" name="partnerDateOfBirth" type="date" autocomplete="section-partner bday" required></div>
+                    <div class="form-group"><label class="form-label" for="m-partner-email">Partner’s email address *</label><input class="form-input" id="m-partner-email" name="partnerEmail" type="email" maxlength="150" autocomplete="section-partner email" required></div>
+                    <div class="form-group"><label class="form-label" for="m-partner-phone">Partner’s phone number *</label><input class="form-input" id="m-partner-phone" name="partnerPhone" type="tel" maxlength="30" autocomplete="section-partner tel" required></div>
+                </div>
+                <div class="form-group"><label class="form-label" for="m-partner-address">Partner’s address *</label><textarea class="form-textarea" id="m-partner-address" name="partnerAddress" maxlength="500" rows="2" autocomplete="section-partner street-address" required></textarea></div>
+            </fieldset>
+            <p class="membership-fee-line">Annual membership fee: <strong id="m-fee"></strong></p>
+            <p id="m-payment-instructions" class="membership-payment-instructions"></p>
+            <div class="form-group"><label class="form-label" for="m-payment">Payment method used *</label><select class="form-select" id="m-payment" name="paymentMethod" required><option value="">Select a payment method</option><option value="BANK_TRANSFER">Bank transfer</option><option value="PAYPAL">PayPal</option></select></div>
+            <label class="membership-check"><input type="checkbox" id="m-paid" required><span>I have paid the membership fee using the selected method. The admin will verify my payment.</span></label>
+            <div class="form-group"><label class="form-label" for="m-listed">Name visibility *</label><select class="form-select" id="m-listed" name="listed" required aria-describedby="m-listed-help"><option value="">Select an option</option><option value="false">I do not want to show my name</option><option value="true">I want to show my name</option></select><p id="m-listed-help">This controls the public member list after approval. For couple membership, your choice applies to both partners’ names.</p></div>
+            <label class="membership-check"><input type="checkbox" id="m-consent" required><span>I give permission to store my submitted data to process and manage my membership. Public display of my name (and my partner’s name for a couple membership) follows my selected name visibility preference. *</span></label>
+            <div id="membership-form-message" role="status" aria-live="polite"></div>
+            <button type="submit" class="btn btn-primary" id="membership-submit">Submit application</button>
+        </form>
+    </dialog>
     <script src="js/common.js"></script>
     <script src="js/header.js"></script>
     <script src="js/footer.js"></script>
     <script src="js/about.js"></script>
+    <script src="js/membership.js?v=member-visibility-1"></script>
 </body>
 
 </html>
