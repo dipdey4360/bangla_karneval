@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery — Bangla Karneval 2026</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/gallery.css">
+    <link rel="icon" href="assets/images/favicon.ico">
+</head>
+
+<body>
+<div class="page-wrapper">
+    <div id="header-container"></div>
+    <main class="page-content">
+
+        <!-- ── Hero ──────────────────────────────────────────── -->
+        <section class="gallery-hero">
+            <div class="container">
+                <h1>Gallery</h1>
+                <p>Memories from Bangla Karneval events</p>
+            </div>
+        </section>
+
+        <!-- ── Current Year Highlights ───────────────────────── -->
+        <section class="highlights-section">
+            <div class="container">
+                <h2 class="section-title" id="highlights-title">Highlights</h2>
+                <div class="gallery-grid" id="highlights-grid">
+                    <!-- skeleton placeholders -->
+                    <div class="gallery-item skeleton"></div>
+                    <div class="gallery-item skeleton"></div>
+                    <div class="gallery-item skeleton"></div>
+                    <div class="gallery-item skeleton"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Previous Years Archive ────────────────────────── -->
+        <section class="archive-section">
+            <div class="container">
+                <h2 class="section-title">Previous Years</h2>
+
+                <!-- Year tabs — populated dynamically -->
+                <div class="year-tabs" id="year-tabs">
+                    <!-- skeleton tab placeholders -->
+                    <div class="year-tab skeleton" style="width:64px;height:38px;border-radius:20px"></div>
+                    <div class="year-tab skeleton" style="width:64px;height:38px;border-radius:20px"></div>
+                    <div class="year-tab skeleton" style="width:64px;height:38px;border-radius:20px"></div>
+                </div>
+
+                <div class="gallery-grid" id="year-gallery-grid">
+                    <p class="gallery-empty">Select a year to view photos.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <div id="footer-container"></div>
+</div>
+
+<!-- ── Lightbox ───────────────────────────────────────────── -->
+<div class="lightbox" id="lightbox">
+    <div class="lightbox-content">
+        <button class="lightbox-close" onclick="closeLightbox()">×</button>
+        <img id="lightbox-image" src="" alt="Gallery image">
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+</div>
+
+<script src="js/common.js"></script>
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/gallery.js"></script>
+</body>
+</html>

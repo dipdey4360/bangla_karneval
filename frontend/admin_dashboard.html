@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — Bangla Karneval 2026</title>
+    <script>
+        (function () {
+            if (!localStorage.getItem('adminToken')) window.location.replace('/admin.html');
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    </noscript>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/admin_dashboard.css">
+    <link rel="stylesheet" href="css/admin_sponsors.css">
+    <link rel="icon" href="assets/images/favicon.ico">
+</head>
+<!-- ── Change Password Modal ──────────────────────────────── -->
+<!-- ── Change Password Modal ──────────────────────────────── -->
+<div class="modal-overlay" id="change-password-modal" style="display:none;">
+    <div class="modal cp-modal">
+        <div class="modal-header">
+            <h3>🔒 Change Password</h3>
+            <button class="modal-close" onclick="closeChangePasswordModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <p class="cp-subtitle">Keep your account secure by using a strong password.</p>
+            <div id="cp-error" class="alert-box alert-error" style="display:none;"></div>
+            <div id="cp-success" class="alert-box alert-success" style="display:none;"></div>
+            <div class="form-group">
+                <label class="form-label">Current Password</label>
+                <div class="cp-input-wrap">
+                    <input type="password" id="cp-current" class="form-input" placeholder="Enter your current password">
+                    <span class="cp-eye" onclick="toggleCpVisibility('cp-current', this)">👁</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">New Password <small style="font-weight:400;color:var(--text-secondary)">(min 8 characters)</small></label>
+                <div class="cp-input-wrap">
+                    <input type="password" id="cp-new" class="form-input" placeholder="Enter new password">
+                    <span class="cp-eye" onclick="toggleCpVisibility('cp-new', this)">👁</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Confirm New Password</label>
+                <div class="cp-input-wrap">
+                    <input type="password" id="cp-confirm" class="form-input" placeholder="Repeat new password">
+                    <span class="cp-eye" onclick="toggleCpVisibility('cp-confirm', this)">👁</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeChangePasswordModal()">Cancel</button>
+            <button class="btn btn-primary" id="cp-submit-btn" onclick="submitChangePassword()">Update Password</button>
+        </div>
+    </div>
+</div>
+<!-- ── Reply Message Modal ───────────────────────────────── -->
+<div class="modal-overlay" id="reply-modal" style="display:none;">
+    <div class="modal" style="max-width:560px">
+        <div class="modal-header">
+            <h3>📬 Reply to Message</h3>
+            <button class="modal-close" onclick="closeModal('reply-modal')">×</button>
+        </div>
+        <div class="modal-body">
+            <div id="reply-original" style="background:#f9f5ef;padding:14px;border-radius:8px;
+                 margin-bottom:16px;border-left:4px solid var(--accent-maroon)">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Your Reply</label>
+                <textarea id="reply-text" class="form-textarea" rows="5"
+                          placeholder="Type your reply here..."></textarea>
+            </div>
+            <div id="reply-alert"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('reply-modal')">Cancel</button>
+            <button class="btn btn-primary" id="reply-submit-btn"
+                    onclick="submitReply()">Send Reply</button>
+        </div>
+    </div>
+</div>
+
+<body>
+<button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                Bangla Karneval
+                <span>Admin Panel 2026</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="active" onclick="switchTab('registrations', this)">
+                <span class="nav-icon">📋</span> Registrations
+            </a>
+            <a href="#" onclick="switchTab('performers', this)">
+                <span class="nav-icon">🎤</span> Performers
+            </a>
+            <a href="#" onclick="switchTab('gallery-mgmt', this)">
+                <span class="nav-icon">🖼️</span> Gallery
+            </a>
+            <a href="#" onclick="switchTab('sponsors', this)">
+                <span class="nav-icon">🤝</span> Sponsors
+            </a>
+            <a href="#" onclick="switchTab('messages', this)">
+                <span class="nav-icon">✉️</span>
+                Messages
+                <span class="msg-badge" id="msg-unread-badge" style="display:none"></span>
+            </a>
+            <a href="#" onclick="switchTab('config', this)">
+                <span class="nav-icon">⚙️</span> Config
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:8px">
+                Signed in as: <span id="admin-name-display" style="color:#fff"></span>
+            </div>
+            <button class="logout-btn" id="logout-btn">🚪 Sign Out</button>
+            <a href="#" id="change-password-btn" class="cp-link">🔒 Change Password</a>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="dashboard-main">
+
+        <!-- ─── TAB: REGISTRATIONS ─── -->
+        <div id="tab-registrations" class="tab-pane active">
+            <div class="dashboard-header">
+                <h1>Dashboard Overview</h1>
+                <span class="admin-info">Bangla Karneval 2026</span>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card total">
+                    <span class="stat-icon">👥</span>
+                    <div class="stat-value" id="stat-total">—</div>
+                    <div class="stat-label">Total Registrations</div>
+                </div>
+                <div class="stat-card paid">
+                    <span class="stat-icon">✅</span>
+                    <div class="stat-value" id="stat-paid">—</div>
+                    <div class="stat-label">Confirmed Payments</div>
+                </div>
+                <div class="stat-card unpaid">
+                    <span class="stat-icon">⏳</span>
+                    <div class="stat-value" id="stat-unpaid">—</div>
+                    <div class="stat-label">Pending / Overdue</div>
+                </div>
+                <div class="stat-card revenue">
+                    <span class="stat-icon">💶</span>
+                    <div class="stat-value" id="stat-revenue">—</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+            </div>
+            <div class="section-card" style="margin-bottom:var(--spacing-xl)">
+                <div class="section-card-header">
+                    <h2>👶🧑👴 Age Group Breakdown</h2>
+                </div>
+                <div id="age-group-table">
+                    <div class="spinner" style="margin:0 auto"></div>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-card-header">
+                    <h2>📋 Registrations</h2>
+                    <button class="btn btn-retro btn-sm" onclick="exportCsv()">⬇️ Export CSV</button>
+                </div>
+                <div class="filter-toolbar">
+                    <input type="text" id="search-input" class="form-input"
+                           placeholder="🔍 Search by name..." style="max-width:260px">
+                    <select id="status-filter" class="form-select" style="max-width:200px">
+                        <option value="ALL">All Statuses</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="CONFIRMED">Confirmed</option>
+                        <option value="OVERDUE">Overdue</option>
+                    </select>
+                </div>
+                <div style="overflow-x:auto">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Ref Code</th><th>Name</th><th>Email</th><th>Phone</th>
+                            <th style="text-align:center">Participants</th>
+                            <th>Amount</th><th>Status</th><th>Registered</th><th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="registrations-tbody">
+                        <tr>
+                            <td colspan="9" style="text-align:center;padding:32px">
+                                <div class="spinner" style="margin:0 auto"></div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── TAB: PERFORMERS ─── -->
+        <div id="tab-performers" class="tab-pane">
+            <div class="dashboard-header">
+                <h1>🎤 Performer Applications</h1>
+                <span class="admin-info">Bangla Karneval 2026</span>
+            </div>
+
+            <!-- ── Event Cards Management ── -->
+            <div class="section-card" style="margin-bottom:var(--spacing-xl)">
+                <div class="section-card-header">
+                    <h2>🎭 What to Expect — Events</h2>
+                    <button class="btn btn-retro btn-sm" onclick="openEventModal()">＋ Create Event</button>
+                </div>
+                <p style="color:var(--text-secondary);font-size:13px;margin-bottom:var(--spacing-lg)">
+                    These events appear as cards on the home page under "What to Expect".
+                </p>
+                <div style="overflow-x:auto">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th style="text-align:center">Highlight</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="events-tbody">
+                        <tr>
+                            <td colspan="5" style="text-align:center;padding:32px">
+                                <div class="spinner" style="margin:0 auto"></div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── Performer Applications ── -->
+            <div class="section-card">
+                <div class="section-card-header">
+                    <h2>🎤 Performer Applications</h2>
+                </div>
+                <div style="overflow-x:auto">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>Name</th><th>Email</th><th>Performance Type</th>
+                            <th style="text-align:center">Group Size</th>
+                            <th>Status</th><th>Submitted</th><th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="performers-tbody">
+                        <tr>
+                            <td colspan="7" style="text-align:center;padding:32px">
+                                <div class="spinner" style="margin:0 auto"></div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ─── TAB: GALLERY ─── -->
+        <div id="tab-gallery-mgmt" class="tab-pane">
+            <div class="dashboard-header">
+                <h1>🖼️ Gallery Management</h1>
+                <span class="admin-info">Bangla Karneval 2026</span>
+            </div>
+            <div class="section-card">
+                <!-- Upload form -->
+                <div style="background:#f9f5ef;border-radius:var(--radius-md);padding:var(--spacing-xl);margin-bottom:var(--spacing-xl)">
+                    <h3 style="margin-bottom:var(--spacing-lg);font-size:1rem;color:var(--accent-maroon)">Upload New Image</h3>
+                    <form id="gallery-upload-form">
+                        <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--spacing-md)">
+                            <div class="form-group">
+                                <label class="form-label">Event Year *</label>
+                                <select id="upload-year" class="form-select">
+                                    <option value="">Loading years...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Media Type</label>
+                                <select id="upload-media-type" class="form-select">
+                                    <option value="IMAGE">Image</option>
+                                    <option value="VIDEO">Video (URL)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Display Order</label>
+                                <input type="number" id="upload-order" class="form-input" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="form-row" style="display:grid;grid-template-columns:2fr 1fr;gap:var(--spacing-md)">
+                            <div class="form-group">
+                                <label class="form-label">Image File</label>
+                                <input type="file" id="upload-file" class="form-input" accept="image/*,video/*">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Or Image URL</label>
+                                <input type="text" id="upload-url" class="form-input" placeholder="https://...">
+                            </div>
+                        </div>
+                        <div class="form-row" style="display:grid;grid-template-columns:2fr 1fr;gap:var(--spacing-md)">
+                            <div class="form-group">
+                                <label class="form-label">Caption</label>
+                                <input type="text" id="upload-caption" class="form-input" placeholder="Describe this image...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mark as Highlight?</label>
+                                <div style="display:flex;align-items:center;gap:var(--spacing-sm);margin-top:12px">
+                                    <input type="checkbox" id="upload-highlight" style="width:20px;height:20px;cursor:pointer">
+                                    <label for="upload-highlight" style="cursor:pointer;font-weight:400">Yes, feature this image</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="gallery-upload-alert"></div>
+                        <button type="submit" class="btn btn-retro">⬆️ Upload Image</button>
+                    </form>
+                </div>
+                <!-- Gallery list -->
+                <h3 style="margin-bottom:var(--spacing-lg);font-size:1rem;color:var(--accent-maroon)">
+                    Uploaded Images
+                    <select id="gallery-year-filter" class="form-select"
+                            style="display:inline-block;width:auto;margin-left:var(--spacing-md);font-size:14px">
+                        <option value="">Loading years...</option>
+                    </select>
+                </h3>
+                <div id="gallery-admin-grid"
+                     style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--spacing-md)">
+                    <p style="color:var(--text-secondary);grid-column:1/-1">Select a year to load gallery.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── TAB: SPONSORS ─── -->
+        <div id="tab-sponsors" class="tab-pane">
+            <div class="dashboard-header">
+                <h1>🤝 Sponsors</h1>
+                <span class="admin-info">Bangla Karneval 2026</span>
+            </div>
+            <div class="section-card" style="margin-top:var(--spacing-xl)">
+                <div class="section-card-header">
+                    <h2>⭐ Sponsor Management</h2>
+                    <button class="btn btn-retro btn-sm" onclick="openSponsorModal()">＋ Add Sponsor</button>
+                </div>
+                <p style="color:var(--text-secondary);font-size:13px;margin-bottom:var(--spacing-lg)">
+                    ↕️ Drag cards to reorder how sponsors appear in the footer.
+                </p>
+                <div id="sponsor-list" class="sponsor-admin-grid">
+                    <div style="text-align:center;padding:32px">
+                        <div class="spinner" style="margin:0 auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── TAB MESSAGES ─────────────────────────────────────── -->
+        <div id="tab-messages" class="tab-pane">
+            <div class="dashboard-header">
+                <h1>📬 Messages</h1>
+                <span class="admin-info">Contact Inquiries</span>
+            </div>
+            <div class="section-card">
+                <div id="messages-list">
+                    <div class="spinner" style="margin:0 auto"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ─── TAB: CONFIG ─── -->
+        <div id="tab-config" class="tab-pane">
+            <div class="dashboard-header">
+                <h1>⚙️ Event Configuration</h1>
+                <span class="admin-info">Bangla Karneval 2026</span>
+            </div>
+
+            <!-- Event config form -->
+            <div class="section-card" style="max-width:700px">
+                <div id="config-alert"></div>
+                <form id="config-form">
+                    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-md)">
+                        <div class="form-group">
+                            <label class="form-label">Price Per Person (€) *</label>
+                            <input type="number" id="cfg-price" class="form-input" step="0.01" min="0" placeholder="10.00">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Event Date</label>
+                            <input type="date" id="cfg-date" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Event Location</label>
+                        <input type="text" id="cfg-location" class="form-input"
+                               placeholder="e.g. Wesseling Community Center, Germany">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">About Text</label>
+                        <textarea id="cfg-about" class="form-textarea" rows="4"
+                                  placeholder="Short description about Bangla Karneval..."></textarea>
+                    </div>
+                    <h4 style="margin:var(--spacing-lg) 0 var(--spacing-md);color:var(--accent-maroon)">Contact Information</h4>
+                    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-md)">
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" id="cfg-phone" class="form-input" placeholder="+49...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contact Email</label>
+                            <input type="email" id="cfg-email" class="form-input" placeholder="info@bangla...">
+                        </div>
+                    </div>
+                    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-md)">
+                        <div class="form-group">
+                            <label class="form-label">WhatsApp Number</label>
+                            <input type="tel" id="cfg-whatsapp" class="form-input" placeholder="+49...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Facebook URL</label>
+                            <input type="url" id="cfg-facebook" class="form-input" placeholder="https://facebook.com/...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Instagram URL</label>
+                        <input type="url" id="cfg-instagram" class="form-input" placeholder="https://instagram.com/...">
+                    </div>
+                    <button type="submit" class="btn btn-retro" style="margin-top:var(--spacing-md)">
+                        💾 Save Configuration
+                    </button>
+                </form>
+            </div>
+
+            <!-- ─── Event Years Management ─── -->
+            <div class="section-card" style="max-width:700px;margin-top:var(--spacing-xl)">
+                <div class="section-card-header">
+                    <h2>📅 Event Years</h2>
+                </div>
+                <p style="color:var(--text-secondary);font-size:13px;margin-bottom:var(--spacing-lg)">
+                    Add previous years here to enable gallery uploads for them.
+                    Each year must exist before images can be uploaded.
+                </p>
+                <div id="event-years-list"
+                     style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:var(--spacing-lg);min-height:36px">
+                    <div class="spinner" style="margin:0 auto"></div>
+                </div>
+                <div style="display:flex;gap:var(--spacing-md);align-items:flex-end;flex-wrap:wrap">
+                    <div class="form-group" style="margin:0">
+                        <label class="form-label">Add Year</label>
+                        <input type="number" id="new-event-year" class="form-input"
+                               placeholder="e.g. 2025" min="2000" max="2099"
+                               style="width:140px">
+                    </div>
+                    <button class="btn btn-retro" onclick="addEventYear()">＋ Add Year</button>
+                </div>
+                <div id="add-year-alert" style="margin-top:var(--spacing-md)"></div>
+            </div>
+
+            <!-- ─── Button Visibility ─── -->
+            <div class="section-card" style="max-width:700px;margin-top:var(--spacing-xl)">
+                <div class="section-card-header">
+                    <h2>👁️ Button Visibility</h2>
+                </div>
+                <p style="color:var(--text-secondary);font-size:13px;margin-bottom:var(--spacing-lg)">
+                    Control which buttons are visible to visitors on the public website.
+                </p>
+
+                <div id="button-visibility-alert"></div>
+
+                <!-- Register Now -->
+                <div style="display:flex;justify-content:space-between;align-items:center;
+                            padding:var(--spacing-md) 0;border-bottom:1px solid #f0e6d0">
+                    <div>
+                        <div style="font-weight:600;color:var(--accent-maroon)">
+                            🎟️ Register Now Button
+                        </div>
+                        <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">
+                            Shown in header nav and home page hero section
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <span id="registration-status-label"
+                              style="font-size:13px;color:var(--text-secondary)">Loading...</span>
+                        <button id="registration-toggle-btn"
+                                onclick="toggleButtonVisibility('registration')"
+                                class="btn btn-sm btn-outline"
+                                style="min-width:unset"
+                                title="Loading...">
+                            <i class="fa-regular fa-eye-slash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Performer -->
+                <div style="display:flex;justify-content:space-between;align-items:center;
+                            padding:var(--spacing-md) 0">
+                    <div>
+                        <div style="font-weight:600;color:var(--accent-maroon)">
+                            🎤 Performer Button
+                        </div>
+                        <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">
+                            Shown in header nav and home page hero nav
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <span id="performer-status-label"
+                              style="font-size:13px;color:var(--text-secondary)">Loading...</span>
+                        <button id="performer-toggle-btn"
+                                onclick="toggleButtonVisibility('performer')"
+                                class="btn btn-sm btn-outline"
+                                style="min-width:unset"
+                                title="Loading...">
+                            <i class="fa-regular fa-eye-slash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+</div>
+
+<!-- ─── EDIT REGISTRATION MODAL ─── -->
+<div class="modal-overlay" id="edit-modal" style="display:none">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>✏️ Edit Registration</h3>
+            <button class="modal-close" onclick="closeModal('edit-modal')">×</button>
+        </div>
+        <form id="edit-form">
+            <input type="hidden" id="edit-id">
+            <div style="background:#f9f5ef;padding:var(--spacing-md);border-radius:var(--radius-sm);margin-bottom:var(--spacing-lg)">
+                <strong id="edit-name" style="color:var(--accent-maroon)"></strong>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Payment Status</label>
+                <select id="edit-status" class="form-select">
+                    <option value="PENDING">⏳ Pending</option>
+                    <option value="CONFIRMED">✅ Confirmed</option>
+                    <option value="OVERDUE">🔴 Overdue</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" id="edit-email" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" id="edit-phone" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <input type="text" id="edit-address" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Message to Registrant <small style="font-weight:400;
+           color:var(--text-secondary)">(optional — sent with status email)</small></label>
+                <textarea id="edit-admin-note" class="form-textarea" rows="3"
+                          placeholder="e.g. Your payment was not received. Please resubmit."></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('edit-modal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ─── EDIT PERFORMER MODAL ─── -->
+<div class="modal-overlay" id="performer-modal" style="display:none">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>✏️ Edit Performer</h3>
+            <button class="modal-close" onclick="closeModal('performer-modal')">×</button>
+        </div>
+        <form id="performer-edit-form">
+            <input type="hidden" id="perf-edit-id">
+            <div style="background:#f9f5ef;padding:var(--spacing-md);border-radius:var(--radius-sm);margin-bottom:var(--spacing-lg)">
+                <strong id="perf-edit-name" style="color:var(--accent-maroon)"></strong>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Application Status</label>
+                <select id="perf-edit-status" class="form-select">
+                    <option value="PENDING">⏳ Pending</option>
+                    <option value="APPROVED">✅ Approved</option>
+                    <option value="REJECTED">❌ Rejected</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Message to Performer <small style="font-weight:400;
+           color:var(--text-secondary)">(optional — sent with status email)</small></label>
+                <textarea id="perf-admin-note" class="form-textarea" rows="3"
+                          placeholder="e.g. Approved! Please arrive 1 hour before the event."></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('performer-modal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ─── SPONSOR MODAL ─── -->
+<div class="modal-overlay" id="sponsor-modal" style="display:none">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="sponsor-modal-title">Add Sponsor</h3>
+            <button class="modal-close" onclick="closeSponsorModal()">×</button>
+        </div>
+        <form id="sponsor-form" enctype="multipart/form-data">
+            <input type="hidden" id="sponsor-id">
+            <div class="form-group">
+                <label class="form-label">Name *</label>
+                <input type="text" id="s-name" class="form-input" placeholder="Company or sponsor name" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Logo (optional)</label>
+                <input type="file" id="s-logo" class="form-input" accept="image/*" onchange="previewLogo(this)">
+                <img id="s-logo-preview" src="" alt="Logo preview"
+                     style="display:none;height:64px;margin-top:8px;border-radius:8px;
+                            object-fit:contain;background:#f5f5f5;padding:4px">
+            </div>
+            <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-md)">
+                <div class="form-group">
+                    <label class="form-label">Address <span style="color:var(--text-secondary);font-weight:400">(optional)</span></label>
+                    <input type="text" id="s-address" class="form-input" placeholder="City, Germany">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone <span style="color:var(--text-secondary);font-weight:400">(optional)</span></label>
+                    <input type="tel" id="s-phone" class="form-input" placeholder="+49...">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Website URL <span style="color:var(--text-secondary);font-weight:400">(optional)</span></label>
+                <input type="url" id="s-website" class="form-input" placeholder="https://example.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Short Description <span style="color:var(--text-secondary);font-weight:400">(optional)</span></label>
+                <input type="text" id="s-description" class="form-input"
+                       placeholder="e.g. Official food partner" maxlength="100">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeSponsorModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">💾 Save Sponsor</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ─── CREATE / EDIT EVENT MODAL ─── -->
+<div class="modal-overlay" id="event-modal" style="display:none">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="event-modal-title">➕ Create Event</h3>
+            <button class="modal-close" onclick="closeModal('event-modal')">×</button>
+        </div>
+        <form id="event-form">
+            <input type="hidden" id="event-id">
+            <div class="form-group">
+                <label class="form-label">Category *</label>
+                <select id="event-category" class="form-select" required>
+                    <option value="">— Select category —</option>
+                    <option value="music">🎵 Music</option>
+                    <option value="dance">💃 Dance</option>
+                    <option value="food">🍛 Food</option>
+                    <option value="fashion">👘 Fashion</option>
+                    <option value="kids">🎪 Kids</option>
+                    <option value="competition">🏆 Competition</option>
+                    <option value="art">🎨 Art</option>
+                    <option value="other">🎭 Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Title *</label>
+                <input type="text" id="event-title" class="form-input"
+                       placeholder="e.g. 🎵 Live Music" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description *</label>
+                <textarea id="event-description" class="form-textarea" rows="3"
+                          placeholder="Short description visible on the home page..." required></textarea>
+            </div>
+            <div class="form-group">
+                <div style="display:flex;align-items:center;gap:var(--spacing-sm);margin-top:8px">
+                    <input type="checkbox" id="event-highlight" style="width:18px;height:18px;cursor:pointer">
+                    <label for="event-highlight" style="cursor:pointer;font-weight:500">
+                        ⭐ Mark as Highlight
+                        <small style="font-weight:400;color:var(--text-secondary);display:block">
+                            Highlighted events are featured prominently on the home page
+                        </small>
+                    </label>
+                </div>
+            </div>
+            <div id="event-form-alert"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('event-modal')">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="event-submit-btn">💾 Save Event</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="js/common.js"></script>
+<script src="js/admin_dashboard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="js/admin_sponsors.js"></script>
+
+<script>
+    /* ══════════════════════════════════════════════════════════════
+       GALLERY — year dropdowns loaded from API
+       ══════════════════════════════════════════════════════════════ */
+    async function loadGalleryYears() {
+        try {
+            const years = await apiFetchWithAuth('/api/admin/gallery/years');
+            const uploadSelect = document.getElementById('upload-year');
+            const filterSelect = document.getElementById('gallery-year-filter');
+
+            if (!years || years.length === 0) {
+                uploadSelect.innerHTML = '<option value="">No years — add one in Config tab</option>';
+                filterSelect.innerHTML = '<option value="">No years available</option>';
+                return;
+            }
+
+            const options = years.map(y => `<option value="${y}">${y}</option>`).join('');
+            uploadSelect.innerHTML = options;
+            filterSelect.innerHTML = options;
+            await loadAdminGallery(years[0]);
+
+        } catch (e) {
+            console.error('Failed to load gallery years:', e);
+            document.getElementById('upload-year').innerHTML         = '<option value="">Failed to load years</option>';
+            document.getElementById('gallery-year-filter').innerHTML = '<option value="">Failed to load years</option>';
+        }
+    }
+
+    async function loadAdminGallery(year) {
+        if (!year) return;
+        const grid = document.getElementById('gallery-admin-grid');
+        if (!grid) return;
+        grid.innerHTML = '<div class="spinner" style="margin:0 auto;grid-column:1/-1"></div>';
+        try {
+            const items = await apiFetchWithAuth(`/api/gallery/${year}`);
+            if (!items || !items.length) {
+                grid.innerHTML = `<p style="color:var(--text-secondary);grid-column:1/-1">No images uploaded for ${year} yet.</p>`;
+                return;
+            }
+            grid.innerHTML = items.map(item => `
+            <div style="position:relative;background:var(--bg-white);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-sm)">
+                <img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.caption || '')}"
+                     style="width:100%;aspect-ratio:4/3;object-fit:cover" loading="lazy">
+                <div style="padding:var(--spacing-sm)">
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:var(--spacing-sm)">
+                        ${escapeHtml(item.caption || 'No caption')}</p>
+                    <div style="display:flex;gap:var(--spacing-xs)">
+                        <button onclick="toggleHighlight('${item.id}')"
+                            class="btn btn-sm ${item.isHighlight ? 'btn-secondary' : 'btn-outline'}"
+                            style="flex:1;font-size:12px">
+                            ${item.isHighlight ? '⭐ Featured' : '☆ Feature'}
+                        </button>
+                        <button onclick="deleteGalleryItem('${item.id}')"
+                            class="btn btn-sm btn-danger" style="font-size:12px">🗑️</button>
+                    </div>
+                </div>
+            </div>`).join('');
+        } catch (e) {
+            grid.innerHTML = '<p style="color:var(--error);grid-column:1/-1">Failed to load gallery.</p>';
+        }
+    }
+
+    async function toggleHighlight(id) {
+        try {
+            await apiFetchWithAuth(`/api/admin/gallery/${id}/highlight`, { method: 'PUT' });
+            await loadAdminGallery(document.getElementById('gallery-year-filter').value);
+        } catch (e) { alert('Failed to toggle highlight.'); }
+    }
+
+    async function deleteGalleryItem(id) {
+        if (!confirm('Delete this image permanently?')) return;
+        try {
+            await apiFetchWithAuth(`/api/admin/gallery/${id}`, { method: 'DELETE' });
+            await loadAdminGallery(document.getElementById('gallery-year-filter').value);
+        } catch (e) { alert('Delete failed.'); }
+    }
+
+    document.getElementById('gallery-year-filter')?.addEventListener('change', (e) => {
+        loadAdminGallery(e.target.value);
+    });
+
+    document.getElementById('gallery-upload-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn   = e.target.querySelector('[type="submit"]');
+        const token = localStorage.getItem('adminToken');
+        const year  = document.getElementById('upload-year').value;
+
+        if (!year) {
+            showAlert('gallery-upload-alert', 'Please select a valid event year.', 'error');
+            return;
+        }
+
+        setLoading(btn, true);
+        const formData = new FormData();
+        formData.append('eventYear',    year);
+        formData.append('mediaType',    document.getElementById('upload-media-type').value);
+        formData.append('caption',      document.getElementById('upload-caption').value);
+        formData.append('isHighlight',  document.getElementById('upload-highlight').checked);
+        formData.append('displayOrder', document.getElementById('upload-order').value);
+
+        const fileInput = document.getElementById('upload-file');
+        const urlInput  = document.getElementById('upload-url').value.trim();
+        if (fileInput.files[0]) formData.append('file', fileInput.files[0]);
+        else if (urlInput)      formData.append('url', urlInput);
+        else {
+            showAlert('gallery-upload-alert', 'Please select a file or enter a URL.', 'error');
+            setLoading(btn, false); return;
+        }
+
+        try {
+            const res = await fetch('/api/admin/gallery', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+            if (!res.ok) {
+                const err = await res.text();
+                throw new Error(err || 'Upload failed');
+            }
+            showAlert('gallery-upload-alert', '✅ Image uploaded successfully!', 'success');
+            e.target.reset();
+            document.getElementById('gallery-year-filter').value = year;
+            await loadAdminGallery(year);
+        } catch (err) {
+            showAlert('gallery-upload-alert', `Upload failed: ${err.message}`, 'error');
+        } finally { setLoading(btn, false); }
+    });
+
+    /* ══════════════════════════════════════════════════════════════
+       EVENT YEARS MANAGEMENT
+       ══════════════════════════════════════════════════════════════ */
+    async function loadEventYears() {
+        const container = document.getElementById('event-years-list');
+        if (!container) return;
+        try {
+            const years = await apiFetchWithAuth('/api/admin/gallery/years');
+            if (!years || years.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-secondary);font-size:13px">No years configured yet.</p>';
+                return;
+            }
+            container.innerHTML = years.map(y => `
+            <span style="
+                display:  inline-block;
+                background: var(--accent-maroon);
+                color:    #fff;
+                padding:  6px 18px;
+                border-radius: 20px;
+                font-weight: 600;
+                font-size: 14px">${y}</span>
+        `).join('');
+        } catch (e) {
+            container.innerHTML = '<p style="color:var(--error);font-size:13px">Failed to load years.</p>';
+        }
+    }
+
+    async function addEventYear() {
+        const input = document.getElementById('new-event-year');
+        const year  = parseInt(input.value);
+
+        if (!year || year < 2000 || year > 2099) {
+            showAlert('add-year-alert', 'Please enter a valid year between 2000 and 2099.', 'error');
+            return;
+        }
+
+        try {
+            await apiFetchWithAuth('/api/admin/config/year', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ eventYear: year })
+            });
+            showAlert('add-year-alert', `✅ Year ${year} added successfully!`, 'success');
+            input.value = '';
+            await Promise.all([loadEventYears(), loadGalleryYears()]);
+        } catch (e) {
+            showAlert('add-year-alert', `Failed to add year: ${e.message}`, 'error');
+        }
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       BUTTON VISIBILITY TOGGLES
+       ══════════════════════════════════════════════════════════════ */
+    async function loadButtonVisibility() {
+        try {
+            const data = await apiFetchWithAuth('/api/config/button-status');
+            updateVisibilityUI('registration', data.registrationEnabled);
+            updateVisibilityUI('performer',    data.performerEnabled);
+        } catch (e) {
+            console.error('Failed to load button visibility:', e);
+            showAlert('button-visibility-alert', 'Failed to load button status.', 'error');
+        }
+    }
+
+    async function toggleButtonVisibility(type) {
+        const btn = document.getElementById(`${type}-toggle-btn`);
+        if (btn) btn.disabled = true;
+
+        try {
+            const endpoint = type === 'registration'
+                ? '/api/admin/config/registration-toggle'
+                : '/api/admin/config/performer-toggle';
+
+            const data = await apiFetchWithAuth(endpoint, { method: 'PATCH' });
+
+            // Both endpoints return { "enabled": true/false }
+            const enabled = data.enabled;
+
+            updateVisibilityUI(type, enabled);
+            showAlert('button-visibility-alert',
+                `${type === 'registration' ? 'Register Now' : 'Performer'} button is now ${enabled ? 'visible' : 'hidden'}.`,
+                'success');
+        } catch (e) {
+            showAlert('button-visibility-alert', `Failed to update: ${e.message}`, 'error');
+        } finally {
+            const btn = document.getElementById(`${type}-toggle-btn`);
+            if (btn) btn.disabled = false;
+        }
+    }
+
+
+
+    function updateVisibilityUI(type, enabled) {
+        const label = document.getElementById(`${type}-status-label`);
+        const btn   = document.getElementById(`${type}-toggle-btn`);
+        if (!label || !btn) return;
+
+        if (enabled) {
+            label.textContent  = 'Visible';
+            label.style.color  = 'var(--success)';
+            btn.title          = 'Hide';
+            btn.className      = 'btn btn-sm btn-outline';
+            btn.innerHTML      = '<i class="fa-regular fa-eye-slash"></i>';
+        } else {
+            label.textContent  = 'Hidden';
+            label.style.color  = 'var(--error)';
+            btn.title          = 'Show';
+            btn.className      = 'btn btn-sm btn-outline';
+            btn.innerHTML      = '<i class="fa-regular fa-eye"></i>';
+        }
+    }
+
+
+    /* ══════════════════════════════════════════════════════════════
+       TAB SWITCHER
+       ══════════════════════════════════════════════════════════════ */
+    function switchTab(name, linkEl) {
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+        const pane = document.getElementById(`tab-${name}`);
+        if (pane) pane.classList.add('active');
+        if (linkEl) linkEl.classList.add('active');
+
+        if (name === 'performers') { loadPerformers(); loadEvents(); }
+        if (name === 'gallery-mgmt') loadGalleryYears();
+        if (name === 'sponsors') { if (!sponsorsLoaded) loadSponsors(); loadPerformerStatus(); }
+        if (name === 'messages') { loadMessages(); loadUnreadCount(); }
+        if (name === 'config')       { loadConfig(); loadEventYears(); loadButtonVisibility(); }
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       MODAL HELPERS
+       ══════════════════════════════════════════════════════════════ */
+    function closeModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       LOGOUT
+       ══════════════════════════════════════════════════════════════ */
+    document.getElementById('logout-btn')?.addEventListener('click', () => {
+        localStorage.removeItem('adminToken');
+        window.location.replace('/admin.html');
+    });
+
+    /* ══════════════════════════════════════════════════════════════
+       ADMIN NAME FROM JWT
+       ══════════════════════════════════════════════════════════════ */
+    (function () {
+        const token = localStorage.getItem('adminToken');
+        if (!token) return;
+        try {
+            const p  = JSON.parse(atob(token.split('.')[1]));
+            const el = document.getElementById('admin-name-display');
+            if (el) el.textContent = p.sub || p.email || p.name || 'Admin';
+        } catch (e) {}
+    })();
+
+    /* ══════════════════════════════════════════════════════════════
+       CONFIG
+       ══════════════════════════════════════════════════════════════ */
+    async function loadConfig() {
+        try {
+            const c = await apiFetch('/api/config/current');
+            document.getElementById('cfg-price').value     = c.pricePerPerson   || '';
+            document.getElementById('cfg-date').value      = c.eventDate        || '';
+            document.getElementById('cfg-location').value  = c.eventLocation    || '';
+            document.getElementById('cfg-about').value     = c.aboutText        || '';
+            document.getElementById('cfg-phone').value     = c.contactPhone     || '';
+            document.getElementById('cfg-email').value     = c.contactEmail     || '';
+            document.getElementById('cfg-whatsapp').value  = c.contactWhatsapp  || '';
+            document.getElementById('cfg-facebook').value  = c.contactFacebook  || '';
+            document.getElementById('cfg-instagram').value = c.contactInstagram || '';
+        } catch (e) { console.error('Config load failed:', e); }
+    }
+
+    document.getElementById('config-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector('[type="submit"]');
+        setLoading(btn, true);
+        try {
+            await apiFetchWithAuth('/api/admin/config', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    pricePerPerson:   parseFloat(document.getElementById('cfg-price').value),
+                    eventDate:        document.getElementById('cfg-date').value      || null,
+                    eventLocation:    document.getElementById('cfg-location').value  || null,
+                    aboutText:        document.getElementById('cfg-about').value     || null,
+                    contactPhone:     document.getElementById('cfg-phone').value     || null,
+                    contactEmail:     document.getElementById('cfg-email').value     || null,
+                    contactWhatsapp:  document.getElementById('cfg-whatsapp').value  || null,
+                    contactFacebook:  document.getElementById('cfg-facebook').value  || null,
+                    contactInstagram: document.getElementById('cfg-instagram').value || null
+                })
+            });
+            showAlert('config-alert', '✅ Configuration saved successfully!', 'success');
+        } catch (err) {
+            showAlert('config-alert', `Save failed: ${err.message}`, 'error');
+        } finally { setLoading(btn, false); }
+    });
+
+    /* ══════════════════════════════════════════════════════════════
+       INIT
+       ══════════════════════════════════════════════════════════════ */
+    document.addEventListener('DOMContentLoaded', () => {
+        loadConfig();
+        loadEventYears();
+        loadButtonVisibility(); // ← added
+    });
+</script>
+</body>
+</html>

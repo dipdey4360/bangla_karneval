@@ -1,0 +1,130 @@
+package com.bangla.karneval.controller;
+
+import com.bangla.karneval.dto.response.ApiResponse;
+import com.bangla.karneval.dto.response.DashboardStatsResponse;
+import com.bangla.karneval.model.PaymentStatus;
+import com.bangla.karneval.model.Registration;
+import com.bangla.karneval.repository.RegistrationRepository;
+import com.bangla.karneval.service.PriceCalculationService;
+import com.bangla.karneval.service.RegistrationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.time.Period;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/admin")
+public class AdminRegistrationController {
+
+    @Autowired private RegistrationService     registrationService;
+    @Autowired private RegistrationRepository  registrationRepository;
+    @Autowired private PriceCalculationService priceCalculationService;
+
+    @GetMapping("/registrations")
+    public ResponseEntity<List<Registration>> getRegistrations(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String search) {
+        PaymentStatus ps = (status != null && !status.equalsIgnoreCase("ALL"))
+                ? PaymentStatus.valueOf(status) : null;
+        return ResponseEntity.ok(registrationService.searchRegistrations(search, ps));
+    }
+
+    @PutMapping("/registrations/{id}")
+    public ResponseEntity<Registration> updateRegistration(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> body) {
+
+        Registration updatedData = new Registration();
+
+        if (body.get("paymentStatus") != null)
+            updatedData.setPaymentStatus(PaymentStatus.valueOf((String) body.get("paymentStatus")));
+        if (body.get("phone") != null)
+            updatedData.setPhone((String) body.get("phone"));
+        if (body.get("email") != null)
+            updatedData.setEmail((String) body.get("email"));
+        if (body.get("address") != null)
+            updatedData.setAddress((String) body.get("address"));
+
+        String adminNote = (String) body.getOrDefault("adminNote", "");
+        return ResponseEntity.ok(registrationService.updateRegistration(id, updatedData, adminNote));
+    }
+
+    @PutMapping("/registrations/{id}/payment")
+    public ResponseEntity<ApiResponse> updatePaymentStatus(
+            @PathVariable Long id,
+            @RequestParam String status) {
+        registrationService.updatePaymentStatus(id, PaymentStatus.valueOf(status));
+        return ResponseEntity.ok(ApiResponse.ok("Payment status updated"));
+    }
+
+    @DeleteMapping("/registrations/{id}")
+    public ResponseEntity<ApiResponse> deleteRegistration(@PathVariable Long id) {
+        registrationService.deleteRegistration(id);
+        return ResponseEntity.ok(ApiResponse.ok("Registration deleted"));
+    }
+
+    @GetMapping("/registrations/export")
+    public ResponseEntity<byte[]> exportCsv() {
+        List<Registration> all = registrationRepository.findAll();
+        StringWriter sw = new StringWriter();
+        PrintWriter  pw = new PrintWriter(sw);
+
+        pw.println("Reference Code,Name,Email,Phone,Date of Birth,Age,Participants," +
+                "Amount,Payment Method,Payment Status,Address,Registered At");
+
+        for (Registration r : all) {
+            int age = 0;
+            if (r.getPrimaryDateOfBirth() != null) {
+                age = Period.between(r.getPrimaryDateOfBirth(), LocalDate.now()).getYears();
+            }
+            pw.printf("%s,%s,%s,%s,%s,%d,%d,%.2f,%s,%s,%s,%s%n",
+                    r.getReferenceCode(),
+                    r.getPrimaryName(),
+                    r.getEmail(),
+                    r.getPhone()             != null ? r.getPhone()                          : "",
+                    r.getPrimaryDateOfBirth() != null ? r.getPrimaryDateOfBirth().toString() : "",
+                    age,
+                    r.getParticipantCount(),
+                    r.getCalculatedAmount(),
+                    r.getPaymentMethod()     != null ? r.getPaymentMethod()                  : "",
+                    r.getPaymentStatus(),
+                    r.getAddress()           != null ? r.getAddress()                        : "",
+                    r.getRegisteredAt()
+            );
+        }
+
+        byte[] csvBytes = sw.toString().getBytes();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("text/csv"));
+        headers.setContentDispositionFormData("attachment", "registrations.csv");
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/dashboard/stats")
+    public ResponseEntity<DashboardStatsResponse> getDashboardStats() {
+        List<Registration> all = registrationRepository.findAll();
+        PriceCalculationService.AgeGroupStats ageStats =
+                priceCalculationService.getAgeGroupStats(all);
+
+        BigDecimal revenue = registrationRepository.sumRevenueByYear(2026);
+
+        DashboardStatsResponse stats = new DashboardStatsResponse(
+                (long) all.size(),
+                registrationRepository.countByPaymentStatus(PaymentStatus.CONFIRMED),
+                registrationRepository.countByPaymentStatus(PaymentStatus.PENDING),
+                registrationRepository.countByPaymentStatus(PaymentStatus.OVERDUE),
+                revenue != null ? revenue : BigDecimal.ZERO,
+                ageStats.getChildren(),
+                ageStats.getAdults(),
+                ageStats.getSeniors()
+        );
+        return ResponseEntity.ok(stats);
+    }
+}

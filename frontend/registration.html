@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register — Bangla Karneval 2026</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/registration.css">
+    <link rel="icon" href="assets/images/favicon.ico">
+</head>
+<body>
+<div class="page-wrapper">
+    <div id="header-container"></div>
+    <main class="page-content">
+
+        <section class="registration-hero">
+            <div class="container">
+                <h1>Register for Bangla Karneval 2026</h1>
+                <p>Secure your spot — children under 18 attend for free!</p>
+            </div>
+        </section>
+
+        <section class="registration-section">
+            <div class="container">
+                <div id="form-alert"></div>
+
+                <!-- Success overlay -->
+                <div class="success-overlay" id="success-overlay">
+                    <div class="success-icon">🎉</div>
+                    <h2>Registration Successful!</h2>
+                    <p>Check your email for payment instructions.</p>
+                    <div class="reference-code-box" id="success-ref-code"></div>
+                    <p><strong>Total Amount:</strong> <span id="success-amount"></span></p>
+                    <p><strong>Payment Method:</strong> <span id="success-payment"></span></p>
+                    <a href="index.html" class="btn btn-primary mt-3">Back to Home</a>
+                </div>
+
+                <div class="registration-layout">
+                    <div class="registration-form-card" id="registration-form-card">
+                        <form id="registration-form" novalidate>
+
+                            <!-- Primary registrant -->
+                            <div class="form-section-title">👤 Primary Registrant</div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="primary-name">Full Name *</label>
+                                    <input type="text" id="primary-name" class="form-input"
+                                           required placeholder="Your full name">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="primary-dob">
+                                        Date of Birth *
+                                        <span id="primary-age-display"
+                                              style="font-weight:400;color:var(--text-secondary);font-size:13px"></span>
+                                    </label>
+                                    <input type="date" id="primary-dob" class="form-input"
+                                           required max="" onchange="onPrimaryDobChange()">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="primary-gender">Gender</label>
+                                    <select id="primary-gender" class="form-select">
+                                        <option value="">— Select —</option>
+                                        <option value="MALE">Male</option>
+                                        <option value="FEMALE">Female</option>
+                                        <option value="OTHER">Other</option>
+                                        <option value="PREFER_NOT_TO_SAY">Prefer not to say</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="primary-phone">Phone Number</label>
+                                    <input type="tel" id="primary-phone" class="form-input"
+                                           placeholder="+49...">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="primary-email">Email Address *</label>
+                                    <input type="email" id="primary-email" class="form-input"
+                                           required placeholder="your@email.com">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="primary-address">Address</label>
+                                    <input type="text" id="primary-address" class="form-input"
+                                           placeholder="City, Country">
+                                </div>
+                            </div>
+
+                            <!-- Additional participants -->
+                            <div class="form-section-title" style="margin-top:var(--spacing-xl)">
+                                👨‍👩‍👧 Additional Participants
+                            </div>
+                            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:var(--spacing-md)">
+                                Children under 18 are <strong>free</strong>.
+                                Adults pay <strong id="price-label">€10.00</strong> each.
+                            </p>
+                            <div id="additional-participants-container"></div>
+                            <button type="button" id="add-participant-btn"
+                                    class="btn btn-outline" style="border-style:dashed">
+                                + Add Participant
+                            </button>
+
+                            <!-- Payment method -->
+                            <div class="form-section-title" style="margin-top:var(--spacing-xl)">
+                                💳 Payment Method
+                            </div>
+                            <div class="payment-methods">
+                                <div class="payment-option" id="payment-option-paypal">
+                                    <input type="radio" name="paymentMethod"
+                                           id="pay-paypal" value="PAYPAL"
+                                           onchange="onPaymentMethodChange()">
+                                    <label for="pay-paypal"><span>🅿️</span> PayPal</label>
+                                    <!-- Expanded PayPal details -->
+                                    <div class="payment-details" id="paypal-details">
+                                        <div class="payment-info-box paypal-box">
+                                            <p><i class="fa-solid fa-circle-info"></i>
+                                                Send your payment to the following PayPal account:
+                                            </p>
+                                            <div class="payment-detail-row">
+                                                <span class="detail-label">PayPal ID</span>
+                                                <span class="detail-value">
+                                                    info@banglakarneval.com
+                                                    <button type="button" class="copy-btn"
+                                                            onclick="copyText('info@banglakarneval.com')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                            <div class="payment-detail-row">
+                                                <span class="detail-label">Reference</span>
+                                                <span class="detail-value" style="color:var(--text-secondary);font-size:13px">
+                                                    Use your reference code as note
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="payment-option" id="payment-option-bank">
+                                    <input type="radio" name="paymentMethod"
+                                           id="pay-bank" value="BANK_TRANSFER"
+                                           onchange="onPaymentMethodChange()">
+                                    <label for="pay-bank"><span>🏦</span> Bank Transfer</label>
+                                    <!-- Expanded Bank details -->
+                                    <div class="payment-details" id="bank-details">
+                                        <div class="payment-info-box bank-box">
+                                            <p><i class="fa-solid fa-circle-info"></i>
+                                                Transfer to the following bank account:
+                                            </p>
+                                            <div class="payment-detail-row">
+                                                <span class="detail-label">Account Holder</span>
+                                                <span class="detail-value">Bangla Karneval e.V.</span>
+                                            </div>
+                                            <div class="payment-detail-row">
+                                                <span class="detail-label">IBAN</span>
+                                                <span class="detail-value">
+                                                    DE12 3456 7890 1234 5678 90
+                                                    <button type="button" class="copy-btn"
+                                                            onclick="copyText('DE12345678901234567890')">
+                                                        <i class="fa-solid fa-copy"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                            <div class="payment-detail-row">
+                                                <span class="detail-label">BIC</span>
+                                                <span class="detail-value">DEUTDEDB</span>
+                                            </div>
+                                            <div class="payment-detail-row">
+                                                <span class="detail-label">Reference</span>
+                                                <span class="detail-value" style="color:var(--text-secondary);font-size:13px">
+                                                    Use your reference code as purpose
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary"
+                                    style="width:100%;margin-top:var(--spacing-lg);
+                                           padding:16px;font-size:1.1rem">
+                                Complete Registration →
+                            </button>
+
+                        </form>
+                    </div>
+
+                    <!-- Price summary -->
+                    <div class="price-summary" id="price-summary-card">
+                        <h3>💰 Price Summary</h3>
+                        <div id="price-summary-body">
+                            <div class="price-row">
+                                <span>Primary registrant</span>
+                                <span id="primary-price-display">€10.00</span>
+                            </div>
+                        </div>
+                        <div class="price-row total">
+                            <span>Total Amount</span>
+                            <span id="total-amount">€10.00</span>
+                        </div>
+                        <p style="font-size:12px;color:var(--text-secondary);margin-top:var(--spacing-md)">
+                            Payment instructions will be sent to your email after registration.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <div id="footer-container"></div>
+</div>
+<script src="js/common.js"></script>
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/registration.js"></script>
+<script>
+    document.getElementById('primary-dob').max = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>

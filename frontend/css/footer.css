@@ -1,0 +1,270 @@
+.site-footer {
+    background:   #ffffff;
+    border-top:   3px solid transparent;
+    border-image: linear-gradient(
+            90deg, #1B9FD8, #D63031, #E91E8C, #8E44AD, #F39C12
+    ) 1;
+}
+
+/* ── Sponsors section ── */
+.footer-sponsors {
+    padding:    var(--spacing-lg) 0;
+    background: #fdf8ff;
+}
+
+.sponsors-header {
+    text-align:    center;
+    margin-bottom: var(--spacing-md);
+}
+
+.sponsors-label {
+    display:     inline-flex;
+    align-items: center;
+    gap:         var(--spacing-sm);
+    font-family: var(--font-heading);
+    font-size:   1.2rem;
+    font-weight: 700;
+    background:  linear-gradient(90deg, #1B9FD8, #D63031, #E91E8C, #8E44AD, #F39C12);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip:         text;
+}
+
+/* ── Wrapper ── */
+.sponsors-inner {
+    display:        flex;
+    flex-direction: column;
+    align-items:    stretch;
+    width:          fit-content;
+    margin:         0 auto;
+}
+
+/* ── Cards row ── */
+.sponsor-cards {
+    display:         flex;
+    flex-wrap:       wrap;
+    justify-content: center;
+    align-items:     stretch;
+    gap:             var(--spacing-md);
+    margin-bottom:   var(--spacing-md);
+    width:           100%;
+}
+
+.sponsor-card {
+    background:     #ffffff;
+    border-radius:  var(--radius-lg);
+    padding:        var(--spacing-lg);
+    text-align:     center;
+    border:         1px solid #eee;
+    box-shadow:     0 2px 8px rgba(0, 0, 0, 0.06);
+    transition:     transform 0.3s ease, box-shadow 0.3s ease;
+    display:        flex;
+    flex-direction: column;
+    align-items:    center;
+    gap:            8px;
+    flex:           0 0 auto;
+    width:          220px;
+}
+
+.sponsor-card:hover {
+    transform:    translateY(-4px);
+    box-shadow:   0 6px 16px rgba(233, 30, 140, 0.15);
+    border-color: #E91E8C;
+}
+
+/* ── Logo box ── */
+.sponsor-logo-box {
+    width:           96px;
+    height:          96px;
+    border-radius:   var(--radius-md);
+    background:      #fdf6e3;
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    margin-bottom:   4px;
+}
+
+.sponsor-logo-box img {
+    width:         100%;
+    height:        100%;
+    object-fit:    contain;
+    border-radius: var(--radius-md);
+}
+
+.sponsor-name {
+    font-weight: 700;
+    font-size:   1.05rem;
+    color:       var(--text-primary);
+}
+
+.sponsor-address {
+    font-size:       0.82rem;
+    color:           var(--text-secondary);
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    gap:             4px;
+}
+.sponsor-address i { color: #E91E8C; font-size: 11px; }
+
+/* ── Become a sponsor CTA ── */
+.become-sponsor {
+    width:           100%;
+    padding:         var(--spacing-sm) var(--spacing-md);
+    background:      linear-gradient(135deg, #fff0f8, #f0f0ff);
+    border-radius:   var(--radius-md);
+    border:          1px dashed #E91E8C;
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    gap:             var(--spacing-lg);
+    box-sizing:      border-box;
+}
+
+.become-sponsor p {
+    color:     var(--text-secondary);
+    font-size: 0.85rem;
+    margin:    0;
+}
+
+.btn-sponsor {
+    display:         inline-flex;
+    align-items:     center;
+    gap:             var(--spacing-sm);
+    background:      linear-gradient(135deg, #E91E8C, #8E44AD);
+    color:           #fff;
+    padding:         8px 20px;
+    border-radius:   50px;
+    font-weight:     700;
+    font-size:       13px;
+    text-decoration: none;
+    white-space:     nowrap;
+    box-shadow:      0 4px 12px rgba(233, 30, 140, 0.3);
+    transition:      all 0.3s ease;
+}
+.btn-sponsor:hover {
+    transform:       translateY(-2px);
+    box-shadow:      0 6px 16px rgba(233, 30, 140, 0.45);
+    text-decoration: none;
+    color:           #fff;
+}
+
+/* ── Bottom bar ── */
+.footer-bottom {
+    background: #2C3E50;
+    padding:    var(--spacing-sm) 0;
+}
+
+.footer-bottom-inner {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    flex-wrap:       wrap;
+    gap:             var(--spacing-md);
+}
+
+.footer-brand {
+    display:     flex;
+    align-items: center;
+    gap:         var(--spacing-sm);
+}
+
+.footer-brand img      { height: 32px; width: auto; object-fit: contain; }
+.footer-brand-name     { font-weight: 700; font-size: 0.85rem; color: #F39C12; font-family: var(--font-heading); }
+
+.footer-links          { display: flex; gap: var(--spacing-md); flex-wrap: wrap; }
+.footer-links a        { color: rgba(255,255,255,0.75); font-size: 13px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.2s; }
+.footer-links a:hover  { color: #E91E8C; text-decoration: none; }
+.footer-links a i      { font-size: 11px; }
+
+.footer-copy           { font-size: 12px; color: rgba(255, 255, 255, 0.5); }
+
+.footer-copy-strip {
+    background: #2C3E50;
+    padding:    var(--spacing-sm) 0;
+    text-align: center;
+    font-size:  12px;
+    color:      rgba(255, 255, 255, 0.5);
+}
+
+/* ── Tablet (max 1024px) ─────────────────────────────────── */
+@media (max-width: 1024px) {
+    .sponsors-inner { width: 100%; }
+
+    .sponsor-card   { width: calc(33.33% - var(--spacing-md)); }
+
+    .sponsors-label { font-size: 1.1rem; }
+}
+
+/* ── Mobile (max 768px) ──────────────────────────────────── */
+@media (max-width: 768px) {
+    .sponsors-inner { width: 100%; }
+
+    .sponsor-cards  { gap: var(--spacing-sm); }
+
+    .sponsor-card {
+        width:   calc(50% - var(--spacing-sm));
+        padding: var(--spacing-md);
+    }
+
+    .sponsor-logo-box {
+        width:  72px;
+        height: 72px;
+    }
+
+    .sponsor-name   { font-size: 0.95rem; }
+
+    .become-sponsor {
+        flex-direction: column;
+        gap:            var(--spacing-sm);
+        text-align:     center;
+    }
+
+    .footer-bottom-inner {
+        flex-direction: column;
+        text-align:     center;
+    }
+
+    .footer-links   { justify-content: center; }
+
+    .footer-brand   { justify-content: center; }
+
+    .footer-copy    { text-align: center; width: 100%; }
+}
+
+/* ── Small mobile (max 480px) ────────────────────────────── */
+@media (max-width: 480px) {
+    .footer-sponsors { padding: var(--spacing-md) 0; }
+
+    .sponsors-label { font-size: 1rem; }
+
+    .sponsor-cards  { gap: var(--spacing-sm); }
+
+    .sponsor-card {
+        width:   calc(50% - var(--spacing-sm));
+        padding: var(--spacing-sm) var(--spacing-md);
+        gap:     6px;
+    }
+
+    .sponsor-logo-box {
+        width:  56px;
+        height: 56px;
+    }
+
+    .sponsor-name    { font-size: 0.85rem; }
+    .sponsor-address { font-size: 0.75rem; }
+
+    .become-sponsor  { padding: var(--spacing-sm); }
+
+    .become-sponsor p { font-size: 0.8rem; }
+
+    .btn-sponsor {
+        padding:   7px 16px;
+        font-size: 12px;
+    }
+
+    .footer-links    { gap: var(--spacing-sm); }
+    .footer-links a  { font-size: 12px; }
+
+    .footer-brand-name { font-size: 0.8rem; }
+}

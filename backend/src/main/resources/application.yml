@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: bangla-karneval
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/banglakarneval}
+    username: ${SPRING_DATASOURCE_USERNAME:admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:securepassword123}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dipankar.bd.89@gmail.com
+    password: ecwpbccnllxxljed
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+jwt:
+  secret: ${JWT_SECRET:bangla-karneval-default-secret-key-change-in-production-min-256-bits}
+  expiration: 28800000   # 8 hours in milliseconds
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+  resources:
+    static-locations: file:/app/static/,classpath:/static/
+
+logging:
+  level:
+    com.bangla.karneval: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: WARN

@@ -1,0 +1,42 @@
+package com.bangla.karneval.controller;
+
+import com.bangla.karneval.dto.request.EventRequest;
+import com.bangla.karneval.dto.response.ApiResponse;
+import com.bangla.karneval.model.Event;
+import com.bangla.karneval.service.EventService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/admin/events")
+public class AdminEventController {
+
+    @Autowired private EventService eventService;
+
+    @GetMapping
+    public ResponseEntity<List<Event>> getAll() {
+        return ResponseEntity.ok(eventService.getAll());
+    }
+
+    @PostMapping
+    public ResponseEntity<Event> create(@Valid @RequestBody EventRequest request) {
+        return ResponseEntity.ok(eventService.create(request));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Event> update(
+            @PathVariable Long id,
+            @Valid @RequestBody EventRequest request) {
+        return ResponseEntity.ok(eventService.update(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> delete(@PathVariable Long id) {
+        eventService.delete(id);
+        return ResponseEntity.ok(ApiResponse.ok("Event deleted"));
+    }
+}

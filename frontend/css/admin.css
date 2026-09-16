@@ -1,0 +1,129 @@
+.admin-login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent-maroon) 0%, #2c0808 100%);
+    padding: var(--spacing-lg);
+}
+
+.admin-login-card {
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xxl);
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.admin-login-logo {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.admin-login-logo .logo-icon {
+    font-size: 3rem;
+}
+
+.admin-login-logo h1 {
+    font-size: 1.5rem;
+    color: var(--accent-maroon);
+    margin-bottom: 4px;
+}
+
+.admin-login-logo p {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.admin-login-form .form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+}
+
+.login-error {
+    display: none;
+}
+
+.login-error.show {
+    display: block;
+}
+
+/* ── Tablet (max 1024px) ─────────────────────────────────── */
+@media (max-width: 1024px) {
+    .admin-login-card {
+        max-width: 400px;
+        padding: var(--spacing-xl);
+    }
+}
+
+/* ── Mobile (max 768px) ──────────────────────────────────── */
+@media (max-width: 768px) {
+    .admin-login-page {
+        align-items: flex-start;
+        padding-top: 60px;
+    }
+
+    .admin-login-card {
+        padding: var(--spacing-xl);
+        border-radius: var(--radius-md);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .admin-login-logo .logo-icon {
+        font-size: 2.5rem;
+    }
+
+    .admin-login-logo h1 {
+        font-size: 1.3rem;
+    }
+
+    .login-btn {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+}
+
+/* ── Small mobile (max 480px) ────────────────────────────── */
+@media (max-width: 480px) {
+    .admin-login-page {
+        padding: var(--spacing-md);
+        padding-top: 40px;
+        align-items: flex-start;
+    }
+
+    .admin-login-card {
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-sm);
+    }
+
+    .admin-login-logo {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .admin-login-logo .logo-icon {
+        font-size: 2rem;
+    }
+
+    .admin-login-logo h1 {
+        font-size: 1.2rem;
+    }
+
+    .admin-login-logo p {
+        font-size: 13px;
+    }
+
+    .admin-login-form .form-group {
+        margin-bottom: var(--spacing-md);
+    }
+
+    .login-btn {
+        padding: 11px;
+        font-size: 0.9rem;
+    }
+}

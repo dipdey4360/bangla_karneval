@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performer Registration — Bangla Karneval 2026</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/performer.css">
+    <link rel="icon" href="assets/images/favicon.ico">
+</head>
+<body>
+<div class="page-wrapper">
+    <div id="header-container"></div>
+    <main class="page-content">
+
+        <section class="performer-hero">
+            <div class="container">
+                <h1>Perform at Bangla Karneval 2026</h1>
+                <p>Share your talent with our community — performer registration is always free!</p>
+            </div>
+        </section>
+
+        <section class="performer-section">
+            <div class="container">
+                <div id="performer-alert"></div>
+
+                <!-- Success state -->
+                <div id="performer-success"
+                     style="display:none;text-align:center;padding:var(--spacing-xxl);
+                      background:var(--bg-white);border-radius:var(--radius-lg);
+                      box-shadow:var(--shadow-md)">
+                    <div style="font-size:4rem;margin-bottom:var(--spacing-md)">🌟</div>
+                    <h2>Application Submitted!</h2>
+                    <p style="margin-top:var(--spacing-md);color:var(--text-secondary)">
+                        Thank you for applying to perform at Bangla Karneval 2026.
+                    </p>
+                    <p style="color:var(--text-secondary)">
+                        Our team will review your application and reach out shortly.
+                    </p>
+                    <a href="index.html" class="btn btn-primary mt-3">Back to Home</a>
+                </div>
+
+                <div class="performer-form-card" id="performer-form-card">
+                    <h2 style="margin-bottom:var(--spacing-xl);color:var(--accent-maroon)">
+                        Performer Application Form
+                    </h2>
+
+                    <form id="performer-form" novalidate>
+
+                        <!-- Performance type -->
+                        <div class="form-section-title">🎤 Performance Type *</div>
+                        <div class="performance-types">
+                            <div class="performance-type-option">
+                                <input type="radio" name="performanceType" id="type-dance" value="DANCE">
+                                <label for="type-dance"><span class="type-icon">💃</span>Dance</label>
+                            </div>
+                            <div class="performance-type-option">
+                                <input type="radio" name="performanceType" id="type-drama" value="DRAMA">
+                                <label for="type-drama"><span class="type-icon">🎭</span>Drama</label>
+                            </div>
+                            <div class="performance-type-option">
+                                <input type="radio" name="performanceType" id="type-music" value="MUSIC">
+                                <label for="type-music"><span class="type-icon">🎵</span>Music / Singing</label>
+                            </div>
+                            <div class="performance-type-option">
+                                <input type="radio" name="performanceType" id="type-other" value="OTHER">
+                                <label for="type-other"><span class="type-icon">🌟</span>Other</label>
+                            </div>
+                        </div>
+
+                        <!-- Personal details -->
+                        <div class="form-section-title" style="margin-top:var(--spacing-xl)">
+                            👤 Personal Details
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="p-name">Full Name *</label>
+                                <input type="text" id="p-name" class="form-input"
+                                       required placeholder="Your full name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="p-dob">
+                                    Date of Birth
+                                    <span id="p-age-display"
+                                          style="font-weight:400;color:var(--text-secondary);font-size:13px"></span>
+                                </label>
+                                <input type="date" id="p-dob" class="form-input"
+                                       max="" onchange="showPerformerAge()">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="p-email">Email Address *</label>
+                                <input type="email" id="p-email" class="form-input"
+                                       required placeholder="your@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="p-phone">Phone Number</label>
+                                <input type="tel" id="p-phone" class="form-input" placeholder="+49...">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="p-address">Address</label>
+                                <input type="text" id="p-address" class="form-input"
+                                       placeholder="City, Country">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="p-group-count">
+                                    Number of Performers in Group
+                                </label>
+                                <input type="number" id="p-group-count" class="form-input"
+                                       min="1" value="1" onchange="updateGroupMembers()">
+                            </div>
+                        </div>
+
+                        <!-- ── Dynamic group members container ── -->
+                        <div id="group-members-section" style="display:none">
+                            <div class="form-section-title" style="margin-top:var(--spacing-xl)">
+                                👥 Group Members Details
+                            </div>
+                            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:var(--spacing-md)">
+                                Please fill in details for each group member (excluding yourself).
+                            </p>
+                            <div id="group-members-container"></div>
+                        </div>
+
+                        <!-- Performance description -->
+                        <div class="form-section-title" style="margin-top:var(--spacing-xl)"></div>
+                        <div class="form-group">
+                            <label class="form-label" for="p-description">
+                                Describe Your Performance *
+                            </label>
+                            <textarea id="p-description" class="form-textarea" rows="5" required
+                                      placeholder="Describe your performance: style, duration (approx. minutes), special requirements, costume/props needed, experience level, etc."></textarea>
+                        </div>
+
+                        <div class="alert alert-info" style="margin-top:var(--spacing-lg)">
+                            ℹ️ <strong>Note:</strong> All performer applications are reviewed by our team.
+                            You will be contacted via email within 5–7 business days.
+                            Performer registration is <strong>completely free</strong>.
+                        </div>
+
+                        <button type="submit" class="btn btn-primary"
+                                style="width:100%;margin-top:var(--spacing-lg);padding:16px;font-size:1.1rem">
+                            Submit Application →
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <div id="footer-container"></div>
+</div>
+<script src="js/common.js"></script>
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/performer.js"></script>
+<script>
+    document.getElementById('p-dob').max = new Date().toISOString().split('T')[0];
+
+    function showPerformerAge() {
+        const dob     = document.getElementById('p-dob').value;
+        const display = document.getElementById('p-age-display');
+        if (!dob) { display.textContent = ''; return; }
+        const age = calculateAgeFromDob(dob);
+        display.textContent = `— ${age} years old`;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+package com.bangla.karneval.service;
+
+import com.bangla.karneval.dto.request.GeneralRegistrationRequest;
+import com.bangla.karneval.dto.response.RegistrationResponse;
+import com.bangla.karneval.model.*;
+import com.bangla.karneval.repository.*;
+import com.bangla.karneval.util.ReferenceCodeGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+public class RegistrationService {
+
+    @Autowired private RegistrationRepository          registrationRepository;
+    @Autowired private AdditionalParticipantRepository additionalParticipantRepository;
+    @Autowired private EventConfigRepository           eventConfigRepository;
+    @Autowired private PriceCalculationService         priceCalculationService;
+    @Autowired private EmailService                    emailService;
+
+    @Transactional
+    public RegistrationResponse registerParticipant(GeneralRegistrationRequest request) {
+        EventConfig config = eventConfigRepository.findByEventYear(2026)
+                .orElseThrow(() -> new RuntimeException("Event config not found for 2026"));
+
+        BigDecimal pricePerPerson = config.getPricePerPerson();
+
+        // Collect additional DOBs for price calculation
+        List<LocalDate> additionalDobs = request.getAdditionalParticipants().stream()
+                .map(GeneralRegistrationRequest.AdditionalParticipantRequest::getDateOfBirth)
+                .toList();
+
+        BigDecimal totalAmount = priceCalculationService.calculateTotalAmount(
+                request.getPrimaryDateOfBirth(), additionalDobs, pricePerPerson
+        );
+
+        String referenceCode = ReferenceCodeGenerator.generate(2026);
+
+        Registration registration = new Registration();
+        registration.setPrimaryName(request.getPrimaryName());
+        registration.setEmail(request.getEmail());
+        registration.setPrimaryDateOfBirth(request.getPrimaryDateOfBirth()); // ← DOB
+        registration.setAddress(request.getAddress());
+        registration.setPhone(request.getPhone());
+        registration.setParticipantCount(1 + request.getAdditionalParticipants().size());
+        registration.setCalculatedAmount(totalAmount);
+        registration.setPaymentMethod(PaymentMethod.valueOf(request.getPaymentMethod()));
+        registration.setReferenceCode(referenceCode);
+        registration.setEventYear(2026);
+        registration.setGender(request.getGender());
+
+        registration = registrationRepository.save(registration);
+
+        for (var p : request.getAdditionalParticipants()) {
+            AdditionalParticipant ap = new AdditionalParticipant();
+            ap.setRegistration(registration);
+            ap.setName(p.getName());
+            ap.setDateOfBirth(p.getDateOfBirth());
+            ap.setGender(p.getGender());
+            ap.setRelation(p.getRelation());
+            additionalParticipantRepository.save(ap);
+        }
+
+        emailService.sendRegistrationConfirmation(registration);
+
+        return new RegistrationResponse(
+                registration.getId(), totalAmount, referenceCode,
+                "Registration successful! Check your email for payment instructions."
+        );
+    }
+
+    public List<Registration> searchRegistrations(String search, PaymentStatus status) {
+        if (search != null && !search.isBlank()) {
+            return registrationRepository.searchByName(search);
+        } else if (status != null) {
+            return registrationRepository.findByPaymentStatus(status);
+        }
+        return registrationRepository.findAll();
+    }
+
+    public Registration getById(Long id) {
+        return registrationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Registration not found"));
+    }
+
+    @Transactional
+    public Registration updateRegistration(Long id, Registration updatedData, String adminNote) {
+        Registration reg = getById(id);
+        if (updatedData.getPaymentStatus() != null) reg.setPaymentStatus(updatedData.getPaymentStatus());
+        if (updatedData.getPhone() != null)          reg.setPhone(updatedData.getPhone());
+        if (updatedData.getEmail() != null)           reg.setEmail(updatedData.getEmail());
+        if (updatedData.getAddress() != null)         reg.setAddress(updatedData.getAddress());
+        Registration saved = registrationRepository.save(reg);
+        // Always send status email when status changes
+        emailService.sendRegistrationStatusEmail(saved, adminNote);
+        return saved;
+    }
+
+    @Transactional
+    public void updatePaymentStatus(Long id, PaymentStatus newStatus) {
+        Registration reg = getById(id);
+        reg.setPaymentStatus(newStatus);
+        registrationRepository.save(reg);
+        if (newStatus == PaymentStatus.CONFIRMED) {
+            emailService.sendPaymentConfirmation(reg);
+        }
+    }
+
+    @Transactional
+    public void deleteRegistration(Long id) {
+        registrationRepository.deleteById(id);
+    }
+
+    public List<Registration> getAllForYear(int year) {
+        return registrationRepository.findByEventYear(year);
+    }
+}

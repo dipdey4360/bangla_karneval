@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangla Karneval 2026</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="icon" href="assets/images/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body class="home-page">
+
+<!-- ── HERO ─────────────────────────────────────────────── -->
+<section class="hero-fullscreen">
+
+    <img src="/assets/images/home_background.jpg"
+         alt=""
+         class="hero-bg-img">
+
+    <!-- Top-left social links -->
+    <div class="hero-social">
+        <a id="home-facebook" href="#" target="_blank" rel="noopener" class="hero-social-btn">
+            <img src="/assets/images/facebook.png" alt="Facebook">
+            <span>Facebook</span>
+        </a>
+        <a id="home-instagram" href="#" target="_blank" rel="noopener" class="hero-social-btn">
+            <img src="/assets/images/instagram.png" alt="Instagram">
+            <span>Instagram</span>
+        </a>
+    </div>
+
+    <!-- Top-right nav -->
+    <nav class="hero-nav" id="hero-nav">
+
+        <button class="burger-btn" id="burger-btn"
+                aria-label="Toggle menu"
+                aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="hero-nav-links" id="hero-nav-links">
+            <a href="/index.html"                  class="hero-nav-btn active">Home</a>
+            <a href="/about_us.html"               class="hero-nav-btn">About Us</a>
+            <a href="/gallery.html"                class="hero-nav-btn">Gallery</a>
+            <a href="/contact.html"                class="hero-nav-btn">Contact Us</a>
+            <!-- ← wrapped in <span> so we can hide the whole item -->
+            <span id="hero-performer-link">
+                <a href="/performer_registration.html" class="hero-nav-btn">Performer</a>
+            </span>
+        </div>
+
+    </nav>
+
+    <!-- Bottom info -->
+    <div class="hero-bottom">
+        <h1 class="hero-title">Bangla Karneval 2026</h1>
+        <p class="hero-tagline">Celebrating Bengali culture, heritage &amp; community</p>
+        <p class="hero-date" id="event-date">15th May, 2026</p>
+        <!-- ← id added so home.js can show/hide it -->
+        <a href="/registration.html" class="hero-register-btn" id="hero-register-btn">Register Now</a>
+    </div>
+
+</section>
+
+<!-- ── WHAT TO EXPECT ───────────────────────────────────── -->
+<section class="highlights-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>What to Expect</h2>
+            <p>An unforgettable celebration of Bengali culture</p>
+        </div>
+        <div class="event-cards" id="event-cards">
+            <div class="event-card skeleton"></div>
+            <div class="event-card skeleton"></div>
+            <div class="event-card skeleton"></div>
+        </div>
+    </div>
+</section>
+
+<div id="footer-container"></div>
+
+<script src="js/common.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>

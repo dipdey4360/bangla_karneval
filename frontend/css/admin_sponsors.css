@@ -1,0 +1,287 @@
+/* ── Performer Toggle Card ── */
+.performer-toggle-card {
+    border-left: 4px solid #D63031;
+    padding: var(--spacing-lg);
+}
+
+.performer-toggle-inner {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    gap:             var(--spacing-lg);
+    flex-wrap:       wrap;
+}
+
+.performer-toggle-inner h3 {
+    margin-bottom: 6px;
+    display:       flex;
+    align-items:   center;
+    gap:           8px;
+}
+
+/* ── Sponsor Admin Grid ── */
+.sponsor-admin-grid {
+    display:        flex;
+    flex-direction: column;
+    gap:            var(--spacing-md);
+}
+
+.sponsor-admin-card {
+    display:       flex;
+    align-items:   center;
+    gap:           var(--spacing-md);
+    background:    #fff;
+    border:        1px solid #eee;
+    border-radius: var(--radius-md);
+    padding:       var(--spacing-md);
+    transition:    box-shadow 0.2s;
+}
+
+.sponsor-admin-card:hover  { box-shadow: var(--shadow-md); }
+.sponsor-admin-card.sponsor-hidden { opacity: 0.5; }
+
+/* Drag handle */
+.drag-handle {
+    cursor:     grab;
+    color:      #bbb;
+    font-size:  1.2rem;
+    padding:    4px;
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+.drag-handle:hover  { color: var(--primary-pink); }
+.drag-handle:active { cursor: grabbing; }
+
+/* Logo */
+.sponsor-admin-logo {
+    width:         64px;
+    height:        64px;
+    background:    #f9f9f9;
+    border-radius: var(--radius-md);
+    display:       flex;
+    align-items:   center;
+    justify-content: center;
+    flex-shrink:   0;
+    overflow:      hidden;
+}
+
+.sponsor-admin-logo img {
+    width:      100%;
+    height:     100%;
+    object-fit: contain;
+}
+
+/* Info */
+.sponsor-admin-info { flex: 1; min-width: 0; }
+
+.sponsor-admin-name {
+    font-weight:   700;
+    font-size:     1rem;
+    color:         var(--text-primary);
+    margin-bottom: 4px;
+    white-space:   nowrap;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+}
+
+.sponsor-admin-meta {
+    font-size:   12px;
+    color:       var(--text-secondary);
+    display:     flex;
+    align-items: center;
+    gap:         5px;
+    margin-top:  2px;
+    flex-wrap:   wrap;
+}
+
+.sponsor-admin-meta i {
+    color:     var(--primary-pink);
+    font-size: 11px;
+}
+
+/* Actions */
+.sponsor-admin-actions {
+    display:         flex;
+    align-items:     center;
+    gap:             var(--spacing-sm);
+    flex-wrap:       wrap;
+    justify-content: flex-end;
+    flex-shrink:     0;
+}
+
+.sponsor-visibility-badge {
+    font-size:   12px;
+    font-weight: 600;
+    padding:     3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.sponsor-visibility-badge.visible {
+    background: #e8f8f0;
+    color:      #1a7a4a;
+}
+
+.sponsor-visibility-badge.hidden {
+    background: #fde8e8;
+    color:      #c0392b;
+}
+
+/* ── Modal ── */
+.modal-overlay {
+    position:        fixed;
+    inset:           0;
+    background:      rgba(0, 0, 0, 0.45);
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    z-index:         9999;
+    padding:         var(--spacing-md);
+}
+
+.modal-box {
+    background:    #fff;
+    border-radius: var(--radius-lg);
+    padding:       var(--spacing-xl);
+    width:         100%;
+    max-width:     560px;
+    max-height:    90vh;
+    overflow-y:    auto;
+    box-shadow:    var(--shadow-lg);
+    animation:     slideDown 0.25s ease;
+}
+
+.modal-header {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    margin-bottom:   var(--spacing-lg);
+}
+
+.modal-header h3 { margin: 0; color: var(--accent-maroon); }
+
+.modal-close {
+    background:  none;
+    border:      none;
+    font-size:   1.5rem;
+    cursor:      pointer;
+    color:       #999;
+    line-height: 1;
+    padding:     0;
+}
+.modal-close:hover { color: var(--primary-pink); }
+
+/* ── Button variants ── */
+.btn-warning {
+    background: #F39C12;
+    color:      #fff;
+    border:     none;
+    cursor:     pointer;
+    transition: background 0.2s;
+}
+.btn-warning:hover { background: #d68910; }
+
+.btn-success {
+    background: #27ae60;
+    color:      #fff;
+    border:     none;
+    cursor:     pointer;
+    transition: background 0.2s;
+}
+.btn-success:hover { background: #1e8449; }
+
+.btn-danger {
+    background: #e74c3c;
+    color:      #fff;
+    border:     none;
+    cursor:     pointer;
+    transition: background 0.2s;
+}
+.btn-danger:hover { background: #c0392b; }
+
+.btn-sm {
+    padding:   5px 12px !important;
+    font-size: 13px !important;
+}
+
+/* ── Tablet (max 1024px) ─────────────────────────────────── */
+@media (max-width: 1024px) {
+    .modal-box {
+        max-width: 90%;
+    }
+
+    .sponsor-admin-actions {
+        justify-content: flex-start;
+    }
+}
+
+/* ── Mobile (max 768px) ──────────────────────────────────── */
+@media (max-width: 768px) {
+    .performer-toggle-card {
+        padding: var(--spacing-md);
+    }
+
+    .performer-toggle-inner {
+        flex-direction: column;
+        align-items:    flex-start;
+        gap:            var(--spacing-md);
+    }
+
+    .sponsor-admin-card {
+        flex-wrap: wrap;
+        gap:       var(--spacing-sm);
+    }
+
+    .sponsor-admin-logo {
+        width:  48px;
+        height: 48px;
+    }
+
+    .sponsor-admin-actions {
+        width:           100%;
+        justify-content: flex-start;
+        margin-top:      var(--spacing-sm);
+        padding-top:     var(--spacing-sm);
+        border-top:      1px solid #f0e6d0;
+    }
+
+    .modal-box {
+        padding:       var(--spacing-lg);
+        max-height:    95vh;
+        border-radius: var(--radius-md);
+    }
+
+    .drag-handle {
+        font-size: 1rem;
+    }
+}
+
+/* ── Small mobile (max 480px) ────────────────────────────── */
+@media (max-width: 480px) {
+    .sponsor-admin-name {
+        font-size: 0.9rem;
+    }
+
+    .sponsor-admin-logo {
+        width:  40px;
+        height: 40px;
+    }
+
+    .sponsor-visibility-badge {
+        font-size: 11px;
+        padding:   2px 8px;
+    }
+
+    .modal-box {
+        padding: var(--spacing-md);
+    }
+
+    .modal-header h3 {
+        font-size: 1rem;
+    }
+
+    .btn-sm {
+        padding:   4px 10px !important;
+        font-size: 12px !important;
+    }
+}

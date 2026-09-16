@@ -1,0 +1,362 @@
+.registration-hero {
+    background: var(--accent-maroon);
+    color:      #fff;
+    padding:    60px 0;
+    text-align: center;
+}
+
+.registration-hero h1 {
+    color:         #fff;
+    margin-bottom: var(--spacing-sm);
+}
+
+.registration-section {
+    padding: var(--spacing-xxl) 0;
+}
+
+.registration-layout {
+    display:               grid;
+    grid-template-columns: 1fr 380px;
+    gap:                   var(--spacing-xxl);
+}
+
+.registration-form-card {
+    background:    var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding:       var(--spacing-xl);
+    box-shadow:    var(--shadow-md);
+}
+
+.form-section-title {
+    font-size:     1.1rem;
+    color:         var(--primary-red);
+    font-weight:   700;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid #f0e6d0;
+}
+
+.form-row {
+    display:               grid;
+    grid-template-columns: 1fr 1fr;
+    gap:                   var(--spacing-md);
+}
+
+/* ── Additional participants ── */
+#additional-participants-container {
+    margin: var(--spacing-md) 0;
+}
+
+.additional-participant-card {
+    background:    #f9f5ef;
+    border-radius: var(--radius-md);
+    padding:       var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-left:   3px solid var(--primary-red);
+    position:      relative;
+}
+
+.remove-participant {
+    position:      absolute;
+    top:           var(--spacing-sm);
+    right:         var(--spacing-sm);
+    background:    var(--error);
+    color:         #fff;
+    border:        none;
+    border-radius: 50%;
+    width:         24px;
+    height:        24px;
+    cursor:        pointer;
+    font-size:     14px;
+    line-height:   24px;
+    text-align:    center;
+}
+
+#add-participant-btn { border-style: dashed; }
+
+/* ── Price summary ── */
+.price-summary {
+    background:    var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding:       var(--spacing-xl);
+    box-shadow:    var(--shadow-md);
+    position:      sticky;
+    top:           90px;
+    height:        fit-content;
+}
+
+.price-summary h3 {
+    margin-bottom: var(--spacing-lg);
+    color:         var(--accent-maroon);
+}
+
+.price-row {
+    display:         flex;
+    justify-content: space-between;
+    padding:         var(--spacing-sm) 0;
+    border-bottom:   1px solid #f0e6d0;
+    font-size:       14px;
+}
+
+.price-row.total {
+    font-weight:   700;
+    font-size:     1.1rem;
+    border-bottom: none;
+    color:         var(--primary-red);
+    margin-top:    var(--spacing-sm);
+}
+
+/* ── Payment methods ── */
+.payment-methods {
+    display:        flex;
+    flex-direction: column;
+    gap:            var(--spacing-md);
+    margin-bottom:  var(--spacing-md);
+}
+
+.payment-option {
+    border:        2px solid #eee;
+    border-radius: var(--radius-md);
+    overflow:      hidden;
+    transition:    border-color 0.3s;
+}
+
+.payment-option:has(input:checked) {
+    border-color: var(--primary-pink);
+}
+
+.payment-option label {
+    display:     flex;
+    align-items: center;
+    gap:         var(--spacing-sm);
+    padding:     var(--spacing-md);
+    cursor:      pointer;
+    font-weight: 600;
+    font-size:   1rem;
+    transition:  background 0.2s;
+}
+
+.payment-option label:hover { background: #fff0f8; }
+
+.payment-option input[type="radio"] {
+    accent-color: var(--primary-pink);
+    width:        18px;
+    height:       18px;
+    cursor:       pointer;
+    margin-left:  var(--spacing-md);
+}
+
+/* ── Expanded payment details ── */
+.payment-details {
+    display: none;
+    padding: 0 var(--spacing-md) var(--spacing-md);
+}
+
+.payment-info-box {
+    border-radius: var(--radius-md);
+    padding:       var(--spacing-md);
+    font-size:     14px;
+}
+
+.paypal-box {
+    background:  #e8f0fe;
+    border-left: 4px solid #003087;
+}
+
+.bank-box {
+    background:  #e8f4fd;
+    border-left: 4px solid #1a5276;
+}
+
+.payment-info-box p {
+    color:         #444;
+    margin-bottom: var(--spacing-sm);
+    display:       flex;
+    align-items:   center;
+    gap:           6px;
+}
+
+.payment-detail-row {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     center;
+    padding:         6px 0;
+    border-bottom:   1px solid rgba(0, 0, 0, 0.06);
+}
+
+.payment-detail-row:last-child { border-bottom: none; }
+
+.detail-label {
+    font-weight: 600;
+    color:       #555;
+    font-size:   13px;
+    min-width:   120px;
+}
+
+.detail-value {
+    font-weight: 700;
+    color:       var(--text-primary);
+    display:     flex;
+    align-items: center;
+    gap:         8px;
+}
+
+/* ── Copy button ── */
+.copy-btn {
+    background:    none;
+    border:        1px solid #ccc;
+    border-radius: 4px;
+    padding:       2px 6px;
+    cursor:        pointer;
+    font-size:     12px;
+    color:         #666;
+    transition:    all 0.2s;
+}
+.copy-btn:hover {
+    background:   var(--primary-pink);
+    color:        #fff;
+    border-color: var(--primary-pink);
+}
+
+/* ── Success overlay ── */
+.success-overlay {
+    display:       none;
+    text-align:    center;
+    padding:       var(--spacing-xxl);
+    background:    var(--bg-white);
+    border-radius: var(--radius-lg);
+    box-shadow:    var(--shadow-md);
+}
+
+.success-overlay.show { display: block; }
+
+.success-icon {
+    font-size:     4rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.reference-code-box {
+    background:    #f0faf5;
+    border:        2px dashed var(--success);
+    border-radius: var(--radius-md);
+    padding:       var(--spacing-lg);
+    font-size:     1.5rem;
+    font-weight:   700;
+    color:         var(--success);
+    letter-spacing: 2px;
+    margin:        var(--spacing-lg) 0;
+}
+
+/* ── Tablet (max 1024px) ─────────────────────────────────── */
+@media (max-width: 1024px) {
+    .registration-layout {
+        grid-template-columns: 1fr 320px;
+        gap:                   var(--spacing-xl);
+    }
+
+    .registration-form-card,
+    .price-summary {
+        padding: var(--spacing-lg);
+    }
+}
+
+/* ── Mobile (max 960px) ──────────────────────────────────── */
+@media (max-width: 960px) {
+    .registration-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .price-summary {
+        position: static;
+        order:    -1;          /* show price summary above form on mobile */
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Mobile (max 768px) ──────────────────────────────────── */
+@media (max-width: 768px) {
+    .registration-hero {
+        padding: 40px 0;
+    }
+
+    .registration-hero h1 { font-size: 1.6rem; }
+
+    .registration-section {
+        padding: var(--spacing-xl) 0;
+    }
+
+    .registration-form-card {
+        padding:       var(--spacing-lg);
+        border-radius: var(--radius-md);
+    }
+
+    .price-summary {
+        padding:       var(--spacing-lg);
+        border-radius: var(--radius-md);
+    }
+
+    .price-row       { font-size: 13px; }
+    .price-row.total { font-size: 1rem; }
+
+    .payment-option label {
+        font-size: 0.9rem;
+        padding:   var(--spacing-sm) var(--spacing-md);
+    }
+
+    .detail-label  { min-width: 100px; font-size: 12px; }
+
+    .payment-info-box { font-size: 13px; }
+
+    .reference-code-box {
+        font-size:      1.2rem;
+        letter-spacing: 1px;
+        padding:        var(--spacing-md);
+    }
+
+    .success-overlay { padding: var(--spacing-xl); }
+    .success-icon    { font-size: 3rem; }
+}
+
+/* ── Small mobile (max 480px) ────────────────────────────── */
+@media (max-width: 480px) {
+    .registration-hero {
+        padding: 30px 0;
+    }
+
+    .registration-hero h1 { font-size: 1.4rem; }
+
+    .registration-section { padding: var(--spacing-lg) 0; }
+
+    .registration-form-card,
+    .price-summary {
+        padding:       var(--spacing-md);
+        border-radius: var(--radius-sm);
+    }
+
+    .form-section-title { font-size: 1rem; }
+
+    .additional-participant-card { padding: var(--spacing-sm) var(--spacing-md); }
+
+    .payment-detail-row {
+        flex-direction: column;
+        align-items:    flex-start;
+        gap:            4px;
+    }
+
+    .detail-label  { min-width: unset; }
+    .detail-value  { font-size: 13px; }
+
+    .reference-code-box {
+        font-size:      1rem;
+        letter-spacing: 0.5px;
+    }
+
+    .success-icon  { font-size: 2.5rem; }
+
+    .copy-btn      { padding: 3px 8px; font-size: 11px; }
+
+    .price-row.total { font-size: 0.95rem; }
+}

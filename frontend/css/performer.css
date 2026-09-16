@@ -1,0 +1,170 @@
+.performer-hero {
+    background: linear-gradient(135deg, var(--accent-maroon), #6b1515);
+    color:      #fff;
+    padding:    60px 0;
+    text-align: center;
+}
+
+.performer-hero h1 { color: #fff; margin-bottom: var(--spacing-sm); }
+.performer-hero p  { color: rgba(255, 255, 255, 0.85); font-size: 1.1rem; }
+
+.performer-section { padding: var(--spacing-xxl) 0; }
+
+.performer-form-card {
+    max-width:     700px;
+    margin:        0 auto;
+    background:    var(--bg-white);
+    border-radius: var(--radius-lg);
+    padding:       var(--spacing-xxl);
+    box-shadow:    var(--shadow-md);
+}
+
+/* ── Performance type tiles ── */
+.performance-types {
+    display:               grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:                   var(--spacing-md);
+    margin-bottom:         var(--spacing-md);
+}
+
+.performance-type-option          { position: relative; }
+.performance-type-option input[type="radio"] { position: absolute; opacity: 0; }
+
+.performance-type-option label {
+    display:        flex;
+    flex-direction: column;
+    align-items:    center;
+    gap:            var(--spacing-sm);
+    padding:        var(--spacing-md);
+    border:         2px solid #ddd;
+    border-radius:  var(--radius-md);
+    cursor:         pointer;
+    text-align:     center;
+    transition:     all 0.3s;
+}
+
+.performance-type-option label .type-icon { font-size: 1.8rem; }
+
+.performance-type-option input:checked + label {
+    border-color: var(--primary-pink);
+    background:   #fff0f8;
+    color:        var(--primary-pink);
+}
+
+.performance-type-option label:hover {
+    border-color: var(--primary-pink);
+    background:   #fff0f8;
+}
+
+/* ── Form row ── */
+.form-row {
+    display:               grid;
+    grid-template-columns: 1fr 1fr;
+    gap:                   var(--spacing-md);
+}
+
+/* ── Group member cards ── */
+.group-member-card {
+    background:    #fdf8ff;
+    border:        1px solid #e8d5f5;
+    border-left:   4px solid var(--primary-pink);
+    border-radius: var(--radius-md);
+    padding:       var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    animation:     slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.group-member-header  { margin-bottom: var(--spacing-md); }
+
+.group-member-number {
+    font-weight: 700;
+    font-size:   1rem;
+    color:       var(--primary-pink);
+    font-family: var(--font-heading);
+}
+
+/* ── Tablet (max 1024px) ─────────────────────────────────── */
+@media (max-width: 1024px) {
+    .performer-form-card {
+        max-width: 90%;
+        padding:   var(--spacing-xl);
+    }
+
+    .performance-types {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ── Mobile (max 768px) ──────────────────────────────────── */
+@media (max-width: 768px) {
+    .performer-hero {
+        padding: 40px 0;
+    }
+
+    .performer-hero h1 { font-size: 1.6rem; }
+    .performer-hero p  { font-size: 1rem; }
+
+    .performer-section { padding: var(--spacing-xl) 0; }
+
+    .performer-form-card {
+        max-width:     100%;
+        padding:       var(--spacing-xl) var(--spacing-lg);
+        border-radius: var(--radius-md);
+        box-shadow:    var(--shadow-sm);
+    }
+
+    .performance-types {
+        grid-template-columns: repeat(2, 1fr);
+        gap:                   var(--spacing-sm);
+    }
+
+    .performance-type-option label {
+        padding:   var(--spacing-sm);
+        font-size: 13px;
+    }
+
+    .performance-type-option label .type-icon { font-size: 1.5rem; }
+
+    .form-row { grid-template-columns: 1fr; }
+
+    .group-member-card { padding: var(--spacing-md); }
+}
+
+/* ── Small mobile (max 480px) ────────────────────────────── */
+@media (max-width: 480px) {
+    .performer-hero {
+        padding: 30px 0;
+    }
+
+    .performer-hero h1 { font-size: 1.4rem; }
+    .performer-hero p  { font-size: 0.9rem; }
+
+    .performer-section { padding: var(--spacing-lg) 0; }
+
+    .performer-form-card {
+        padding:       var(--spacing-lg) var(--spacing-md);
+        border-radius: var(--radius-sm);
+    }
+
+    .performance-types {
+        grid-template-columns: 1fr 1fr;
+        gap:                   var(--spacing-xs);
+    }
+
+    .performance-type-option label {
+        padding:   var(--spacing-sm) var(--spacing-xs);
+        font-size: 12px;
+        gap:       4px;
+    }
+
+    .performance-type-option label .type-icon { font-size: 1.3rem; }
+
+    .group-member-card  { padding: var(--spacing-sm) var(--spacing-md); }
+
+    .group-member-number { font-size: 0.9rem; }
+}

@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bangla_karneval
+    username: admin
+    password: securepassword123
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dev@banglakarneval.com
+    password: dev-password
+
+jwt:
+  secret: dev-secret-key-for-local-development-only-32chars
+  expiration: 28800000
+
+logging:
+  level:
+    com.bangla.karneval: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
