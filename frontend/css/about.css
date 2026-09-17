@@ -255,3 +255,10 @@
 #membership-form-message { color:#a82424; margin:12px 0; }
 @media(max-width:768px) { .board-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .members-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:480px) { .board-grid { grid-template-columns:1fr; } .membership-form-grid { grid-template-columns:1fr; gap:0; } .membership-benefits,.membership-dialog { padding:20px; } .membership-prices { gap:20px; } }
+
+@media (max-width:768px) {
+    .membership-dialog, .membership-review-dialog { max-height:90dvh; }
+    .membership-close { min-width:44px; min-height:44px; }
+    #m-partner-group { min-inline-size:0; }
+    .membership-form-grid { grid-template-columns:minmax(0,1fr); }
+}

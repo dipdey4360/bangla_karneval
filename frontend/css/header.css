@@ -330,3 +330,13 @@
 
     .main-nav a i { font-size: 15px !important; }
 }
+
+@media (max-width:768px) {
+    .hamburger { width:44px; height:44px; }
+    .main-nav ul { align-items:stretch; }
+    .main-nav a { min-height:44px; }
+    .main-nav { max-height:calc(100dvh - 96px); }
+}
+@media (max-width:480px) {
+    .main-nav { max-height:calc(100dvh - 80px); }
+}

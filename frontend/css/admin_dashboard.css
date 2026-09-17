@@ -633,3 +633,11 @@
     .msg-item  { padding: 12px; }
     .msg-email { display: none; }
 }
+
+@media (max-width:768px) {
+    .dashboard-main { min-width:0; width:100%; }
+    /* These rows have desktop column definitions in the HTML. */
+    .dashboard-main .form-row { grid-template-columns:minmax(0,1fr) !important; }
+    .section-card, .dashboard-main form { min-width:0; }
+    .sidebar { height:100dvh; }
+}

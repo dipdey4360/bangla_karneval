@@ -14,6 +14,14 @@ function initBurgerMenu() {
     const burger = document.getElementById('burger-btn');
     const links  = document.getElementById('hero-nav-links');
     if (!burger || !links) return;
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && links.classList.contains('open')) {
+            links.classList.remove('open');
+            burger.classList.remove('open');
+            burger.setAttribute('aria-expanded', 'false');
+            burger.focus();
+        }
+    });
 
     burger.addEventListener('click', (e) => {
         e.stopPropagation();

@@ -39,6 +39,14 @@ function initHamburger() {
     const hamburger = document.getElementById('hamburger');
     const nav       = document.getElementById('main-nav');
     if (!hamburger || !nav) return;
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && nav.classList.contains('open')) {
+            nav.classList.remove('open');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+            hamburger.focus();
+        }
+    });
 
     hamburger.addEventListener('click', (e) => {
         e.stopPropagation();

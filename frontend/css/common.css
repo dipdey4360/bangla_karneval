@@ -367,3 +367,11 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 
+
+/* Phone controls remain readable without triggering automatic input zoom. */
+@media (max-width: 768px) {
+    .form-input, .form-select, .form-textarea { font-size:16px; min-width:0; max-width:100%; }
+    .form-input, .form-select, .btn { min-height:44px; }
+    .form-group { min-width:0; }
+    dialog { max-height:90dvh; overscroll-behavior:contain; }
+}

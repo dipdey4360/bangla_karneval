@@ -469,3 +469,14 @@
     .event-icon    { font-size: 2rem; }
     .event-card h3 { font-size: 1rem; }
 }
+
+/* Give mobile hero copy its own readable space over the artwork. */
+@media (max-width:768px) {
+    .hero-fullscreen { height:auto; min-height:420px; max-height:none; }
+    .hero-fullscreen::before { background:linear-gradient(to bottom,rgba(20,10,5,.12),rgba(20,10,5,.65) 48%,rgba(20,10,5,.88)); }
+    .hero-bottom { padding:100px 20px 28px; }
+    .hero-tagline { font-size:1rem; }
+    .burger-btn, .hero-social-btn { width:44px; height:44px; }
+    .hero-nav-links { max-height:calc(100dvh - 90px); max-width:calc(100vw - 32px); }
+    .hero-nav-btn { min-height:44px; }
+}
