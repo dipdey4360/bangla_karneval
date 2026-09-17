@@ -72,8 +72,14 @@ async function loadEventConfig() {
 
         const fb = document.getElementById('home-facebook');
         const ig = document.getElementById('home-instagram');
-        if (fb && config.contactFacebook)  fb.href = config.contactFacebook;
-        if (ig && config.contactInstagram) ig.href = config.contactInstagram;
+        if (fb && config.contactFacebook) {
+            const url = safeWebUrl(config.contactFacebook);
+            if (url) fb.href = url; else fb.removeAttribute('href');
+        }
+        if (ig && config.contactInstagram) {
+            const url = safeWebUrl(config.contactInstagram);
+            if (url) ig.href = url; else ig.removeAttribute('href');
+        }
 
     } catch (e) {
         console.error('Failed to load event config:', e);
@@ -97,15 +103,13 @@ async function loadEventCards() {
         events.forEach(ev => {
             const card = document.createElement('div');
             card.className = 'event-card';
-            card.innerHTML = `
-                <div class="event-icon">
-                    <img src="${ev.iconUrl || '/assets/images/default-event.png'}"
-                         alt="${ev.title}"
-                         onerror="this.style.display='none'">
-                </div>
-                <h3>${ev.title}</h3>
-                <p>${ev.description || ''}</p>
-            `;
+            const icon = contentNode('div', null, 'event-icon');
+            const image = contentNode('img');
+            image.src = safeWebUrl(ev.iconUrl) || '/assets/images/default-event.png';
+            image.alt = ev.title || '';
+            image.addEventListener('error', () => { image.style.display = 'none'; });
+            icon.append(image);
+            card.append(icon, contentNode('h3', ev.title), contentNode('p', ev.description || ''));
             grid.appendChild(card);
         });
 

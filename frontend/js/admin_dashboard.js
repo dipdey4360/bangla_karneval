@@ -379,47 +379,31 @@ async function loadMessages() {
             container.innerHTML = '<p style="color:var(--text-secondary);padding:20px">No messages yet.</p>';
             return;
         }
-        container.innerHTML = messages.map(m => `
-            <div class="msg-item ${m.read ? '' : 'msg-unread'}" id="msg-${m.id}">
-                <div class="msg-meta">
-                    <strong>${escapeHtml(m.name)}</strong>
-                    <span class="msg-email">${escapeHtml(m.email)}</span>
-                    <span class="msg-time">${new Date(m.submittedAt).toLocaleString()}</span>
-                    ${m.answered ? '<span class="badge badge-confirmed">Replied</span>'
-            : m.read ? '' : '<span class="badge badge-pending">New</span>'}
-                </div>
-                <div class="msg-body">${escapeHtml(m.message)}</div>
-                ${m.replyText ? `<div class="msg-reply-preview">
-                    <strong>Your reply:</strong> ${escapeHtml(m.replyText)}</div>` : ''}
-                <div style="margin-top:10px;display:flex;gap:8px">
-                    <button class="btn btn-sm btn-primary reply-btn"
-                            data-id="${m.id}"
-                            data-name="${escapeHtml(m.name)}"
-                            data-email="${escapeHtml(m.email)}"
-                            data-message="${escapeHtml(m.message)}">
-                        ${m.answered ? '✏️ Edit Reply' : '↩️ Reply'}
-                    </button>
-                    ${!m.read ? `<button class="btn btn-sm btn-outline mark-read-btn"
-                            data-id="${m.id}">Mark as Read</button>` : ''}
-                </div>
-            </div>
-        `).join('');
-
-        // Attach click handlers after rendering
-        container.querySelectorAll('.reply-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                openReplyModal(
-                    btn.dataset.id,
-                    btn.dataset.name,
-                    btn.dataset.email,
-                    btn.dataset.message
-                );
-            });
-        });
-
-        container.querySelectorAll('.mark-read-btn').forEach(btn => {
-            btn.addEventListener('click', () => markRead(btn.dataset.id));
-        });
+        container.replaceChildren();
+        for (const m of messages) {
+            const item = contentNode('div', null, 'msg-item' + (m.read ? '' : ' msg-unread'));
+            item.id = 'msg-' + m.id;
+            const meta = contentNode('div', null, 'msg-meta');
+            meta.append(contentNode('strong', m.name), contentNode('span', m.email, 'msg-email'), contentNode('span', new Date(m.submittedAt).toLocaleString(), 'msg-time'));
+            if (m.answered) meta.append(contentNode('span', 'Replied', 'badge badge-confirmed'));
+            else if (!m.read) meta.append(contentNode('span', 'New', 'badge badge-pending'));
+            item.append(meta, contentNode('div', m.message, 'msg-body'));
+            if (m.replyText) {
+                const reply = contentNode('div', null, 'msg-reply-preview');
+                reply.append(contentNode('strong', 'Your reply: '), document.createTextNode(m.replyText));
+                item.append(reply);
+            }
+            const actions = contentNode('div'); actions.style.cssText = 'margin-top:10px;display:flex;gap:8px';
+            const replyButton = contentNode('button', m.answered ? '✏️ Edit Reply' : '↩️ Reply', 'btn btn-sm btn-primary reply-btn');
+            replyButton.type = 'button';
+            replyButton.addEventListener('click', () => openReplyModal(m.id, m.name, m.email, m.message));
+            actions.append(replyButton);
+            if (!m.read) {
+                const readButton = contentNode('button', 'Mark as Read', 'btn btn-sm btn-outline mark-read-btn');
+                readButton.type = 'button'; readButton.addEventListener('click', () => markRead(m.id)); actions.append(readButton);
+            }
+            item.append(actions); container.append(item);
+        }
 
     } catch (e) {
         container.innerHTML = '<p style="color:var(--error)">Failed to load messages.</p>';
@@ -449,9 +433,9 @@ async function markRead(id) {
 
 function openReplyModal(id, name, email, message) {
     currentReplyId = id;
-    document.getElementById('reply-original').innerHTML =
-        `<strong>${escapeHtml(name)}</strong> &lt;${escapeHtml(email)}&gt;<br>
-         <span style="color:#666;font-size:13px">${escapeHtml(message)}</span>`;
+    const original = document.getElementById('reply-original');
+    const messageText = contentNode('span', message); messageText.style.cssText = 'color:#666;font-size:13px';
+    original.replaceChildren(contentNode('strong', name), document.createTextNode(' <' + email + '>'), document.createElement('br'), messageText);
     document.getElementById('reply-text').value = '';
     document.getElementById('reply-alert').innerHTML = '';
     document.getElementById('reply-modal').style.display = 'flex';
@@ -479,7 +463,7 @@ async function submitReply() {
         loadMessages();
         loadUnreadCount();
     } catch (e) {
-        alertEl.innerHTML = `<p style="color:var(--error)">${e.message}</p>`;
+        alertEl.innerHTML = `<p style="color:var(--error)">${escapeHtml(e.message)}</p>`;
     } finally {
         setLoading(btn, false);
     }

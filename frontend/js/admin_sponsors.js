@@ -64,30 +64,28 @@ function renderSponsorList(sponsors) {
         return;
     }
 
-    container.innerHTML = sponsors.map(s => `
-        <div class="sponsor-admin-card ${isVisible(s) ? '' : 'sponsor-hidden'}"
-             data-id="${s.id}">
-            <div class="drag-handle" title="Drag to reorder">⠿</div>
-            <div class="sponsor-admin-logo">
-                ${s.logoPath
-        ? `<img src="${escapeHtml(s.logoPath)}" alt="${escapeHtml(s.name)}">`
-        : `<div style="font-size:1.5rem;color:#ccc">🏢</div>`}
-            </div>
-            <div class="sponsor-admin-info">
-                <div class="sponsor-admin-name">${escapeHtml(s.name)}</div>
-                ${s.address    ? `<div class="sponsor-admin-meta">📍 ${escapeHtml(s.address)}</div>`    : ''}
-                ${s.phone      ? `<div class="sponsor-admin-meta">📞 ${escapeHtml(s.phone)}</div>`      : ''}
-                ${s.websiteUrl ? `<div class="sponsor-admin-meta">🌐 ${escapeHtml(s.websiteUrl)}</div>` : ''}
-                ${s.description? `<div class="sponsor-admin-meta">ℹ️ ${escapeHtml(s.description)}</div>`: ''}
-            </div>
-            <div class="sponsor-admin-actions">
-                <button class="btn btn-sm btn-outline" onclick="toggleSponsor('${s.id}')" title="${isVisible(s) ? 'Hide' : 'Show'}">
-                        ${isVisible(s) ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>'}</button>
-                <button class="btn btn-sm btn-outline" onclick="editSponsor(${JSON.stringify(s).replace(/"/g, '&quot;')})" title="Edit"><i class="fa-regular fa-pen-to-square"></i></button>
-                <button class="btn btn-sm btn-danger" onclick="deleteSponsor('${s.id}', '${escapeHtml(s.name)}')" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
-            </div>
-        </div>
-    `).join('');
+    container.replaceChildren();
+    for (const s of sponsors) {
+        const card = contentNode('div', null, 'sponsor-admin-card' + (isVisible(s) ? '' : ' sponsor-hidden'));
+        card.dataset.id = s.id;
+        const handle = contentNode('div', '⠿', 'drag-handle'); handle.title = 'Drag to reorder';
+        const logo = contentNode('div', null, 'sponsor-admin-logo');
+        const url = safeWebUrl(s.logoPath);
+        if (url) { const image = contentNode('img'); image.src = url; image.alt = s.name || ''; logo.append(image); }
+        else logo.append(contentNode('div', '🏢'));
+        const info = contentNode('div', null, 'sponsor-admin-info');
+        info.append(contentNode('div', s.name, 'sponsor-admin-name'));
+        for (const [value,icon] of [[s.address,'📍'],[s.phone,'📞'],[s.websiteUrl,'🌐'],[s.description,'ℹ️']]) {
+            if (value) info.append(contentNode('div', icon + ' ' + value, 'sponsor-admin-meta'));
+        }
+        const actions = contentNode('div', null, 'sponsor-admin-actions');
+        for (const [title,icon,action] of [[isVisible(s)?'Hide':'Show',isVisible(s)?'fa-eye-slash':'fa-eye',()=>toggleSponsor(s.id)],['Edit','fa-pen-to-square',()=>editSponsor(s)],['Delete','fa-trash-can',()=>deleteSponsor(s.id,s.name)]]) {
+            const button = contentNode('button', null, 'btn btn-sm ' + (title==='Delete'?'btn-danger':'btn-outline'));
+            button.type = 'button'; button.title = title; button.append(contentNode('i', null, 'fa-regular '+icon));
+            button.addEventListener('click',action); actions.append(button);
+        }
+        card.append(handle,logo,info,actions); container.append(card);
+    }
 
     // Init drag-and-drop
     if (sortableInstance) sortableInstance.destroy();

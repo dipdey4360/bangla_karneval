@@ -98,9 +98,22 @@ function setLoading(btnEl, loading) {
 }
 
 function escapeHtml(str) {
-    const d = document.createElement('div');
-    d.appendChild(document.createTextNode(str || ''));
-    return d.innerHTML;
+    return String(str ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+
+// Use text nodes for API content and allow only web URLs for links/images.
+function contentNode(tag, text, className) {
+    const node = document.createElement(tag);
+    if (text != null) node.textContent = String(text);
+    if (className) node.className = className;
+    return node;
+}
+function safeWebUrl(value) {
+    if (typeof value !== 'string' || !value.trim()) return '';
+    try {
+        const url = new URL(value, window.location.origin);
+        return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+    } catch { return ''; }
 }
 
 // ── Page transition — professional loading experience ─────────────────────────

@@ -23,23 +23,23 @@ async function loadFooterSponsors() {
             return;
         }
 
-        grid.innerHTML = sponsors.map(s => `
-            <div class="sponsor-card">
-                <div class="sponsor-logo-box">
-                    ${s.logoPath
-            ? `<img src="${s.logoPath}" alt="${s.name}">`
-            : `<i class="fa-solid fa-building" style="font-size:1.8rem;color:#ccc"></i>`}
-                </div>
-                <div class="sponsor-name">
-                    ${s.websiteUrl
-            ? `<a href="${s.websiteUrl}" target="_blank"
-                              style="color:inherit;text-decoration:none">${s.name}</a>`
-            : s.name}
-                </div>
-                ${s.address     ? `<div class="sponsor-address"><i class="fa-solid fa-location-dot"></i> ${s.address}</div>` : ''}
-                ${s.description ? `<div class="sponsor-address"><i class="fa-solid fa-circle-info"></i> ${s.description}</div>` : ''}
-            </div>
-        `).join('');
+        grid.replaceChildren();
+        for (const s of sponsors) {
+            const card = contentNode('div', null, 'sponsor-card');
+            const logo = contentNode('div', null, 'sponsor-logo-box');
+            const imageUrl = safeWebUrl(s.logoPath);
+            if (imageUrl) { const image = contentNode('img'); image.src=imageUrl; image.alt=s.name || ''; logo.append(image); }
+            else { const icon=contentNode('i',null,'fa-solid fa-building'); icon.style.cssText='font-size:1.8rem;color:#ccc'; logo.append(icon); }
+            const name = contentNode('div', null, 'sponsor-name');
+            const website = safeWebUrl(s.websiteUrl);
+            if (website) { const link = contentNode('a',s.name); link.href=website; link.target='_blank'; link.rel='noopener noreferrer'; link.style.cssText='color:inherit;text-decoration:none'; name.append(link); }
+            else name.textContent=s.name || '';
+            card.append(logo,name);
+            for (const [value,icon] of [[s.address,'fa-location-dot'],[s.description,'fa-circle-info']]) {
+                if (value) { const detail=contentNode('div',null,'sponsor-address'); detail.append(contentNode('i',null,'fa-solid '+icon),document.createTextNode(' '+value)); card.append(detail); }
+            }
+            grid.append(card);
+        }
 
     } catch (e) {
         grid.closest('.footer-sponsors').style.display = 'none';
