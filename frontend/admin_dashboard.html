@@ -815,8 +815,9 @@
             }
             grid.innerHTML = items.map(item => `
             <div style="position:relative;background:var(--bg-white);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-sm)">
-                <img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.caption || '')}"
-                     style="width:100%;aspect-ratio:4/3;object-fit:cover" loading="lazy">
+                ${item.mediaType === 'VIDEO'
+                    ? `<video src="${escapeHtml(safeWebUrl(item.url))}" controls playsinline preload="metadata" style="width:100%;aspect-ratio:4/3;object-fit:cover"></video>`
+                    : `<img src="${escapeHtml(safeWebUrl(item.url))}" alt="${escapeHtml(item.caption || '')}" style="width:100%;aspect-ratio:4/3;object-fit:cover" loading="lazy">`}
                 <div style="padding:var(--spacing-sm)">
                     <p style="font-size:12px;color:var(--text-secondary);margin-bottom:var(--spacing-sm)">
                         ${escapeHtml(item.caption || 'No caption')}</p>

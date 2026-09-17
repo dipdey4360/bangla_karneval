@@ -1,6 +1,7 @@
 package com.bangla.karneval.dto.request;
 
 import jakarta.validation.constraints.*;
+import jakarta.validation.Valid;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -27,7 +28,8 @@ public class GeneralRegistrationRequest {
     @NotBlank
     private String paymentMethod;
 
-    private List<AdditionalParticipantRequest> additionalParticipants = new ArrayList<>();
+    @NotNull
+    private List<@NotNull @Valid AdditionalParticipantRequest> additionalParticipants = new ArrayList<>();
 
     @Data
     public static class AdditionalParticipantRequest {

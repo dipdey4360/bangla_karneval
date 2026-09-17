@@ -6,7 +6,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import java.util.Map;
 
-@RestControllerAdvice(assignableTypes = MembershipController.class)
+@RestControllerAdvice(assignableTypes = {MembershipController.class, RegistrationController.class})
 public class MembershipExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<?> expected(ResponseStatusException e) {
@@ -19,5 +19,5 @@ public class MembershipExceptionHandler {
         return ResponseEntity.badRequest().body(Map.of("message", message));
     }
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<?> unreadable() { return ResponseEntity.badRequest().body(Map.of("message", "Please check dates, membership type and payment method")); }
+    public ResponseEntity<?> unreadable() { return ResponseEntity.badRequest().body(Map.of("message", "Please check the submitted dates and field values")); }
 }

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/gallery.css">
+    <link rel="stylesheet" href="css/gallery.css?v=gallery-media-1">
     <link rel="icon" href="assets/images/favicon.ico">
 </head>
 
@@ -41,7 +41,7 @@
         <!-- ── Previous Years Archive ────────────────────────── -->
         <section class="archive-section">
             <div class="container">
-                <h2 class="section-title">Previous Years</h2>
+                <h2 class="section-title">Gallery by Year</h2>
 
                 <!-- Year tabs — populated dynamically -->
                 <div class="year-tabs" id="year-tabs">
@@ -66,6 +66,7 @@
     <div class="lightbox-content">
         <button class="lightbox-close" onclick="closeLightbox()">×</button>
         <img id="lightbox-image" src="" alt="Gallery image">
+        <video id="lightbox-video" controls playsinline hidden></video>
         <div class="lightbox-caption" id="lightbox-caption"></div>
     </div>
 </div>
@@ -73,6 +74,6 @@
 <script src="js/common.js?v=rendering-security-1"></script>
 <script src="js/header.js"></script>
 <script src="js/footer.js?v=rendering-security-1"></script>
-<script src="js/gallery.js"></script>
+<script src="js/gallery.js?v=gallery-media-1"></script>
 </body>
 </html>

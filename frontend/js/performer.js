@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('performer-form')
         ?.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!e.target.reportValidity()) return;
             const btn = e.target.querySelector('[type="submit"]');
             setLoading(btn, true);
 
@@ -75,7 +76,8 @@ function updateGroupMembers() {
     section.style.display = 'block';
 
     // Build cards for members 2..N (member 1 is the main registrant)
-    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+    const today = `${yesterday.getFullYear()}-${String(yesterday.getMonth()+1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
     let html    = '';
     for (let i = 2; i <= count; i++) {
         html += `

@@ -1,6 +1,7 @@
 package com.bangla.karneval.dto.request;
 
 import jakarta.validation.constraints.*;
+import jakarta.validation.Valid;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -27,14 +28,22 @@ public class PerformerRegistrationRequest {
     private String performanceType;
 
     private String performanceDescription;
-    private Integer groupMemberCount = 1;
+    @Min(1)
+    private Integer groupMemberCount;
 
-    private List<GroupMemberRequest> groupMembers = new ArrayList<>();
+    @NotNull
+    private List<@NotNull @Valid GroupMemberRequest> groupMembers = new ArrayList<>();
+
+    @AssertTrue(message = "Group member count must include the main performer and all listed group members")
+    public boolean isGroupCountConsistent() {
+        return groupMembers == null || groupMemberCount == null || groupMemberCount == groupMembers.size() + 1;
+    }
 
     @Data
     public static class GroupMemberRequest {
         @NotBlank
         private String    name;
+        @Past
         private LocalDate dateOfBirth;
         private String    gender;
     }

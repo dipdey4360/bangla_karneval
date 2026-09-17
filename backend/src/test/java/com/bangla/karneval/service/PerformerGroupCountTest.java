@@ -1,0 +1,23 @@
+package com.bangla.karneval.service;
+import com.bangla.karneval.dto.request.PerformerRegistrationRequest;
+import com.bangla.karneval.repository.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.List;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+@ExtendWith(MockitoExtension.class)
+class PerformerGroupCountTest {
+    @Mock PerformerRegistrationRepository performerRepository;
+    @Mock PerformerGroupMemberRepository groupMemberRepository;
+    @Mock EmailService emailService;
+    @InjectMocks PerformerService service;
+    @Test void derivesCountInsteadOfTrustingClient() {
+        var r=new PerformerRegistrationRequest(); r.setName("Lead"); r.setGroupMemberCount(99);
+        var member=new PerformerRegistrationRequest.GroupMemberRequest(); member.setName("Partner"); r.setGroupMembers(List.of(member));
+        when(performerRepository.save(any())).thenAnswer(i->i.getArgument(0));
+        assertEquals(2,service.register(r).getGroupMemberCount()); verify(groupMemberRepository).save(any());
+    }
+}

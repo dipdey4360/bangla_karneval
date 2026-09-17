@@ -28,7 +28,7 @@ public class PerformerService {
         performer.setAddress(request.getAddress());
         performer.setPerformanceType(request.getPerformanceType());
         performer.setPerformanceDescription(request.getPerformanceDescription());
-        performer.setGroupMemberCount(request.getGroupMemberCount());
+        performer.setGroupMemberCount(1 + request.getGroupMembers().size());
         performer.setApprovalStatus("PENDING");
         performer.setEventYear(2026);
 
