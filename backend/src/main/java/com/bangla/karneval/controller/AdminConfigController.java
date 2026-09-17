@@ -55,8 +55,9 @@ public class AdminConfigController {
             return ResponseEntity.badRequest().build();
         }
         // Return existing if already present — idempotent
-        if (eventConfigRepository.existsById(year)) {
-            return ResponseEntity.ok(eventConfigRepository.findByEventYear(year).get());
+        var existing = eventConfigRepository.findByEventYear(year);
+        if (existing.isPresent()) {
+            return ResponseEntity.ok(existing.get());
         }
         EventConfig config = new EventConfig();
         config.setEventYear(year);
