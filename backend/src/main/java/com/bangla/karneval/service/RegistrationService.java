@@ -1,6 +1,7 @@
 package com.bangla.karneval.service;
 
 import com.bangla.karneval.dto.request.GeneralRegistrationRequest;
+import com.bangla.karneval.dto.request.RegistrationUpdateRequest;
 import com.bangla.karneval.dto.response.RegistrationResponse;
 import com.bangla.karneval.model.*;
 import com.bangla.karneval.repository.*;
@@ -88,15 +89,15 @@ public class RegistrationService {
     }
 
     @Transactional
-    public Registration updateRegistration(Long id, Registration updatedData, String adminNote) {
+    public Registration updateRegistration(Long id, RegistrationUpdateRequest updatedData) {
         Registration reg = getById(id);
-        if (updatedData.getPaymentStatus() != null) reg.setPaymentStatus(updatedData.getPaymentStatus());
-        if (updatedData.getPhone() != null)          reg.setPhone(updatedData.getPhone());
-        if (updatedData.getEmail() != null)           reg.setEmail(updatedData.getEmail());
-        if (updatedData.getAddress() != null)         reg.setAddress(updatedData.getAddress());
+        if (updatedData.paymentStatus() != null) reg.setPaymentStatus(updatedData.paymentStatus());
+        if (updatedData.phone() != null) reg.setPhone(updatedData.phone());
+        if (updatedData.email() != null) reg.setEmail(updatedData.email());
+        if (updatedData.address() != null) reg.setAddress(updatedData.address());
         Registration saved = registrationRepository.save(reg);
-        // Always send status email when status changes
-        emailService.sendRegistrationStatusEmail(saved, adminNote);
+        // Preserve the dashboard's existing update notification and optional admin note.
+        emailService.sendRegistrationStatusEmail(saved, updatedData.adminNote() == null ? "" : updatedData.adminNote());
         return saved;
     }
 

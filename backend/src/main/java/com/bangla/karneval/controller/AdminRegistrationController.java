@@ -1,6 +1,8 @@
 package com.bangla.karneval.controller;
 
 import com.bangla.karneval.dto.response.ApiResponse;
+import com.bangla.karneval.dto.request.RegistrationUpdateRequest;
+import jakarta.validation.Valid;
 import com.bangla.karneval.dto.response.DashboardStatsResponse;
 import com.bangla.karneval.model.PaymentStatus;
 import com.bangla.karneval.model.Registration;
@@ -39,21 +41,8 @@ public class AdminRegistrationController {
     @PutMapping("/registrations/{id}")
     public ResponseEntity<Registration> updateRegistration(
             @PathVariable Long id,
-            @RequestBody Map<String, Object> body) {
-
-        Registration updatedData = new Registration();
-
-        if (body.get("paymentStatus") != null)
-            updatedData.setPaymentStatus(PaymentStatus.valueOf((String) body.get("paymentStatus")));
-        if (body.get("phone") != null)
-            updatedData.setPhone((String) body.get("phone"));
-        if (body.get("email") != null)
-            updatedData.setEmail((String) body.get("email"));
-        if (body.get("address") != null)
-            updatedData.setAddress((String) body.get("address"));
-
-        String adminNote = (String) body.getOrDefault("adminNote", "");
-        return ResponseEntity.ok(registrationService.updateRegistration(id, updatedData, adminNote));
+            @Valid @RequestBody RegistrationUpdateRequest request) {
+        return ResponseEntity.ok(registrationService.updateRegistration(id, request));
     }
 
     @PutMapping("/registrations/{id}/payment")
