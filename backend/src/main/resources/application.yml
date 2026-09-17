@@ -2,6 +2,10 @@ spring:
   application:
     name: bangla-karneval
 
+  web:
+    resources:
+      static-locations: file:/app/static/,classpath:/static/
+
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/banglakarneval}
     username: ${SPRING_DATASOURCE_USERNAME:admin}
@@ -42,9 +46,6 @@ server:
   port: 8080
   servlet:
     context-path: /
-
-  resources:
-    static-locations: file:/app/static/,classpath:/static/
 
 logging:
   level:
