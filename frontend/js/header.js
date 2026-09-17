@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const res = await fetch('/components/header.html');
         container.innerHTML = await res.text();
+        updateEventYearLabels();
         initNavigation();
         initHamburger();
         await applyButtonVisibility();  // ← replaces checkPerformerStatus()

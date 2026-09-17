@@ -1,7 +1,11 @@
+let performerEventYear = null;
 document.addEventListener('DOMContentLoaded', () => {
+    getActiveEventConfig().then(config => { performerEventYear = config.eventYear; })
+        .catch(() => showAlert('performer-alert', 'Event details could not be loaded. Refresh before applying.', 'error'));
     document.getElementById('performer-form')
         ?.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (performerEventYear === null) { showAlert('performer-alert', 'Refresh the page to load the event year before applying.', 'error'); return; }
             if (!e.target.reportValidity()) return;
             const btn = e.target.querySelector('[type="submit"]');
             setLoading(btn, true);
@@ -34,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!valid) { setLoading(btn, false); return; }
 
             const payload = {
+                eventYear: performerEventYear,
                 name:                   document.getElementById('p-name').value.trim(),
                 email:                  document.getElementById('p-email').value.trim(),
                 phone:                  document.getElementById('p-phone').value.trim(),

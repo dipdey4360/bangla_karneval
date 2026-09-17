@@ -13,18 +13,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class EventConfigService {
 
     @Autowired private EventConfigRepository eventConfigRepository;
+    @Autowired private ApplicationSettingsService settings;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     public EventConfig getCurrentYearConfig() {
-        return eventConfigRepository.findByEventYear(2026)
+        return eventConfigRepository.findByEventYear(settings.activeYear())
                 .orElseThrow(() -> new RuntimeException("Event config not found"));
     }
 
     @Transactional
     public EventConfig update(ConfigUpdateRequest request) {
-        EventConfig config = getCurrentYearConfig();
+        EventConfig config = eventConfigRepository.findByEventYear(request.getEventYear())
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND,"Event year not found"));
         if (request.getPricePerPerson()  != null) config.setPricePerPerson(request.getPricePerPerson());
         if (request.getEventDate()       != null) config.setEventDate(request.getEventDate());
         if (request.getEventLocation()   != null) config.setEventLocation(request.getEventLocation());
@@ -41,14 +43,14 @@ public class EventConfigService {
 
     public boolean isPerformerEnabled() {
         entityManager.clear();
-        return eventConfigRepository.findByEventYear(2026)
+        return eventConfigRepository.findByEventYear(settings.activeYear())
                 .map(c -> Boolean.TRUE.equals(c.getPerformerEnabled()))
                 .orElse(true);
     }
 
     public boolean isRegistrationEnabled() {
         entityManager.clear();
-        return eventConfigRepository.findByEventYear(2026)
+        return eventConfigRepository.findByEventYear(settings.activeYear())
                 .map(c -> Boolean.TRUE.equals(c.getRegistrationEnabled()))
                 .orElse(true);
     }
@@ -57,7 +59,7 @@ public class EventConfigService {
 
     @Transactional
     public boolean togglePerformerEnabled() {
-        EventConfig config = eventConfigRepository.findByEventYear(2026)
+        EventConfig config = eventConfigRepository.findByEventYear(settings.activeYear())
                 .orElseThrow(() -> new RuntimeException("Config not found"));
         boolean newValue = !Boolean.TRUE.equals(config.getPerformerEnabled());
         config.setPerformerEnabled(newValue);
@@ -67,7 +69,7 @@ public class EventConfigService {
 
     @Transactional
     public boolean toggleRegistrationEnabled() {
-        EventConfig config = eventConfigRepository.findByEventYear(2026)
+        EventConfig config = eventConfigRepository.findByEventYear(settings.activeYear())
                 .orElseThrow(() -> new RuntimeException("Config not found"));
         boolean newValue = !Boolean.TRUE.equals(config.getRegistrationEnabled());
         config.setRegistrationEnabled(newValue);

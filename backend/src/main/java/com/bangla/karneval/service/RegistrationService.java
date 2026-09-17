@@ -22,11 +22,11 @@ public class RegistrationService {
     @Autowired private EventConfigRepository           eventConfigRepository;
     @Autowired private PriceCalculationService         priceCalculationService;
     @Autowired private EmailService                    emailService;
+    @Autowired private ApplicationSettingsService settings;
 
     @Transactional
     public RegistrationResponse registerParticipant(GeneralRegistrationRequest request) {
-        EventConfig config = eventConfigRepository.findByEventYear(2026)
-                .orElseThrow(() -> new RuntimeException("Event config not found for 2026"));
+        EventConfig config = settings.requireActiveYear(request.getEventYear());
 
         BigDecimal pricePerPerson = config.getPricePerPerson();
 
@@ -39,7 +39,7 @@ public class RegistrationService {
                 request.getPrimaryDateOfBirth(), additionalDobs, pricePerPerson
         );
 
-        String referenceCode = ReferenceCodeGenerator.generate(2026);
+        String referenceCode = ReferenceCodeGenerator.generate(config.getEventYear());
 
         Registration registration = new Registration();
         registration.setPrimaryName(request.getPrimaryName());
@@ -51,7 +51,7 @@ public class RegistrationService {
         registration.setCalculatedAmount(totalAmount);
         registration.setPaymentMethod(PaymentMethod.valueOf(request.getPaymentMethod()));
         registration.setReferenceCode(referenceCode);
-        registration.setEventYear(2026);
+        registration.setEventYear(config.getEventYear());
         registration.setGender(request.getGender());
 
         registration = registrationRepository.save(registration);
@@ -74,13 +74,11 @@ public class RegistrationService {
         );
     }
 
-    public List<Registration> searchRegistrations(String search, PaymentStatus status) {
-        if (search != null && !search.isBlank()) {
-            return registrationRepository.searchByName(search);
-        } else if (status != null) {
-            return registrationRepository.findByPaymentStatus(status);
-        }
-        return registrationRepository.findAll();
+    public List<Registration> searchRegistrations(String search, PaymentStatus status, int year) {
+        return registrationRepository.findByEventYear(year).stream()
+            .filter(r -> status == null || r.getPaymentStatus() == status)
+            .filter(r -> search == null || search.isBlank() || r.getPrimaryName().toLowerCase(java.util.Locale.ROOT).contains(search.toLowerCase(java.util.Locale.ROOT)))
+            .toList();
     }
 
     public Registration getById(Long id) {

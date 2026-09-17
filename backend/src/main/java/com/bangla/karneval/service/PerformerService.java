@@ -17,9 +17,11 @@ public class PerformerService {
     @Autowired private PerformerRegistrationRepository performerRepository;
     @Autowired private PerformerGroupMemberRepository  groupMemberRepository;
     @Autowired private EmailService emailService;
+    @Autowired private ApplicationSettingsService settings;
 
     @Transactional
     public PerformerRegistration register(PerformerRegistrationRequest request) {
+        var config = settings.requireActiveYear(request.getEventYear());
         PerformerRegistration performer = new PerformerRegistration();
         performer.setName(request.getName());
         performer.setEmail(request.getEmail());
@@ -30,7 +32,7 @@ public class PerformerService {
         performer.setPerformanceDescription(request.getPerformanceDescription());
         performer.setGroupMemberCount(1 + request.getGroupMembers().size());
         performer.setApprovalStatus("PENDING");
-        performer.setEventYear(2026);
+        performer.setEventYear(config.getEventYear());
 
         performer = performerRepository.save(performer);
 
@@ -48,8 +50,8 @@ public class PerformerService {
         return performer;
     }
 
-    public List<PerformerRegistration> getAll(){
-        return performerRepository.findAll();
+    public List<PerformerRegistration> getAll(int year){
+        return performerRepository.findByEventYear(year);
     }
 
     public List<PerformerRegistration> getByStatus(String status)  {
@@ -62,7 +64,7 @@ public class PerformerService {
                 .orElseThrow(() -> new RuntimeException("Performer not found"));
         p.setApprovalStatus(status);
         PerformerRegistration saved = performerRepository.save(p);
-        emailService.sendPerformerStatusEmail(saved.getEmail(), saved.getName(), status, adminNote);
+        emailService.sendPerformerStatusEmail(saved.getEmail(), saved.getName(), status, adminNote, saved.getEventYear());
         return saved;
     }
 

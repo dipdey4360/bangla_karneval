@@ -1,5 +1,6 @@
 let participantCount = 0;
 let pricePerPerson   = 10;
+let registrationEventYear = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadPrice();
@@ -10,10 +11,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadPrice() {
     try {
-        const config   = await apiFetch('/api/config/current');
-        pricePerPerson = parseFloat(config.pricePerPerson) || 10;
+        const config   = await getActiveEventConfig();
+        registrationEventYear = config.eventYear;
+        pricePerPerson = Number(config.pricePerPerson ?? 10);
         document.getElementById('price-label').textContent = formatCurrency(pricePerPerson);
-    } catch (e) { /* use default */ }
+    } catch (e) { showAlert('form-alert', 'Event details could not be loaded. Refresh before registering.', 'error'); }
     updatePriceSummary();
 }
 
@@ -173,6 +175,7 @@ function setupForm() {
     document.getElementById('registration-form')
         ?.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (registrationEventYear === null) { showAlert('form-alert', 'Refresh the page to load the event year before registering.', 'error'); return; }
             const btn = e.target.querySelector('[type="submit"]');
             setLoading(btn, true);
 
@@ -208,6 +211,7 @@ function setupForm() {
             }
 
             const payload = {
+                eventYear: registrationEventYear,
                 primaryName:            document.getElementById('primary-name').value.trim(),
                 email:                  document.getElementById('primary-email').value.trim(),
                 primaryDateOfBirth:     document.getElementById('primary-dob').value,

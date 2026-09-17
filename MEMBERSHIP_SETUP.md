@@ -43,3 +43,5 @@ Fee changes affect new applications; existing applications retain their original
 - New JavaScript files passed syntax checks. The application and approval browser flow was checked using a local preview with synthetic data, including the six-card desktop layout.
 - The schema initialization and migration were checked against a disposable database, including repeated migration runs.
 - Email sending was mocked during tests. Actual SMTP delivery must be verified with your configured mail account after deployment.
+
+Active-year update: Membership settings now live independently in application_settings. On upgrade, the existing 2026 fees, benefits and payment instructions are copied once. Event-year changes do not change memberships or their public-name preferences. See ACTIVE_YEAR_SETUP.md.

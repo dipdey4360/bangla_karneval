@@ -23,7 +23,7 @@ public class EmailService {
     public void sendRegistrationConfirmation(Registration reg) {
         sendHtmlEmail(
             reg.getEmail(),
-            "🎉 Registration Confirmed — Bangla Karneval 2026",
+            "🎉 Registration Confirmed — Bangla Karneval " + reg.getEventYear(),
             emailTemplateUtil.buildRegistrationConfirmationEmail(reg)
         );
     }
@@ -32,7 +32,7 @@ public class EmailService {
     public void sendPaymentConfirmation(Registration reg) {
         sendHtmlEmail(
             reg.getEmail(),
-            "✅ Payment Confirmed — Bangla Karneval 2026",
+            "✅ Payment Confirmed — Bangla Karneval " + reg.getEventYear(),
             emailTemplateUtil.buildPaymentConfirmationEmail(reg)
         );
     }
@@ -41,7 +41,7 @@ public class EmailService {
     public void sendPaymentReminder(Registration reg) {
         sendHtmlEmail(
             reg.getEmail(),
-            "⏰ Payment Reminder — Bangla Karneval 2026",
+            "⏰ Payment Reminder — Bangla Karneval " + reg.getEventYear(),
             emailTemplateUtil.buildPaymentReminderEmail(reg)
         );
     }
@@ -75,8 +75,8 @@ public class EmailService {
     @Async
     public void sendRegistrationStatusEmail(Registration reg, String adminNote) {
         String subject = reg.getPaymentStatus().name().equals("CONFIRMED")
-                ? "✅ Registration Confirmed — Bangla Karneval 2026"
-                : "❌ Registration Update — Bangla Karneval 2026";
+                ? "✅ Registration Confirmed — Bangla Karneval " + reg.getEventYear()
+                : "❌ Registration Update — Bangla Karneval " + reg.getEventYear();
         sendHtmlEmail(
                 reg.getEmail(),
                 subject,
@@ -87,14 +87,14 @@ public class EmailService {
     // ── Performer status with admin note ─────────────────────────
     @Async
     public void sendPerformerStatusEmail(String toEmail, String name,
-                                         String status, String adminNote) {
+                                         String status, String adminNote, Integer eventYear) {
         String subject = "APPROVED".equals(status)
-                ? "🎉 Performer Application Approved — Bangla Karneval 2026"
-                : "📋 Performer Application Update — Bangla Karneval 2026";
+                ? "🎉 Performer Application Approved — Bangla Karneval " + eventYear
+                : "📋 Performer Application Update — Bangla Karneval " + eventYear;
         sendHtmlEmail(
                 toEmail,
                 subject,
-                emailTemplateUtil.buildPerformerStatusEmail(name, status, adminNote)
+                emailTemplateUtil.buildPerformerStatusEmail(name, status, adminNote, eventYear)
         );
     }
 

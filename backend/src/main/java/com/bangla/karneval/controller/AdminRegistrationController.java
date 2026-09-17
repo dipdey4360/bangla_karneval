@@ -28,14 +28,16 @@ public class AdminRegistrationController {
     @Autowired private RegistrationService     registrationService;
     @Autowired private RegistrationRepository  registrationRepository;
     @Autowired private PriceCalculationService priceCalculationService;
+    @Autowired private com.bangla.karneval.service.ApplicationSettingsService settings;
 
     @GetMapping("/registrations")
     public ResponseEntity<List<Registration>> getRegistrations(
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String search) {
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Integer year) {
         PaymentStatus ps = (status != null && !status.equalsIgnoreCase("ALL"))
                 ? PaymentStatus.valueOf(status) : null;
-        return ResponseEntity.ok(registrationService.searchRegistrations(search, ps));
+        return ResponseEntity.ok(registrationService.searchRegistrations(search, ps, year == null ? settings.activeYear() : year));
     }
 
     @PutMapping("/registrations/{id}")
@@ -60,8 +62,8 @@ public class AdminRegistrationController {
     }
 
     @GetMapping("/registrations/export")
-    public ResponseEntity<byte[]> exportCsv() {
-        List<Registration> all = registrationRepository.findAll();
+    public ResponseEntity<byte[]> exportCsv(@RequestParam(required = false) Integer year) {
+        List<Registration> all = registrationRepository.findByEventYear(year == null ? settings.activeYear() : year);
         StringWriter sw = new StringWriter();
         PrintWriter  pw = new PrintWriter(sw);
 
@@ -97,18 +99,19 @@ public class AdminRegistrationController {
     }
 
     @GetMapping("/dashboard/stats")
-    public ResponseEntity<DashboardStatsResponse> getDashboardStats() {
-        List<Registration> all = registrationRepository.findAll();
+    public ResponseEntity<DashboardStatsResponse> getDashboardStats(@RequestParam(required = false) Integer year) {
+        int selectedYear = year == null ? settings.activeYear() : year;
+        List<Registration> all = registrationRepository.findByEventYear(selectedYear);
         PriceCalculationService.AgeGroupStats ageStats =
                 priceCalculationService.getAgeGroupStats(all);
 
-        BigDecimal revenue = registrationRepository.sumRevenueByYear(2026);
+        BigDecimal revenue = registrationRepository.sumRevenueByYear(selectedYear);
 
         DashboardStatsResponse stats = new DashboardStatsResponse(
                 (long) all.size(),
-                registrationRepository.countByPaymentStatus(PaymentStatus.CONFIRMED),
-                registrationRepository.countByPaymentStatus(PaymentStatus.PENDING),
-                registrationRepository.countByPaymentStatus(PaymentStatus.OVERDUE),
+                all.stream().filter(r -> r.getPaymentStatus() == PaymentStatus.CONFIRMED).count(),
+                all.stream().filter(r -> r.getPaymentStatus() == PaymentStatus.PENDING).count(),
+                all.stream().filter(r -> r.getPaymentStatus() == PaymentStatus.OVERDUE).count(),
                 revenue != null ? revenue : BigDecimal.ZERO,
                 ageStats.getChildren(),
                 ageStats.getAdults(),

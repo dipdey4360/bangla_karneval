@@ -63,7 +63,7 @@ async function applyHeroButtonVisibility() {
 /* ── Load event config (date + social links) ───────────────── */
 async function loadEventConfig() {
     try {
-        const config = await apiFetch('/api/config/current');
+        const config = await getActiveEventConfig();
 
         const dateEl = document.getElementById('event-date');
         if (dateEl && config.eventDate) {
@@ -92,7 +92,8 @@ async function loadEventCards() {
     if (!grid) return;
 
     try {
-        const events = await apiFetch('/api/events/2026');
+        const config = await getActiveEventConfig();
+        const events = await apiFetch(`/api/events/${config.eventYear}`);
         grid.innerHTML = '';
 
         if (!events || events.length === 0) {

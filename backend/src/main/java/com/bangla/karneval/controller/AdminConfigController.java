@@ -17,9 +17,21 @@ public class AdminConfigController {
 
     @Autowired private EventConfigService    eventConfigService;
     @Autowired private EventConfigRepository eventConfigRepository; // ← added
+    @Autowired private com.bangla.karneval.service.ApplicationSettingsService settings;
+
+    @GetMapping("/year/{year}")
+    public ResponseEntity<EventConfig> getYear(@PathVariable Integer year) {
+        return ResponseEntity.of(eventConfigRepository.findByEventYear(year));
+    }
+    public record ActiveYear(@jakarta.validation.constraints.NotNull Integer eventYear) {}
+    @PutMapping("/active-year")
+    @PreAuthorize("hasRole('ADMIN')")
+    public EventConfig activate(@jakarta.validation.Valid @RequestBody ActiveYear request) {
+        return settings.activate(request.eventYear());
+    }
 
     @PutMapping
-    public ResponseEntity<EventConfig> update(@RequestBody ConfigUpdateRequest request) {
+    public ResponseEntity<EventConfig> update(@jakarta.validation.Valid @RequestBody ConfigUpdateRequest request) {
         return ResponseEntity.ok(eventConfigService.update(request));
     }
 

@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('logout-btn')?.addEventListener('click', logout);
 
     // Only load what the default active tab (Registrations) needs
+    await ensureAdminYears();
     await Promise.all([loadDashboardStats(), loadRegistrations()]);
     setupSearch();
     setupFilter();
@@ -37,10 +38,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ── Stats ─────────────────────────────────────────────────────────────────────
 async function loadDashboardStats() {
     try {
-        const stats = await apiFetchWithAuth('/api/admin/dashboard/stats');
+        const stats = await apiFetchWithAuth('/api/admin/dashboard/stats' + adminYearQuery());
         document.getElementById('stat-total').textContent   = stats.totalRegistrations || 0;
         document.getElementById('stat-paid').textContent    = stats.totalPaid          || 0;
-        document.getElementById('stat-unpaid').textContent  = stats.totalUnpaid        || 0;
+        document.getElementById('stat-unpaid').textContent  = (stats.totalUnpaid || 0) + (stats.totalOverdue || 0);
         document.getElementById('stat-revenue').textContent = formatCurrency(stats.totalRevenue);
         renderAgeGroups(stats);
     } catch (e) { console.error('Stats load failed:', e); }
@@ -83,6 +84,7 @@ async function loadRegistrations(status = 'ALL', search = '') {
     showTableSkeleton('registrations-tbody', 9, 5);
     try {
         const params = new URLSearchParams();
+        if (adminSelectedYear !== null) params.set("year", adminSelectedYear);
         if (status !== 'ALL') params.set('status', status);
         if (search) params.set('search', search);
         allRegistrations = await apiFetchWithAuth(`/api/admin/registrations?${params}`);
@@ -192,7 +194,7 @@ async function deleteRegistration(id, btn) {
 function exportCsv() {
     const token = localStorage.getItem('adminToken');
     const req   = new XMLHttpRequest();
-    req.open('GET', '/api/admin/registrations/export');
+    req.open('GET', '/api/admin/registrations/export' + adminYearQuery());
     req.setRequestHeader('Authorization', `Bearer ${token}`);
     req.responseType = 'blob';
     req.onload = () => {
@@ -211,7 +213,7 @@ let allPerformers = [];
 async function loadPerformers() {
     showTableSkeleton('performers-tbody', 7, 5);
     try {
-        allPerformers = await apiFetchWithAuth('/api/admin/performers') || [];
+        allPerformers = await apiFetchWithAuth('/api/admin/performers' + adminYearQuery()) || [];
         const tbody   = document.getElementById('performers-tbody');
         if (!tbody) return;
         if (!allPerformers.length) {
@@ -473,7 +475,7 @@ async function submitReply() {
 async function loadEvents() {
     showTableSkeleton('events-tbody', 5, 4);
     try {
-        allEvents = await apiFetchWithAuth('/api/admin/events') || [];
+        allEvents = await apiFetchWithAuth('/api/admin/events' + adminYearQuery()) || [];
         renderEventTable(allEvents);
     } catch (e) { console.error('Events load failed:', e); }
 }
@@ -544,7 +546,7 @@ document.getElementById('event-form')?.addEventListener('submit', async (e) => {
         title:       document.getElementById('event-title').value.trim(),
         description: document.getElementById('event-description').value.trim(),
         isHighlight: document.getElementById('event-highlight').checked,
-        eventYear:   2026
+        eventYear:   adminSelectedYear
     };
     setLoading(btn, true);
     try {

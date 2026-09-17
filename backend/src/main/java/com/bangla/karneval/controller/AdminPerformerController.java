@@ -15,10 +15,11 @@ import java.util.Map;
 public class AdminPerformerController {
 
     @Autowired private PerformerService performerService;
+    @Autowired private com.bangla.karneval.service.ApplicationSettingsService settings;
 
     @GetMapping
-    public ResponseEntity<List<PerformerRegistration>> getAll() {
-        return ResponseEntity.ok(performerService.getAll());
+    public ResponseEntity<List<PerformerRegistration>> getAll(@RequestParam(required = false) Integer year) {
+        return ResponseEntity.ok(performerService.getAll(year == null ? settings.activeYear() : year));
     }
 
     @PutMapping("/{id}/status")

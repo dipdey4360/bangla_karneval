@@ -6,7 +6,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import java.util.Map;
 
-@RestControllerAdvice(assignableTypes = {MembershipController.class, RegistrationController.class, AdminRegistrationController.class})
+@RestControllerAdvice(assignableTypes = {MembershipController.class, RegistrationController.class, AdminRegistrationController.class, AdminConfigController.class})
 public class MembershipExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<?> expected(ResponseStatusException e) {

@@ -18,13 +18,13 @@ public class MembershipService {
     public record DecisionEmail(Long memberId) {}
     public record PublicMember(String name) {}
     private final MemberRepository repository;
-    private final EventConfigService configService;
+    private final ApplicationSettingsService configService;
     private final ApplicationEventPublisher events;
-    public MembershipService(MemberRepository repository, EventConfigService configService, ApplicationEventPublisher events) {
+    public MembershipService(MemberRepository repository, ApplicationSettingsService configService, ApplicationEventPublisher events) {
         this.repository = repository; this.configService = configService; this.events = events;
     }
     public MembershipSettingsRequest settings() {
-        var c = configService.getCurrentYearConfig();
+        var c = configService.getSettings();
         return new MembershipSettingsRequest(
             c.getMembershipBenefits() == null ? "Voting rights\nEligibility to become a board member\nDiscounts at all events" : c.getMembershipBenefits(),
             c.getMembershipSingleFee() == null ? new BigDecimal("25.00") : c.getMembershipSingleFee(),
@@ -33,7 +33,7 @@ public class MembershipService {
     }
     @Transactional
     public MembershipSettingsRequest updateSettings(MembershipSettingsRequest request) {
-        var c = configService.getCurrentYearConfig();
+        var c = configService.getSettings();
         c.setMembershipBenefits(request.benefits().trim());
         c.setMembershipSingleFee(request.singleFee()); c.setMembershipCoupleFee(request.coupleFee());
         c.setMembershipPaymentInstructions(request.paymentInstructions().trim());

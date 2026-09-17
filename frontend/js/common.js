@@ -1,5 +1,25 @@
 const API_BASE = '';
 
+let activeEventConfigPromise;
+function getActiveEventConfig(refresh = false) {
+    if (refresh || !activeEventConfigPromise) {
+        activeEventConfigPromise = apiFetch('/api/config/current', {cache:'no-store'}).catch(error => {
+            activeEventConfigPromise = null; throw error;
+        });
+    }
+    return activeEventConfigPromise;
+}
+async function updateEventYearLabels() {
+    try {
+        const config = await getActiveEventConfig();
+        document.querySelectorAll('[data-event-year]').forEach(node => node.textContent = config.eventYear);
+        const base = document.documentElement.dataset.baseTitle || document.title;
+        document.documentElement.dataset.baseTitle = base;
+        document.title = `${base} ${config.eventYear}`;
+    } catch (error) { console.warn('Active event year could not be loaded', error); }
+}
+document.addEventListener('DOMContentLoaded', updateEventYearLabels);
+
 // ── Public fetch (no auth) ────────────────────────────────────────────────────
 async function apiFetch(url, options = {}) {
     const response = await fetch(API_BASE + url, options);

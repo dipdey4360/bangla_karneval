@@ -10,6 +10,7 @@ import java.util.List;
 
 @Data
 public class GeneralRegistrationRequest {
+    @NotNull private Integer eventYear;
 
     @NotBlank
     private String primaryName;

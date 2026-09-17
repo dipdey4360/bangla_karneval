@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class ConfigUpdateRequest {
+    @jakarta.validation.constraints.NotNull private Integer eventYear;
     private BigDecimal pricePerPerson;
     private LocalDate  eventDate;
     private String     eventLocation;

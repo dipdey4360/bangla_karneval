@@ -12,11 +12,12 @@ public class EmailTemplateUtil {
     private static final String GREEN        = "#27AE60";
 
     public String buildRegistrationConfirmationEmail(Registration reg) {
+        Integer year = reg.getEventYear();
         String paymentDetails = buildPaymentDetails(reg);
 
         String body = "<h2 style=\"color:" + BRAND_COLOR + ";margin-bottom:16px\">Dear " + escHtml(reg.getPrimaryName()) + ",</h2>"
                 + "<p style=\"font-size:16px;color:#444\">"
-                + "Thank you for registering for <strong>Bangla Karneval 2026</strong>! "
+                + "Thank you for registering for <strong>Bangla Karneval" + (year == null ? "" : " " + year) + "</strong>! "
                 + "Your registration has been received successfully.</p>"
                 + "<div style=\"background:#f9f5ef;border-radius:8px;padding:20px;margin:24px 0;border-left:4px solid " + RED + "\">"
                 + "<h3 style=\"color:" + BRAND_COLOR + ";margin-bottom:12px\">Registration Details</h3>"
@@ -38,13 +39,14 @@ public class EmailTemplateUtil {
                 + "<p style=\"color:#666;font-size:14px;margin-top:24px\">"
                 + "If you have any questions, please reply to this email or contact us via WhatsApp.</p>";
 
-        return buildBase(body);
+        return buildBase(body, year);
     }
 
     public String buildPaymentConfirmationEmail(Registration reg) {
+        Integer year = reg.getEventYear();
         String body = "<h2 style=\"color:" + BRAND_COLOR + ";margin-bottom:16px\">Dear " + escHtml(reg.getPrimaryName()) + ",</h2>"
                 + "<p style=\"font-size:16px;color:#444\">"
-                + "Great news! Your payment for <strong>Bangla Karneval 2026</strong> has been "
+                + "Great news! Your payment for <strong>Bangla Karneval" + (year == null ? "" : " " + year) + "</strong> has been "
                 + "<strong style=\"color:" + GREEN + "\">confirmed</strong>. Your spot is secured! 🎊</p>"
                 + "<div style=\"background:#d4edda;border-radius:8px;padding:20px;margin:24px 0;border-left:4px solid " + GREEN + "\">"
                 + "<h3 style=\"color:#155724;margin-bottom:12px\">✅ Payment Confirmed</h3>"
@@ -55,13 +57,14 @@ public class EmailTemplateUtil {
                 + "<p style=\"color:#666\">We look forward to seeing you at the event. "
                 + "Please keep your reference code handy.</p>";
 
-        return buildBase(body);
+        return buildBase(body, year);
     }
 
     public String buildPaymentReminderEmail(Registration reg) {
+        Integer year = reg.getEventYear();
         String body = "<h2 style=\"color:" + BRAND_COLOR + ";margin-bottom:16px\">Dear " + escHtml(reg.getPrimaryName()) + ",</h2>"
                 + "<p style=\"font-size:16px;color:#444\">"
-                + "This is a friendly reminder that your payment for <strong>Bangla Karneval 2026</strong> "
+                + "This is a friendly reminder that your payment for <strong>Bangla Karneval" + (year == null ? "" : " " + year) + "</strong> "
                 + "is still <strong style=\"color:#E67E22\">pending</strong>.</p>"
                 + "<div style=\"background:#fff3cd;border-radius:8px;padding:20px;margin:24px 0;border-left:4px solid #F39C12\">"
                 + "<h3 style=\"color:#856404;margin-bottom:12px\">⚠️ Payment Pending</h3>"
@@ -75,7 +78,7 @@ public class EmailTemplateUtil {
                 + "Please complete your payment as soon as possible to confirm your spot. "
                 + "Unpaid registrations may be cancelled after the deadline.</p>";
 
-        return buildBase(body);
+        return buildBase(body, year);
     }
 
     private String buildPaymentDetails(Registration reg) {
@@ -106,7 +109,7 @@ public class EmailTemplateUtil {
         };
     }
 
-    private String buildBase(String content) {
+    private String buildBase(String content, Integer year) {
         return "<!DOCTYPE html>"
                 + "<html><head><meta charset=\"UTF-8\">"
                 + "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"></head>"
@@ -121,14 +124,14 @@ public class EmailTemplateUtil {
                 + "<h1 style=\"color:" + GOLD + ";margin:0;font-size:24px;font-family:Georgia,serif\">"
                 + "বাংলা কার্নেভাল</h1>"
                 + "<p style=\"color:rgba(255,255,255,0.85);margin:6px 0 0;font-size:14px\">"
-                + "Bangla Karneval 2026 — Wesseling, Germany</p>"
+                + "Bangla Karneval" + (year == null ? "" : " " + year) + " — Wesseling, Germany</p>"
                 + "</td></tr>"
                 // Body
                 + "<tr><td style=\"padding:32px\">" + content + "</td></tr>"
                 // Footer
                 + "<tr><td style=\"background:#f9f5ef;padding:20px 32px;text-align:center;"
                 + "font-size:13px;color:#999;border-top:1px solid #f0e6d0\">"
-                + "Bangla Karneval 2026 · Wesseling, Germany<br>"
+                + "Bangla Karneval" + (year == null ? "" : " " + year) + " · Wesseling, Germany<br>"
                 + "<a href=\"mailto:info@banglakarneval.com\" style=\"color:" + RED + "\">"
                 + "info@banglakarneval.com</a>"
                 + "</td></tr>"
@@ -137,6 +140,7 @@ public class EmailTemplateUtil {
     }
 
     public String buildContactReplyEmail(String name, String originalMessage, String replyText) {
+        Integer year = null;
         String body = "<h2 style='color:#7B241C'>Hello " + escHtml(name) + ",</h2>"
                 + "<p>Thank you for reaching out to <strong>Bangla Karneval</strong>. "
                 + "Here is our response to your message:</p>"
@@ -148,15 +152,16 @@ public class EmailTemplateUtil {
                 + "padding:14px 16px;border-radius:6px;margin:8px 0'>"
                 + escHtml(replyText) + "</div>"
                 + "<p style='margin-top:20px'>If you have further questions, feel free to reply to this email.</p>";
-        return buildBase(body);
+        return buildBase(body, year);
     }
 
     public String buildRegistrationStatusEmail(Registration reg, String adminNote) {
+        Integer year = reg.getEventYear();
         boolean confirmed = reg.getPaymentStatus().name().equals("CONFIRMED");
         String statusColor = confirmed ? "#27AE60" : "#C0392B";
         String statusLabel = confirmed ? "✅ CONFIRMED" : "❌ " + reg.getPaymentStatus().name();
         String body = "<h2 style='color:#7B241C'>Hello " + escHtml(reg.getPrimaryName()) + ",</h2>"
-                + "<p>Your registration for <strong>Bangla Karneval 2026</strong> has been updated.</p>"
+                + "<p>Your registration for <strong>Bangla Karneval" + (year == null ? "" : " " + year) + "</strong> has been updated.</p>"
                 + "<div style='background:#f9f5ef;padding:14px 16px;border-radius:6px;margin:16px 0'>"
                 + "<strong>Reference:</strong> " + escHtml(reg.getReferenceCode()) + "<br>"
                 + "<strong>Status:</strong> <span style='color:" + statusColor + ";font-weight:700'>"
@@ -167,15 +172,15 @@ public class EmailTemplateUtil {
                 + "padding:12px 16px;border-radius:6px'>" + escHtml(adminNote) + "</div>"
                 : "")
                 + "<p style='margin-top:20px'>If you have questions, please contact us.</p>";
-        return buildBase(body);
+        return buildBase(body, year);
     }
 
-    public String buildPerformerStatusEmail(String name, String status, String adminNote) {
+    public String buildPerformerStatusEmail(String name, String status, String adminNote, Integer year) {
         boolean approved = "APPROVED".equals(status);
         String statusColor = approved ? "#27AE60" : "#C0392B";
         String statusLabel = approved ? "✅ APPROVED" : "❌ REJECTED";
         String body = "<h2 style='color:#7B241C'>Hello " + escHtml(name) + ",</h2>"
-                + "<p>Your performer application for <strong>Bangla Karneval 2026</strong> has been reviewed.</p>"
+                + "<p>Your performer application for <strong>Bangla Karneval" + (year == null ? "" : " " + year) + "</strong> has been reviewed.</p>"
                 + "<div style='background:#f9f5ef;padding:14px 16px;border-radius:6px;margin:16px 0'>"
                 + "<strong>Decision:</strong> <span style='color:" + statusColor + ";font-weight:700'>"
                 + statusLabel + "</span></div>"
@@ -188,7 +193,7 @@ public class EmailTemplateUtil {
                 + (approved ? "We look forward to your performance! Further details will follow."
                 : "Thank you for your interest. We hope to see you at the event.")
                 + "</p>";
-        return buildBase(body);
+        return buildBase(body, year);
     }
 
 

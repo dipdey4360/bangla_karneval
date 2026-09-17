@@ -13,11 +13,11 @@ class ParticipantValidationTest {
     @BeforeAll static void setup() { factory=Validation.buildDefaultValidatorFactory(); validator=factory.getValidator(); }
     @AfterAll static void close() { factory.close(); }
     GeneralRegistrationRequest general() {
-        var r=new GeneralRegistrationRequest(); r.setPrimaryName("Applicant"); r.setEmail("test@example.invalid");
+        var r=new GeneralRegistrationRequest(); r.setEventYear(2026); r.setPrimaryName("Applicant"); r.setEmail("test@example.invalid");
         r.setPrimaryDateOfBirth(LocalDate.of(1990,1,1)); r.setPaymentMethod("PAYPAL"); return r;
     }
     PerformerRegistrationRequest performer() {
-        var r=new PerformerRegistrationRequest(); r.setName("Performer"); r.setEmail("test@example.invalid"); r.setPerformanceType("DANCE"); return r;
+        var r=new PerformerRegistrationRequest(); r.setEventYear(2026); r.setName("Performer"); r.setEmail("test@example.invalid"); r.setPerformanceType("DANCE"); return r;
     }
     @Test void additionalParticipantsValidateNamesDatesAndNulls() {
         var r=general(); assertTrue(validator.validate(r).isEmpty());

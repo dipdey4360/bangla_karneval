@@ -18,14 +18,14 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class MembershipServiceTest {
     @Mock MemberRepository repository;
-    @Mock EventConfigService config;
+    @Mock ApplicationSettingsService config;
     @Mock ApplicationEventPublisher events;
     @InjectMocks MembershipService service;
     MembershipRequest request(Member.Type type, String partner, boolean consent) {
         return new MembershipRequest("Alice",partner,LocalDate.of(1991,2,3),"Partner street","987654","bob@example.invalid",LocalDate.of(1990,1,1),"Example street","123456","alice@example.invalid",type,PaymentMethod.BANK_TRANSFER,true,consent,true);
     }
     @Test void singleAndCoupleFeesAreCalculatedByServer() {
-        when(config.getCurrentYearConfig()).thenReturn(new EventConfig());
+        when(config.getSettings()).thenReturn(new ApplicationSettings());
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
         Member single=service.apply(request(Member.Type.SINGLE,null,true));
         Member couple=service.apply(request(Member.Type.COUPLE,"Bob",true));
@@ -51,7 +51,7 @@ class MembershipServiceTest {
         verifyNoInteractions(repository);
     }
     @Test void applicantVisibilityChoiceIsRequiredAndPreservedOnApproval() {
-        when(config.getCurrentYearConfig()).thenReturn(new EventConfig());
+        when(config.getSettings()).thenReturn(new ApplicationSettings());
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
         for (boolean listed : new boolean[]{false,true}) {
             var request = new MembershipRequest("Alice","Bob",LocalDate.of(1991,2,3),"Street","123","bob@example.invalid",LocalDate.of(1990,1,1),"Street","123","alice@example.invalid",Member.Type.COUPLE,PaymentMethod.PAYPAL,true,true,listed);
@@ -94,7 +94,7 @@ class MembershipServiceTest {
         assertEquals(1,MembershipService.PublicMember.class.getRecordComponents().length);
     }
     @Test void settingsChangesDoNotRepriceExistingApplications() {
-        EventConfig c=new EventConfig(); when(config.getCurrentYearConfig()).thenReturn(c);
+        ApplicationSettings c=new ApplicationSettings(); when(config.getSettings()).thenReturn(c);
         service.updateSettings(new MembershipSettingsRequest("Voting",new BigDecimal("26.00"),new BigDecimal("31.00"),"Instructions"));
         assertEquals(new BigDecimal("26.00"),service.settings().singleFee());
         verifyNoInteractions(repository);

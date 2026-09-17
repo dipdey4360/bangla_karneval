@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard — Bangla Karneval 2026</title>
+    <title>Admin Dashboard — Bangla Karneval</title>
     <script>
         (function () {
             if (!localStorage.getItem('adminToken')) window.location.replace('/admin.html');
@@ -98,7 +98,7 @@
         <div class="sidebar-header">
             <div class="sidebar-logo">
                 Bangla Karneval
-                <span>Admin Panel 2026</span>
+                <span>Admin Panel <span data-event-year></span></span>
             </div>
         </div>
         <nav class="sidebar-nav">
@@ -136,12 +136,17 @@
 
     <!-- Main content -->
     <main class="dashboard-main">
+        <div class="section-card" style="margin-bottom:20px">
+            <label class="form-label" for="admin-year-filter">View / manage event year</label>
+            <select class="form-select" id="admin-year-filter" style="max-width:260px"><option value="">Loading years…</option></select>
+            <p>Filters registrations, dashboard totals, performers, event cards, and event configuration. Board members and memberships cover all years.</p>
+        </div>
 
         <!-- ─── TAB: REGISTRATIONS ─── -->
         <div id="tab-registrations" class="tab-pane active">
             <div class="dashboard-header">
                 <h1>Dashboard Overview</h1>
-                <span class="admin-info">Bangla Karneval 2026</span>
+                <span class="admin-info">Bangla Karneval <span data-managed-year></span></span>
             </div>
             <div class="stats-grid">
                 <div class="stat-card total">
@@ -213,7 +218,7 @@
         <div id="tab-performers" class="tab-pane">
             <div class="dashboard-header">
                 <h1>🎤 Performer Applications</h1>
-                <span class="admin-info">Bangla Karneval 2026</span>
+                <span class="admin-info">Bangla Karneval <span data-managed-year></span></span>
             </div>
 
             <!-- ── Event Cards Management ── -->
@@ -278,7 +283,7 @@
         <div id="tab-gallery-mgmt" class="tab-pane">
             <div class="dashboard-header">
                 <h1>🖼️ Gallery Management</h1>
-                <span class="admin-info">Bangla Karneval 2026</span>
+                <span class="admin-info">Bangla Karneval <span data-managed-year></span></span>
             </div>
             <div class="section-card">
                 <!-- Upload form -->
@@ -350,7 +355,7 @@
         <div id="tab-sponsors" class="tab-pane">
             <div class="dashboard-header">
                 <h1>🤝 Sponsors</h1>
-                <span class="admin-info">Bangla Karneval 2026</span>
+                <span class="admin-info">Bangla Karneval <span data-managed-year></span></span>
             </div>
             <div class="section-card" style="margin-top:var(--spacing-xl)">
                 <div class="section-card-header">
@@ -425,10 +430,20 @@
         <div id="tab-config" class="tab-pane">
             <div class="dashboard-header">
                 <h1>⚙️ Event Configuration</h1>
-                <span class="admin-info">Bangla Karneval 2026</span>
+                <span class="admin-info">Bangla Karneval <span data-managed-year></span></span>
             </div>
 
             <!-- Event config form -->
+            <div class="section-card" style="max-width:700px;margin-bottom:20px">
+                <h2>Active Event Year</h2>
+                <p>Currently active: <strong id="active-year-current">Loading…</strong></p>
+                <p>Add a year below, select it in “View / manage event year”, and save its event details before activating it here.</p>
+                <label class="form-label" for="active-event-year">Year to activate</label>
+                <select class="form-select" id="active-event-year"><option value="">Loading years…</option></select>
+                <button class="btn btn-primary" type="button" id="activate-event-year" style="margin-top:12px">Activate selected year</button>
+                <p id="active-year-message" role="status" style="margin-top:12px"></p>
+                <p>This changes public event details and new applications. Historical records, board members, and membership fees stay unchanged.</p>
+            </div>
             <div class="section-card" style="max-width:700px">
                 <div id="config-alert"></div>
                 <form id="config-form">
@@ -489,7 +504,7 @@
                     <h2>📅 Event Years</h2>
                 </div>
                 <p style="color:var(--text-secondary);font-size:13px;margin-bottom:var(--spacing-lg)">
-                    Add previous years here to enable gallery uploads for them.
+                    Add past or upcoming years here to prepare event details and gallery uploads.
                     Each year must exist before images can be uploaded.
                 </p>
                 <div id="event-years-list"
@@ -514,7 +529,7 @@
                     <h2>👁️ Button Visibility</h2>
                 </div>
                 <p style="color:var(--text-secondary);font-size:13px;margin-bottom:var(--spacing-lg)">
-                    Control which buttons are visible to visitors on the public website.
+                    Control which buttons are visible to visitors for the active event year.
                 </p>
 
                 <div id="button-visibility-alert"></div>
@@ -768,11 +783,12 @@
         <button class="btn btn-primary" type="submit">Save decision and send email</button>
     </form>
 </dialog>
-<script src="js/common.js?v=rendering-security-1"></script>
-<script src="js/admin_dashboard.js?v=rendering-security-1"></script>
+<script src="js/common.js?v=active-year-1"></script>
+<script src="js/admin_year.js?v=active-year-1"></script>
+<script src="js/admin_dashboard.js?v=active-year-1"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-<script src="js/admin_sponsors.js?v=rendering-security-1"></script>
-<script src="js/admin_membership.js?v=member-visibility-1"></script>
+<script src="js/admin_sponsors.js?v=active-year-1"></script>
+<script src="js/admin_membership.js?v=active-year-1"></script>
 
 <script>
     /* ══════════════════════════════════════════════════════════════
@@ -948,6 +964,7 @@
             showAlert('add-year-alert', `✅ Year ${year} added successfully!`, 'success');
             input.value = '';
             await Promise.all([loadEventYears(), loadGalleryYears()]);
+            await ensureAdminYears(true);
         } catch (e) {
             showAlert('add-year-alert', `Failed to add year: ${e.message}`, 'error');
         }
@@ -1067,10 +1084,16 @@
     /* ══════════════════════════════════════════════════════════════
        CONFIG
        ══════════════════════════════════════════════════════════════ */
+    let configLoadedYear = null;
     async function loadConfig() {
+        configLoadedYear = null;
         try {
-            const c = await apiFetch('/api/config/current');
-            document.getElementById('cfg-price').value     = c.pricePerPerson   || '';
+            await ensureAdminYears();
+            const year = adminSelectedYear;
+            const c = await apiFetchWithAuth(`/api/admin/config/year/${year}`);
+            if (!c || year !== adminSelectedYear) return;
+            configLoadedYear = c.eventYear;
+            document.getElementById('cfg-price').value     = c.pricePerPerson   ?? '';
             document.getElementById('cfg-date').value      = c.eventDate        || '';
             document.getElementById('cfg-location').value  = c.eventLocation    || '';
             document.getElementById('cfg-about').value     = c.aboutText        || '';
@@ -1084,6 +1107,7 @@
 
     document.getElementById('config-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        if (configLoadedYear !== adminSelectedYear) { showAlert('config-alert','Wait for the selected year’s settings to load before saving.','error'); return; }
         const btn = e.target.querySelector('[type="submit"]');
         setLoading(btn, true);
         try {
@@ -1091,6 +1115,7 @@
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    eventYear: adminSelectedYear,
                     pricePerPerson:   parseFloat(document.getElementById('cfg-price').value),
                     eventDate:        document.getElementById('cfg-date').value      || null,
                     eventLocation:    document.getElementById('cfg-location').value  || null,

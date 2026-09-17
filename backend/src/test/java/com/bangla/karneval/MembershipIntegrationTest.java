@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "logging.level.root=WARN", "logging.level.com.bangla.karneval=WARN"
 })
 @AutoConfigureMockMvc
+@org.springframework.test.annotation.DirtiesContext(classMode=org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS)
 class MembershipIntegrationTest {
     @Autowired MockMvc mvc;
     @Autowired ObjectMapper json;

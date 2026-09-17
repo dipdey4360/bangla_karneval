@@ -16,10 +16,11 @@ import java.util.List;
 public class AdminEventController {
 
     @Autowired private EventService eventService;
+    @Autowired private com.bangla.karneval.service.ApplicationSettingsService settings;
 
     @GetMapping
-    public ResponseEntity<List<Event>> getAll() {
-        return ResponseEntity.ok(eventService.getAll());
+    public ResponseEntity<List<Event>> getAll(@RequestParam(required = false) Integer year) {
+        return ResponseEntity.ok(eventService.getByYear(year == null ? settings.activeYear() : year));
     }
 
     @PostMapping

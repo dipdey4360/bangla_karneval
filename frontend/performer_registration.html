@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Performer Registration — Bangla Karneval 2026</title>
+    <title>Performer Registration — Bangla Karneval</title>
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/footer.css">
@@ -17,7 +17,7 @@
 
         <section class="performer-hero">
             <div class="container">
-                <h1>Perform at Bangla Karneval 2026</h1>
+                <h1>Perform at Bangla Karneval <span data-event-year></span></h1>
                 <p>Share your talent with our community — performer registration is always free!</p>
             </div>
         </section>
@@ -34,7 +34,7 @@
                     <div style="font-size:4rem;margin-bottom:var(--spacing-md)">🌟</div>
                     <h2>Application Submitted!</h2>
                     <p style="margin-top:var(--spacing-md);color:var(--text-secondary)">
-                        Thank you for applying to perform at Bangla Karneval 2026.
+                        Thank you for applying to perform at Bangla Karneval <span data-event-year></span>.
                     </p>
                     <p style="color:var(--text-secondary)">
                         Our team will review your application and reach out shortly.
@@ -158,10 +158,10 @@
     </main>
     <div id="footer-container"></div>
 </div>
-<script src="js/common.js?v=rendering-security-1"></script>
-<script src="js/header.js"></script>
-<script src="js/footer.js?v=rendering-security-1"></script>
-<script src="js/performer.js?v=participant-validation-1"></script>
+<script src="js/common.js?v=active-year-1"></script>
+<script src="js/header.js?v=active-year-1"></script>
+<script src="js/footer.js?v=active-year-1"></script>
+<script src="js/performer.js?v=active-year-1"></script>
 <script>
     document.getElementById('p-dob').max = new Date().toISOString().split('T')[0];
 

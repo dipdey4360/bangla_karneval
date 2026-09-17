@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => res.text())
         .then(html => {
             container.innerHTML = html;
+            updateEventYearLabels();
             loadFooterSponsors();
         })
         .catch(err => console.error('Footer load error:', err));

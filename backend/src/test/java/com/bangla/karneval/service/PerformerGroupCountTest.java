@@ -13,9 +13,12 @@ class PerformerGroupCountTest {
     @Mock PerformerRegistrationRepository performerRepository;
     @Mock PerformerGroupMemberRepository groupMemberRepository;
     @Mock EmailService emailService;
+    @Mock ApplicationSettingsService settings;
     @InjectMocks PerformerService service;
     @Test void derivesCountInsteadOfTrustingClient() {
-        var r=new PerformerRegistrationRequest(); r.setName("Lead"); r.setGroupMemberCount(99);
+        var r=new PerformerRegistrationRequest(); r.setEventYear(2026);
+        var config=new com.bangla.karneval.model.EventConfig(); config.setEventYear(2026);
+        when(settings.requireActiveYear(2026)).thenReturn(config); r.setName("Lead"); r.setGroupMemberCount(99);
         var member=new PerformerRegistrationRequest.GroupMemberRequest(); member.setName("Partner"); r.setGroupMembers(List.of(member));
         when(performerRepository.save(any())).thenAnswer(i->i.getArgument(0));
         assertEquals(2,service.register(r).getGroupMemberCount()); verify(groupMemberRepository).save(any());
