@@ -22,6 +22,19 @@ class MembershipControllerTest {
     @MockBean MembershipService service;
     @MockBean BoardMemberService board;
     @MockBean JwtUtil jwt;
+    @Test void onlyAdminCanDeleteMembership() throws Exception {
+        mvc.perform(delete("/api/admin/members/7")).andExpect(status().isForbidden());
+        mvc.perform(delete("/api/admin/members/7").with(user("visitor").roles("USER"))).andExpect(status().isForbidden());
+        verifyNoInteractions(service);
+        mvc.perform(delete("/api/admin/members/7").with(user("admin").roles("ADMIN"))).andExpect(status().isNoContent());
+        verify(service).delete(7L);
+    }
+    @Test void deletingMissingMembershipReturnsNotFound() throws Exception {
+        doThrow(new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Membership application not found"))
+            .when(service).delete(7L);
+        mvc.perform(delete("/api/admin/members/7").with(user("admin").roles("ADMIN")))
+            .andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Membership application not found"));
+    }
     private String application(boolean consent) { return """
         {"name":"Alice","dateOfBirth":"1990-01-01","address":"Example street","phone":"12345",
         "email":"alice@example.invalid","membershipType":"SINGLE","paymentMethod":"PAYPAL",

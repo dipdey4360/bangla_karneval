@@ -36,6 +36,8 @@ Refresh applications to check email delivery. If delivery fails, check your exis
 
 Fee changes affect new applications; existing applications retain their original fee. This feature records applications and decisions; automatic yearly renewal, recurring charges, and membership expiry are not implemented.
 
+To remove a membership, go to **Admin → Memberships**, find the record (select **All** if needed), click **Delete member**, and confirm the displayed names. This permanently deletes the application and its stored personal details from the application database, and removes the names from the public list on the next refresh. For couples, both partners belong to the same record and are deleted together. Pending and rejected applications can also be deleted. No deletion email is sent. Existing backups and previously sent emails are unaffected.
+
 ## Verification performed
 
 - 14 automated tests passed, including an isolated PostgreSQL integration test covering approval, both public names, rejection, failed email delivery and retry, visibility, and saved settings.

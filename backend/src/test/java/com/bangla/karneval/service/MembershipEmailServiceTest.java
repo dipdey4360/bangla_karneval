@@ -9,6 +9,13 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MembershipEmailServiceTest {
+    @Test void queuedEmailSkipsDeletedMember() {
+        var repository = mock(MemberRepository.class); var mail = mock(JavaMailSender.class);
+        when(repository.findLockedById(7L)).thenReturn(Optional.empty());
+        new MembershipEmailService(repository, mail, "sender@example.invalid").deliver(7L);
+        verifyNoInteractions(mail);
+        verify(repository, never()).save(any());
+    }
     @Test void sendsBothDecisionsAndRecordsDeliveryWithoutNetwork() {
         for (Member.Status status : new Member.Status[]{Member.Status.APPROVED,Member.Status.REJECTED}) {
             var repository=mock(MemberRepository.class); var mail=mock(JavaMailSender.class);

@@ -21,6 +21,21 @@ class MembershipServiceTest {
     @Mock ApplicationSettingsService config;
     @Mock ApplicationEventPublisher events;
     @InjectMocks MembershipService service;
+    @Test void deletesWholeCoupleRecordWithoutSendingEmail() {
+        Member member = new Member(); member.setId(7L); member.setMembershipType(Member.Type.COUPLE);
+        member.setName("Alice"); member.setPartnerName("Bob");
+        when(repository.findLockedById(7L)).thenReturn(Optional.of(member));
+        service.delete(7L);
+        verify(repository).delete(member);
+        verifyNoInteractions(events);
+    }
+    @Test void missingMemberCannotBeDeleted() {
+        when(repository.findLockedById(7L)).thenReturn(Optional.empty());
+        var error = assertThrows(ResponseStatusException.class, () -> service.delete(7L));
+        assertEquals(404, error.getStatusCode().value());
+        verify(repository, never()).delete(any(Member.class));
+        verifyNoInteractions(events);
+    }
     MembershipRequest request(Member.Type type, String partner, boolean consent) {
         return new MembershipRequest("Alice",partner,LocalDate.of(1991,2,3),"Partner street","987654","bob@example.invalid",LocalDate.of(1990,1,1),"Example street","123456","alice@example.invalid",type,PaymentMethod.BANK_TRANSFER,true,consent,true);
     }

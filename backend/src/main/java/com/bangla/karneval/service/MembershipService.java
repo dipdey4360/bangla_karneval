@@ -102,6 +102,10 @@ public class MembershipService {
         m.setEmailDelivery(Member.Delivery.PENDING);
         events.publishEvent(new DecisionEmail(id));
     }
+    @Transactional
+    public void delete(Long id) {
+        repository.delete(locked(id));
+    }
     private Member locked(Long id) {
         return repository.findLockedById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Membership application not found"));
     }

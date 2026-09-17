@@ -35,6 +35,11 @@ public class MembershipController {
     @DeleteMapping("/api/admin/board-members/{slot}")
     public ResponseEntity<Void> clearBoard(@PathVariable int slot) { board.clear(slot); return ResponseEntity.noContent().build(); }
     @GetMapping("/api/admin/members") public List<Member> applications() { return memberships.applications(); }
+    @DeleteMapping("/api/admin/members/{id}")
+    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
+        memberships.delete(id);
+        return ResponseEntity.noContent().build();
+    }
     @PutMapping("/api/admin/members/{id}/decision")
     public Member decision(@PathVariable Long id, @Valid @RequestBody MembershipDecisionRequest request) { return memberships.decide(id, request); }
     @PostMapping("/api/admin/members/{id}/retry-email")

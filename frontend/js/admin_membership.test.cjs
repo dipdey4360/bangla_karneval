@@ -3,6 +3,43 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 
+test('member deletion confirms both names, preserves cancelled/failed records and removes successful records', async () => {
+    const elements = new Map();
+    const make = () => ({value:'ALL', children:[], listeners:{},
+        addEventListener(name, fn){this.listeners[name]=fn;}, append(...items){this.children.push(...items);},
+        replaceChildren(){this.children=[];}});
+    const get = id => {if (!elements.has(id)) elements.set(id, make()); return elements.get(id);};
+    let confirmed = false, failure = false, deleted = 0, prompt;
+    const member = {id:7,name:'Alice',partnerName:'Bob',membershipType:'COUPLE',status:'APPROVED',emailDelivery:'SENT'};
+    const context = {document:{getElementById:get,createElement:make,addEventListener(){}},
+        formatCurrency:()=>'',formatDateTime:()=>'',
+        confirm:text=>{prompt=text; return confirmed;},
+        apiFetchWithAuth:async(url, options={})=>{
+            if(options.method==='DELETE') {
+                assert.equal(url, '/api/admin/members/7');
+                if(failure) throw Error('Deletion failed');
+                deleted++; return null;
+            }
+            return url==='/api/admin/members' ? [member] : {};
+        }};
+    context.window=context;
+    vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'admin_membership.js'),'utf8'),context);
+    await context.loadMembershipAdmin();
+    const card=get('membership-applications').children[0];
+    const btn=card.children.at(-1).children.find(child=>child.textContent==='Delete member');
+    await btn.listeners.click({currentTarget:btn});
+    assert.match(prompt,/Alice & Bob/); assert.match(prompt,/Both partners/); assert.equal(deleted,0);
+    confirmed=true; failure=true;
+    await btn.listeners.click({currentTarget:btn});
+    assert.equal(get('membership-applications').children[0],card);
+    assert.equal(get('membership-admin-message').textContent,'Deletion failed'); assert.equal(btn.disabled,false);
+    failure=false;
+    await btn.listeners.click({currentTarget:btn});
+    assert.equal(deleted,1);
+    assert.match(get('membership-applications').children[0].textContent,/No applications/);
+    assert.match(get('membership-admin-message').textContent,/deleted successfully/);
+});
+
 test('board editor selects a card, saves multipart data, refreshes cards and reports failures', async () => {
     const elements = new Map();
     const make = () => ({value:'', checked:false, files:[], dataset:{}, children:[], listeners:{},

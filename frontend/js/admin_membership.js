@@ -64,6 +64,23 @@
                 node('p', `Decision email: ${m.emailDelivery.replaceAll('_',' ').toLowerCase()}`));
             const actions=node('div',undefined,'membership-admin-actions');
             actions.append(button('Review details',()=>openReview(m)));
+            actions.append(button('Delete member', async event => {
+                const names = m.name + (m.partnerName ? ' & ' + m.partnerName : '');
+                if (!confirm(`Permanently delete the membership record for ${names}?\n\n${m.membershipType === 'COUPLE' ? 'Both partners’ details and public names will be removed.' : 'Their details and public name will be removed.'}\nThis cannot be undone. No deletion email will be sent.`)) return;
+                const btn = event.currentTarget;
+                btn.disabled = true;
+                const message = byId('membership-admin-message');
+                message.textContent = 'Deleting membership record…';
+                try {
+                    const result = await apiFetchWithAuth(`/api/admin/members/${m.id}`, {method:'DELETE'});
+                    if (result === undefined) throw new Error('Deletion was not confirmed. Please sign in again and retry.');
+                    applications = applications.filter(member => member.id !== m.id);
+                    renderApplications();
+                    message.textContent = `Membership record for ${names} deleted successfully. Refresh About Us to see the updated member list.`;
+                } catch (error) {
+                    message.textContent = error.message || 'Unable to delete the membership record. Please try again.';
+                } finally { btn.disabled = false; }
+            }));
             if (m.status!=='PENDING' && ['FAILED','PENDING'].includes(m.emailDelivery)) actions.append(button('Retry decision email',async event=>{
                 const btn=event.currentTarget; btn.disabled=true;
                 try { await apiFetchWithAuth(`/api/admin/members/${m.id}/retry-email`,{method:'POST'}); byId('membership-admin-message').textContent='Email retry requested. Refresh to check delivery status.'; await loadApplications(); }
