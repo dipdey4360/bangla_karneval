@@ -44,6 +44,7 @@ services:
       - gallery_uploads:/app/static/assets/images/gallery
       - sponsor_uploads:/app/uploads/sponsors
       - board_uploads:/app/uploads/board
+      - programme_posters:/app/uploads/posters
     restart: unless-stopped
     networks:
       - bangla-network
@@ -53,6 +54,7 @@ volumes:
   gallery_uploads:
   sponsor_uploads:
   board_uploads:
+  programme_posters:
 
 networks:
   bangla-network:

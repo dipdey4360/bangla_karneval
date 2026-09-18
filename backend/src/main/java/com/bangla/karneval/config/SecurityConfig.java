@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/index.html"),
+                                new AntPathRequestMatcher("/event_preview.html"),
                                 new AntPathRequestMatcher("/about_us.html"),
                                 new AntPathRequestMatcher("/gallery.html"),
                                 new AntPathRequestMatcher("/registration.html"),
@@ -71,6 +72,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/error"),
                                 new AntPathRequestMatcher("/api/config/current"),
+                                new AntPathRequestMatcher("/api/editions/**", "GET"),
+                                new AntPathRequestMatcher("/api/organisation", "GET"),
                                 new AntPathRequestMatcher("/api/config/button-status"),
                                 new AntPathRequestMatcher("/api/admin/config/performer-status"),
                                 new AntPathRequestMatcher("/api/sponsors"),

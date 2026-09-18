@@ -20,7 +20,8 @@ public class AdminGalleryController {
 
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<GalleryItem> upload(
-            @RequestParam Integer      eventYear,
+            @RequestParam(required=false) Integer eventYear,
+            @RequestParam(required=false) Long eventEditionId,
             @RequestParam(required = false) MultipartFile file,
             @RequestParam(required = false) String        url,
             @RequestParam(defaultValue = "IMAGE") String  mediaType,
@@ -30,6 +31,7 @@ public class AdminGalleryController {
 
         GalleryUploadRequest request = new GalleryUploadRequest();
         request.setEventYear(eventYear);
+        request.setEventEditionId(eventEditionId);
         request.setFile(file);
         request.setUrl(url);
         request.setMediaType(mediaType);

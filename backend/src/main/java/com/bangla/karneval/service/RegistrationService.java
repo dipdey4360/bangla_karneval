@@ -26,7 +26,8 @@ public class RegistrationService {
 
     @Transactional
     public RegistrationResponse registerParticipant(GeneralRegistrationRequest request) {
-        EventConfig config = settings.requireActiveYear(request.getEventYear());
+        EventConfig config = request.getEventEditionId()==null ? settings.requireActiveYear(request.getEventYear()) : settings.requireActiveEdition(request.getEventEditionId(),request.getEventYear(),request.getEventVersion());
+        if (Boolean.FALSE.equals(config.getRegistrationEnabled())) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT,"Registration is closed for this event.");
 
         BigDecimal pricePerPerson = config.getPricePerPerson();
 
@@ -52,6 +53,11 @@ public class RegistrationService {
         registration.setPaymentMethod(PaymentMethod.valueOf(request.getPaymentMethod()));
         registration.setReferenceCode(referenceCode);
         registration.setEventYear(config.getEventYear());
+        registration.setEventEditionId(config.getEventEditionId());
+        registration.setEventTitle(config.getTitle());
+        registration.setEventDateSnapshot(config.getEventDate());
+        registration.setEventLocationSnapshot(config.getEventLocation());
+        registration.setPaymentInstructionsSnapshot(config.getPaymentInstructions());
         registration.setGender(request.getGender());
 
         registration = registrationRepository.save(registration);
@@ -81,6 +87,11 @@ public class RegistrationService {
             .toList();
     }
 
+    public List<Registration> searchByEdition(String search,PaymentStatus status,Long id) {
+        return registrationRepository.findByEventEditionId(id).stream()
+         .filter(r->status==null || r.getPaymentStatus()==status)
+         .filter(r->search==null || search.isBlank() || r.getPrimaryName().toLowerCase(java.util.Locale.ROOT).contains(search.toLowerCase(java.util.Locale.ROOT))).toList();
+    }
     public Registration getById(Long id) {
         return registrationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Registration not found"));

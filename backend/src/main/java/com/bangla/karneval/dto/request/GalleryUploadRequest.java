@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class GalleryUploadRequest {
     @NotNull
     private Integer eventYear;
+    private Long eventEditionId;
+    private Long eventVersion;
     private String       mediaType    = "IMAGE";
     private String       caption;
     private Boolean      isHighlight  = false;

@@ -1,9 +1,35 @@
 const API_BASE = '';
 
+// Match event names, not colour themes. Unknown events have no default artwork.
+function eventPosterUrl(config) {
+    const uploaded = safeWebUrl(config.posterPath);
+    if (uploaded) return uploaded;
+    const name = String(config.title || '').toLowerCase().trim()
+        .replace(/[-_]+/g, ' ').replace(/\s+/g, ' ')
+        .replace(/\s+\d{4}$/, '').trim();
+    const posters = {
+        'bangla karneval': 'bangla-karneval.svg',
+        'puja': 'puja.svg', 'durga puja': 'puja.svg',
+        'eid': 'Eid.svg', 'eid ul fitr': 'Eid.svg', 'eid ul adha': 'Eid.svg',
+        'bangla noboborsho': 'Bangla_Noboborsho.svg'
+    };
+    return Object.hasOwn(posters, name) ? '/assets/images/programmes/' + posters[name] : null;
+}
+
+function showEventPoster(image, config) {
+    if (!image) return;
+    const url = eventPosterUrl(config);
+    image.hidden = !url;
+    image.style.display = url ? '' : 'none';
+    if (url) image.src = url;
+    else image.removeAttribute('src');
+}
+
 let activeEventConfigPromise;
 function getActiveEventConfig(refresh = false) {
     if (refresh || !activeEventConfigPromise) {
-        activeEventConfigPromise = apiFetch('/api/config/current', {cache:'no-store'}).catch(error => {
+        const previewId = location.pathname.endsWith('/event_preview.html') ? new URLSearchParams(location.search).get('edition') : null;
+        activeEventConfigPromise = (previewId ? apiFetchWithAuth('/api/admin/editions/' + encodeURIComponent(previewId), {cache:'no-store'}) : apiFetch('/api/config/current', {cache:'no-store'})).catch(error => {
             activeEventConfigPromise = null; throw error;
         });
     }
@@ -15,7 +41,11 @@ async function updateEventYearLabels() {
         document.querySelectorAll('[data-event-year]').forEach(node => node.textContent = config.eventYear);
         const base = document.documentElement.dataset.baseTitle || document.title;
         document.documentElement.dataset.baseTitle = base;
-        document.title = `${base} ${config.eventYear}`;
+        document.title = location.pathname.endsWith('index.html') || location.pathname === '/' ? config.title + ' | Bangla Karneval e.V.' : base.replace('Bangla Karneval','Bangla Karneval e.V.');
+        document.querySelectorAll('[data-event-title]').forEach(node => node.textContent = config.title || ('Bangla Karneval '+config.eventYear));
+        const themes=['bangla-karneval','eid','puja','bangla-noboborsho','bbq','game'];
+        document.documentElement.dataset.theme=themes.includes(config.themeKey)?config.themeKey:'bangla-karneval';
+        if(/^#[0-9a-fA-F]{6}$/.test(config.accentColor||'')) document.documentElement.style.setProperty('--event-accent',config.accentColor);
     } catch (error) { console.warn('Active event year could not be loaded', error); }
 }
 document.addEventListener('DOMContentLoaded', updateEventYearLabels);

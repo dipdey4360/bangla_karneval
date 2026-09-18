@@ -11,6 +11,8 @@ import java.util.List;
 @Data
 public class GeneralRegistrationRequest {
     @NotNull private Integer eventYear;
+    private Long eventEditionId;
+    private Long eventVersion;
 
     @NotBlank
     private String primaryName;

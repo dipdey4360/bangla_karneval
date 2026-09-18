@@ -13,6 +13,17 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "event_config")
 public class EventConfig {
+    @Transient private Long eventEditionId;
+    @Transient private Integer legacyEventYear;
+    @Transient private String title;
+    @Transient private String programmeCode;
+    @Transient private String tagline;
+    @Transient private String themeKey;
+    @Transient private String accentColor;
+    @Transient private String posterPath;
+    @Transient private String paymentInstructions;
+    @Transient private Long version;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

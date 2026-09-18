@@ -46,11 +46,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadContactDetails() {
     try {
-        const config = await apiFetch('/api/config/current');
+        const config = await apiFetch('/api/organisation');
+        const event = await getActiveEventConfig();
         const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || ''; };
         set('contact-phone',    config.contactPhone);
         set('contact-email',    config.contactEmail);
-        set('contact-location', config.eventLocation);
+        set('contact-location', event.eventLocation);
 
         const phoneLink = document.getElementById('contact-phone-link');
         const emailLink = document.getElementById('contact-email-link');
@@ -59,8 +60,8 @@ async function loadContactDetails() {
 
         const fbLink = document.getElementById('contact-facebook');
         const igLink = document.getElementById('contact-instagram');
-        if (fbLink && config.contactFacebook)  fbLink.href = config.contactFacebook;
-        if (igLink && config.contactInstagram) igLink.href = config.contactInstagram;
+        if (fbLink && config.contactFacebook)  fbLink.href = safeWebUrl(config.contactFacebook) || '#';
+        if (igLink && config.contactInstagram) igLink.href = safeWebUrl(config.contactInstagram) || '#';
 
     } catch (e) { console.error('Failed to load contact details:', e); }
 }

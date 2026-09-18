@@ -34,6 +34,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @org.springframework.test.annotation.DirtiesContext(classMode=org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS)
 class MembershipIntegrationTest {
+    @org.springframework.test.context.DynamicPropertySource
+    static void isolatedSchema(org.springframework.test.context.DynamicPropertyRegistry registry) {
+        String url=IsolatedPostgres.newSchemaUrl();
+        registry.add("spring.datasource.url", () -> url);
+    }
     @Autowired MockMvc mvc;
     @Autowired ObjectMapper json;
     @Autowired MemberRepository members;

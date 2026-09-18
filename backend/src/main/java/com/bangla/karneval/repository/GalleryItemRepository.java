@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface GalleryItemRepository extends JpaRepository<GalleryItem, Long> {
+    java.util.List<GalleryItem> findByEventEditionIdOrderByDisplayOrderAsc(Long eventEditionId);
     List<GalleryItem> findByEventYearOrderByDisplayOrderAsc(Integer year);
     List<GalleryItem> findByEventYearAndIsHighlight(Integer year, Boolean isHighlight);
 

@@ -19,6 +19,7 @@ public class Event {
 
     @Column(nullable = false)
     private Integer eventYear;
+    private Long eventEditionId;
 
     @Column(length = 50)
     private String category; // DANCE, DRAMA, FOOD, CONCERT, GAMES, DRESS

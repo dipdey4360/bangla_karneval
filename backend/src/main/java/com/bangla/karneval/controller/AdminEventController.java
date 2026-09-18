@@ -17,10 +17,11 @@ public class AdminEventController {
 
     @Autowired private EventService eventService;
     @Autowired private com.bangla.karneval.service.ApplicationSettingsService settings;
+    @Autowired private com.bangla.karneval.service.ProgrammeService programmes;
 
     @GetMapping
-    public ResponseEntity<List<Event>> getAll(@RequestParam(required = false) Integer year) {
-        return ResponseEntity.ok(eventService.getByYear(year == null ? settings.activeYear() : year));
+    public ResponseEntity<List<Event>> getAll(@RequestParam(required = false) Integer year, @RequestParam(required = false) Long eventEditionId) {
+        return ResponseEntity.ok(eventService.getByEdition(programmes.resolve(eventEditionId,year)));
     }
 
     @PostMapping

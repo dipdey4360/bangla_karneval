@@ -38,7 +38,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ── Stats ─────────────────────────────────────────────────────────────────────
 async function loadDashboardStats() {
     try {
+        const selected=adminSelectedEdition;
         const stats = await apiFetchWithAuth('/api/admin/dashboard/stats' + adminYearQuery());
+        if(selected!==adminSelectedEdition)return;
         document.getElementById('stat-total').textContent   = stats.totalRegistrations || 0;
         document.getElementById('stat-paid').textContent    = stats.totalPaid          || 0;
         document.getElementById('stat-unpaid').textContent  = (stats.totalUnpaid || 0) + (stats.totalOverdue || 0);
@@ -83,11 +85,14 @@ function showTableSkeleton(tbodyId, cols = 9, rows = 5) {
 async function loadRegistrations(status = 'ALL', search = '') {
     showTableSkeleton('registrations-tbody', 9, 5);
     try {
+        const selected=adminSelectedEdition;
         const params = new URLSearchParams();
-        if (adminSelectedYear !== null) params.set("year", adminSelectedYear);
+        if (adminSelectedEdition !== null) params.set("eventEditionId", adminSelectedEdition);
         if (status !== 'ALL') params.set('status', status);
         if (search) params.set('search', search);
-        allRegistrations = await apiFetchWithAuth(`/api/admin/registrations?${params}`);
+        const loaded = await apiFetchWithAuth(`/api/admin/registrations?${params}`);
+        if(selected!==adminSelectedEdition)return;
+        allRegistrations=loaded || [];
         renderRegistrationTable(allRegistrations);
     } catch (e) { console.error('Registrations load failed:', e); }
 }
@@ -213,7 +218,10 @@ let allPerformers = [];
 async function loadPerformers() {
     showTableSkeleton('performers-tbody', 7, 5);
     try {
-        allPerformers = await apiFetchWithAuth('/api/admin/performers' + adminYearQuery()) || [];
+        const selected=adminSelectedEdition;
+        const loaded=await apiFetchWithAuth('/api/admin/performers' + adminYearQuery()) || [];
+        if(selected!==adminSelectedEdition)return;
+        allPerformers=loaded;
         const tbody   = document.getElementById('performers-tbody');
         if (!tbody) return;
         if (!allPerformers.length) {
@@ -475,7 +483,10 @@ async function submitReply() {
 async function loadEvents() {
     showTableSkeleton('events-tbody', 5, 4);
     try {
-        allEvents = await apiFetchWithAuth('/api/admin/events' + adminYearQuery()) || [];
+        const selected=adminSelectedEdition;
+        const loaded=await apiFetchWithAuth('/api/admin/events' + adminYearQuery()) || [];
+        if(selected!==adminSelectedEdition)return;
+        allEvents=loaded;
         renderEventTable(allEvents);
     } catch (e) { console.error('Events load failed:', e); }
 }
@@ -546,7 +557,8 @@ document.getElementById('event-form')?.addEventListener('submit', async (e) => {
         title:       document.getElementById('event-title').value.trim(),
         description: document.getElementById('event-description').value.trim(),
         isHighlight: document.getElementById('event-highlight').checked,
-        eventYear:   adminSelectedYear
+        eventYear:   adminSelectedYear,
+        eventEditionId: adminSelectedEdition
     };
     setLoading(btn, true);
     try {

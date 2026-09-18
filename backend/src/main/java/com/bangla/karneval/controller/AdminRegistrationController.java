@@ -29,15 +29,16 @@ public class AdminRegistrationController {
     @Autowired private RegistrationRepository  registrationRepository;
     @Autowired private PriceCalculationService priceCalculationService;
     @Autowired private com.bangla.karneval.service.ApplicationSettingsService settings;
+    @Autowired private com.bangla.karneval.service.ProgrammeService programmes;
 
     @GetMapping("/registrations")
     public ResponseEntity<List<Registration>> getRegistrations(
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) Integer year) {
+            @RequestParam(required = false) Integer year, @RequestParam(required = false) Long eventEditionId) {
         PaymentStatus ps = (status != null && !status.equalsIgnoreCase("ALL"))
                 ? PaymentStatus.valueOf(status) : null;
-        return ResponseEntity.ok(registrationService.searchRegistrations(search, ps, year == null ? settings.activeYear() : year));
+        return ResponseEntity.ok(registrationService.searchByEdition(search, ps, programmes.resolve(eventEditionId,year)));
     }
 
     @PutMapping("/registrations/{id}")
@@ -62,8 +63,8 @@ public class AdminRegistrationController {
     }
 
     @GetMapping("/registrations/export")
-    public ResponseEntity<byte[]> exportCsv(@RequestParam(required = false) Integer year) {
-        List<Registration> all = registrationRepository.findByEventYear(year == null ? settings.activeYear() : year);
+    public ResponseEntity<byte[]> exportCsv(@RequestParam(required = false) Integer year, @RequestParam(required = false) Long eventEditionId) {
+        List<Registration> all = registrationRepository.findByEventEditionId(programmes.resolve(eventEditionId,year));
         StringWriter sw = new StringWriter();
         PrintWriter  pw = new PrintWriter(sw);
 
@@ -99,13 +100,13 @@ public class AdminRegistrationController {
     }
 
     @GetMapping("/dashboard/stats")
-    public ResponseEntity<DashboardStatsResponse> getDashboardStats(@RequestParam(required = false) Integer year) {
-        int selectedYear = year == null ? settings.activeYear() : year;
-        List<Registration> all = registrationRepository.findByEventYear(selectedYear);
+    public ResponseEntity<DashboardStatsResponse> getDashboardStats(@RequestParam(required = false) Integer year, @RequestParam(required = false) Long eventEditionId) {
+        Long selectedEdition = programmes.resolve(eventEditionId,year);
+        List<Registration> all = registrationRepository.findByEventEditionId(selectedEdition);
         PriceCalculationService.AgeGroupStats ageStats =
                 priceCalculationService.getAgeGroupStats(all);
 
-        BigDecimal revenue = registrationRepository.sumRevenueByYear(selectedYear);
+        BigDecimal revenue = all.stream().filter(r->r.getPaymentStatus()==PaymentStatus.CONFIRMED).map(Registration::getCalculatedAmount).reduce(BigDecimal.ZERO,BigDecimal::add);
 
         DashboardStatsResponse stats = new DashboardStatsResponse(
                 (long) all.size(),

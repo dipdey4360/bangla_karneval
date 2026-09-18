@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/footer.css">
     <link rel="stylesheet" href="css/registration.css">
     <link rel="icon" href="assets/images/favicon.ico">
+<link rel="stylesheet" href="css/programmes.css?v=programmes-1">
 </head>
 <body>
 <div class="page-wrapper">
@@ -17,7 +18,7 @@
 
         <section class="registration-hero">
             <div class="container">
-                <h1>Register for Bangla Karneval <span data-event-year></span></h1>
+                <h1>Register for <span data-event-title>Bangla Karneval</span></h1>
                 <p>Secure your spot — children under 18 attend for free!</p>
             </div>
         </section>
@@ -110,76 +111,9 @@
                                 💳 Payment Method
                             </div>
                             <div class="payment-methods">
-                                <div class="payment-option" id="payment-option-paypal">
-                                    <input type="radio" name="paymentMethod"
-                                           id="pay-paypal" value="PAYPAL"
-                                           onchange="onPaymentMethodChange()">
-                                    <label for="pay-paypal"><span>🅿️</span> PayPal</label>
-                                    <!-- Expanded PayPal details -->
-                                    <div class="payment-details" id="paypal-details">
-                                        <div class="payment-info-box paypal-box">
-                                            <p><i class="fa-solid fa-circle-info"></i>
-                                                Send your payment to the following PayPal account:
-                                            </p>
-                                            <div class="payment-detail-row">
-                                                <span class="detail-label">PayPal ID</span>
-                                                <span class="detail-value">
-                                                    info@banglakarneval.com
-                                                    <button type="button" class="copy-btn"
-                                                            onclick="copyText('info@banglakarneval.com')">
-                                                        <i class="fa-solid fa-copy"></i>
-                                                    </button>
-                                                </span>
-                                            </div>
-                                            <div class="payment-detail-row">
-                                                <span class="detail-label">Reference</span>
-                                                <span class="detail-value" style="color:var(--text-secondary);font-size:13px">
-                                                    Use your reference code as note
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="payment-option" id="payment-option-bank">
-                                    <input type="radio" name="paymentMethod"
-                                           id="pay-bank" value="BANK_TRANSFER"
-                                           onchange="onPaymentMethodChange()">
-                                    <label for="pay-bank"><span>🏦</span> Bank Transfer</label>
-                                    <!-- Expanded Bank details -->
-                                    <div class="payment-details" id="bank-details">
-                                        <div class="payment-info-box bank-box">
-                                            <p><i class="fa-solid fa-circle-info"></i>
-                                                Transfer to the following bank account:
-                                            </p>
-                                            <div class="payment-detail-row">
-                                                <span class="detail-label">Account Holder</span>
-                                                <span class="detail-value">Bangla Karneval e.V.</span>
-                                            </div>
-                                            <div class="payment-detail-row">
-                                                <span class="detail-label">IBAN</span>
-                                                <span class="detail-value">
-                                                    DE12 3456 7890 1234 5678 90
-                                                    <button type="button" class="copy-btn"
-                                                            onclick="copyText('DE12345678901234567890')">
-                                                        <i class="fa-solid fa-copy"></i>
-                                                    </button>
-                                                </span>
-                                            </div>
-                                            <div class="payment-detail-row">
-                                                <span class="detail-label">BIC</span>
-                                                <span class="detail-value">DEUTDEDB</span>
-                                            </div>
-                                            <div class="payment-detail-row">
-                                                <span class="detail-label">Reference</span>
-                                                <span class="detail-value" style="color:var(--text-secondary);font-size:13px">
-                                                    Use your reference code as purpose
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+  <div class="payment-option"><input type="radio" name="paymentMethod" id="pay-paypal" value="PAYPAL" onchange="onPaymentMethodChange()"><label for="pay-paypal">PayPal</label><div class="payment-details" id="paypal-details"><p data-event-payment style="white-space:pre-wrap"></p></div></div>
+  <div class="payment-option"><input type="radio" name="paymentMethod" id="pay-bank" value="BANK_TRANSFER" onchange="onPaymentMethodChange()"><label for="pay-bank">Bank Transfer</label><div class="payment-details" id="bank-details"><p data-event-payment style="white-space:pre-wrap"></p></div></div>
+</div>
 
                             <button type="submit" class="btn btn-primary"
                                     style="width:100%;margin-top:var(--spacing-lg);
@@ -214,10 +148,10 @@
     </main>
     <div id="footer-container"></div>
 </div>
-<script src="js/common.js?v=active-year-1"></script>
-<script src="js/header.js?v=mobile-1"></script>
-<script src="js/footer.js?v=active-year-1"></script>
-<script src="js/registration.js?v=active-year-1"></script>
+<script src="js/common.js?v=programmes-1"></script>
+<script src="js/header.js?v=programmes-1"></script>
+<script src="js/footer.js?v=programmes-1"></script>
+<script src="js/registration.js?v=programmes-1"></script>
 <script>
     document.getElementById('primary-dob').max = new Date().toISOString().split('T')[0];
 </script>

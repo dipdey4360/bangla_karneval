@@ -16,10 +16,11 @@ public class AdminPerformerController {
 
     @Autowired private PerformerService performerService;
     @Autowired private com.bangla.karneval.service.ApplicationSettingsService settings;
+    @Autowired private com.bangla.karneval.service.ProgrammeService programmes;
 
     @GetMapping
-    public ResponseEntity<List<PerformerRegistration>> getAll(@RequestParam(required = false) Integer year) {
-        return ResponseEntity.ok(performerService.getAll(year == null ? settings.activeYear() : year));
+    public ResponseEntity<List<PerformerRegistration>> getAll(@RequestParam(required = false) Integer year, @RequestParam(required = false) Long eventEditionId) {
+        return ResponseEntity.ok(performerService.getByEdition(programmes.resolve(eventEditionId,year)));
     }
 
     @PutMapping("/{id}/status")

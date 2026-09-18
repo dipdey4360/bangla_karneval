@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 public class ApplicationSettings {
     @Id private Integer id = 1;
     @Column(nullable = false) private Integer activeEventYear;
+    private Long activeEventEditionId;
     @Column(columnDefinition = "TEXT") private String membershipBenefits;
     @Column(precision = 10, scale = 2) private BigDecimal membershipSingleFee;
     @Column(precision = 10, scale = 2) private BigDecimal membershipCoupleFee;

@@ -1,6 +1,9 @@
 let performerEventYear = null;
+let performerEditionId = null, performerEventVersion = null;
 document.addEventListener('DOMContentLoaded', () => {
-    getActiveEventConfig().then(config => { performerEventYear = config.eventYear; })
+    getActiveEventConfig().then(config => { if(config.performerEnabled===false){document.getElementById('performer-form').hidden=true;showAlert('performer-alert','Registration is currently closed for this event.','info');}
+        performerEventYear = config.eventYear;
+        performerEditionId=config.eventEditionId; performerEventVersion=config.version; })
         .catch(() => showAlert('performer-alert', 'Event details could not be loaded. Refresh before applying.', 'error'));
     document.getElementById('performer-form')
         ?.addEventListener('submit', async (e) => {
@@ -39,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const payload = {
                 eventYear: performerEventYear,
+                eventEditionId: performerEditionId, eventVersion: performerEventVersion,
                 name:                   document.getElementById('p-name').value.trim(),
                 email:                  document.getElementById('p-email').value.trim(),
                 phone:                  document.getElementById('p-phone').value.trim(),

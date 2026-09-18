@@ -14,13 +14,13 @@ public class EventConfigService {
 
     @Autowired private EventConfigRepository eventConfigRepository;
     @Autowired private ApplicationSettingsService settings;
+    @Autowired private ProgrammeService programmes;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     public EventConfig getCurrentYearConfig() {
-        return eventConfigRepository.findByEventYear(settings.activeYear())
-                .orElseThrow(() -> new RuntimeException("Event config not found"));
+        return programmes.current();
     }
 
     @Transactional
@@ -41,39 +41,15 @@ public class EventConfigService {
 
     /* ── Read methods — clear L1 cache first to avoid stale reads ── */
 
-    public boolean isPerformerEnabled() {
-        entityManager.clear();
-        return eventConfigRepository.findByEventYear(settings.activeYear())
-                .map(c -> Boolean.TRUE.equals(c.getPerformerEnabled()))
-                .orElse(true);
-    }
+    public boolean isPerformerEnabled() { return programmes.current().getPerformerEnabled(); }
 
-    public boolean isRegistrationEnabled() {
-        entityManager.clear();
-        return eventConfigRepository.findByEventYear(settings.activeYear())
-                .map(c -> Boolean.TRUE.equals(c.getRegistrationEnabled()))
-                .orElse(true);
-    }
+    public boolean isRegistrationEnabled() { return programmes.current().getRegistrationEnabled(); }
 
     /* ── Toggle methods — compute new value explicitly, never re-read ── */
 
     @Transactional
-    public boolean togglePerformerEnabled() {
-        EventConfig config = eventConfigRepository.findByEventYear(settings.activeYear())
-                .orElseThrow(() -> new RuntimeException("Config not found"));
-        boolean newValue = !Boolean.TRUE.equals(config.getPerformerEnabled());
-        config.setPerformerEnabled(newValue);
-        eventConfigRepository.saveAndFlush(config);
-        return newValue;
-    }
+    public boolean togglePerformerEnabled() { return programmes.toggle(true); }
 
     @Transactional
-    public boolean toggleRegistrationEnabled() {
-        EventConfig config = eventConfigRepository.findByEventYear(settings.activeYear())
-                .orElseThrow(() -> new RuntimeException("Config not found"));
-        boolean newValue = !Boolean.TRUE.equals(config.getRegistrationEnabled());
-        config.setRegistrationEnabled(newValue);
-        eventConfigRepository.saveAndFlush(config);
-        return newValue;
-    }
+    public boolean toggleRegistrationEnabled() { return programmes.toggle(false); }
 }

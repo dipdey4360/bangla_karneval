@@ -18,6 +18,7 @@ public class GalleryItem {
 
     @Column(nullable = false)
     private Integer eventYear;
+    private Long eventEditionId;
 
     @Column(length = 10)
     private String mediaType; // IMAGE, VIDEO

@@ -13,6 +13,7 @@ import java.util.List;
 
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
+    java.util.List<Registration> findByEventEditionId(Long eventEditionId);
 
     List<Registration> findByPaymentStatus(PaymentStatus status);
     List<Registration> findByEventYear(Integer year);

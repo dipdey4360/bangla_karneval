@@ -21,15 +21,16 @@ public class GalleryService {
 
     @Autowired private GalleryItemRepository galleryItemRepository;
     @Autowired private EventConfigRepository  eventConfigRepository;
+    @Autowired private ProgrammeService programmes;
 
     private static final String UPLOAD_DIR = "/app/static/assets/images/gallery/";
 
     public List<GalleryItem> getByYear(Integer year) {
-        return galleryItemRepository.findByEventYearOrderByDisplayOrderAsc(year);
+        return galleryItemRepository.findByEventEditionIdOrderByDisplayOrderAsc(programmes.legacyId(year));
     }
 
     public List<GalleryItem> getHighlights(Integer year) {
-        return galleryItemRepository.findByEventYearAndIsHighlight(year, true);
+        return getByYear(year).stream().filter(i->Boolean.TRUE.equals(i.getIsHighlight())).toList();
     }
 
     /* Years from event_config — used by ADMIN upload dropdown (valid years only) */
@@ -48,21 +49,15 @@ public class GalleryService {
     @Transactional
     public GalleryItem upload(GalleryUploadRequest request) throws IOException {
 
-        // Correct check — findByEventYear, not existsById
-        if (!eventConfigRepository.findByEventYear(request.getEventYear()).isPresent()) {
-            throw new IllegalArgumentException(
-                    "No event config found for year: " + request.getEventYear() +
-                            ". Please add this year in the Config tab first."
-            );
-        }
-
+        var edition=programmes.get(programmes.resolve(request.getEventEditionId(),request.getEventYear()));
         String fileUrl = request.getUrl();
         if (request.getFile() != null && !request.getFile().isEmpty()) {
-            fileUrl = saveFile(request.getFile(), request.getEventYear());
+            fileUrl = saveFile(request.getFile(), edition.getEventYear());
         }
 
         GalleryItem item = new GalleryItem();
-        item.setEventYear(request.getEventYear());
+        item.setEventYear(edition.getEventYear());
+        item.setEventEditionId(edition.getEventEditionId());
         item.setMediaType(request.getMediaType());
         item.setUrl(fileUrl);
         item.setCaption(request.getCaption());

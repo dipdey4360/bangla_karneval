@@ -29,6 +29,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureMockMvc
 @DirtiesContext(classMode=DirtiesContext.ClassMode.AFTER_CLASS)
 class ActiveYearIntegrationTest {
+    @org.springframework.test.context.DynamicPropertySource
+    static void isolatedSchema(org.springframework.test.context.DynamicPropertyRegistry registry) {
+        String url=IsolatedPostgres.newSchemaUrl();
+        registry.add("spring.datasource.url", () -> url);
+    }
     @Autowired MockMvc mvc;
     @Autowired EventConfigRepository configs;
     @Autowired RegistrationRepository registrations;

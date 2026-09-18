@@ -2,123 +2,26 @@
    GALLERY — gallery.js
    ══════════════════════════════════════════════════════════════ */
 
-let currentEventYear = null;
-
-document.addEventListener('DOMContentLoaded', async () => {
-    await initGallery();
-    setupLightbox();
-});
-
-/* ── Init — load config first to get current year ──────────── */
-async function initGallery() {
-    try {
-        // Get current event year from config
-        const config = await apiFetch('/api/config/current');
-        currentEventYear = config.eventYear;
-
-        // Update highlights section title
-        const titleEl = document.getElementById('highlights-title');
-        if (titleEl) titleEl.textContent = `${currentEventYear} Event Highlights`;
-
-        // Load highlights for current year
-        await loadHighlights(currentEventYear);
-
-        // Load every gallery year, including the current event year
-        await loadGalleryYearTabs();
-
-    } catch (e) {
-        console.error('Gallery init failed:', e);
-        document.getElementById('highlights-grid').innerHTML =
-            '<p class="gallery-empty">Failed to load gallery.</p>';
-    }
+let currentEventYear=null, galleryLoadId=0;
+document.addEventListener('DOMContentLoaded',async()=>{await initGallery();setupLightbox();});
+async function initGallery(){
+ try {
+ const c=await getActiveEventConfig(); currentEventYear=c.eventYear;
+ document.getElementById('highlights-title').textContent=c.title+' Highlights';
+ const items=await apiFetch('/api/editions/'+c.eventEditionId+'/gallery?highlight=true');
+ renderGallery(items,'highlights-grid','No highlights added for this event yet.');
+ const editions=await apiFetch('/api/editions'), tabs=document.getElementById('year-tabs'); tabs.replaceChildren();
+ for(const e of editions){const tab=contentNode('button',e.title,'year-tab');tab.type='button';tab.dataset.edition=e.eventEditionId;tab.addEventListener('click',()=>loadEditionGallery(e.eventEditionId));tabs.append(tab);}
+ await loadEditionGallery(c.eventEditionId);
+ }catch(e){document.getElementById('highlights-grid').textContent='Unable to load gallery. Please refresh.';}
+}
+async function loadEditionGallery(id){
+ const request=++galleryLoadId;
+ document.querySelectorAll('.year-tab').forEach(t=>t.classList.toggle('active',Number(t.dataset.edition)===Number(id)));
+ try{const items=await apiFetch('/api/editions/'+id+'/gallery'); if(request===galleryLoadId)renderGallery(items,'year-gallery-grid','No photos or videos uploaded for this event yet.');}
+ catch(e){if(request===galleryLoadId)document.getElementById('year-gallery-grid').textContent='Unable to load this event gallery.';}
 }
 
-/* ── Load highlights for current year ─────────────────────── */
-async function loadHighlights(year) {
-    const grid = document.getElementById('highlights-grid');
-    grid.innerHTML = `
-        <div class="gallery-item skeleton"></div>
-        <div class="gallery-item skeleton"></div>
-        <div class="gallery-item skeleton"></div>
-        <div class="gallery-item skeleton"></div>`;
-    try {
-        const items = await apiFetch(`/api/gallery/${year}?highlight=true`);
-        renderGallery(items, 'highlights-grid',
-            `No highlights added for ${year} yet.`);
-    } catch (e) {
-        console.error('Highlights load failed:', e);
-        grid.innerHTML = '<p class="gallery-empty">Failed to load highlights.</p>';
-    }
-}
-
-/* ── Load year tabs including the current year ────────── */
-async function loadGalleryYearTabs() {
-    const tabsContainer = document.getElementById('year-tabs');
-    const grid          = document.getElementById('year-gallery-grid');
-
-    try {
-        // Returns years that have actual images in gallery_items
-        const allYears     = await apiFetch('/api/gallery/years');
-        const galleryYears = [...new Set([Number(currentEventYear), ...allYears.map(Number)])]
-            .filter(Number.isInteger).sort((a,b) => b-a);
-
-        if (galleryYears.length === 0) {
-            tabsContainer.innerHTML = '<p class="gallery-empty" style="font-size:14px">No gallery years available.</p>';
-            grid.innerHTML          = '';
-            return;
-        }
-
-        // Build tabs
-        tabsContainer.replaceChildren();
-        galleryYears.forEach(year => {
-            const tab = contentNode('button', year, 'year-tab');
-            tab.type = 'button'; tab.dataset.year = year;
-            tabsContainer.append(tab);
-        });
-
-        // Attach click listeners
-        tabsContainer.querySelectorAll('.year-tab').forEach(tab => {
-            tab.addEventListener('click', () =>
-                loadYearGallery(parseInt(tab.dataset.year))
-            );
-        });
-
-        // Auto-load the current event year
-        await loadYearGallery(Number(currentEventYear));
-
-    } catch (e) {
-        console.error('Previous years load failed:', e);
-        tabsContainer.innerHTML = '<p class="gallery-empty">Failed to load years.</p>';
-    }
-}
-
-/* ── Load gallery for selected year ────────────────────────── */
-async function loadYearGallery(year) {
-    // Update active tab
-    document.querySelectorAll('.year-tab').forEach(t =>
-        t.classList.toggle('active', parseInt(t.dataset.year) === year)
-    );
-
-    const grid = document.getElementById('year-gallery-grid');
-    if (!grid) return;
-
-    grid.innerHTML = `
-        <div class="gallery-item skeleton"></div>
-        <div class="gallery-item skeleton"></div>
-        <div class="gallery-item skeleton"></div>
-        <div class="gallery-item skeleton"></div>`;
-
-    try {
-        const items = await apiFetch(`/api/gallery/${year}`);
-        renderGallery(items, 'year-gallery-grid',
-            `No photos or videos uploaded for ${year} yet.`);
-    } catch (e) {
-        console.error(`Gallery load failed for ${year}:`, e);
-        grid.innerHTML = '<p class="gallery-empty">Failed to load gallery.</p>';
-    }
-}
-
-/* ── Render gallery grid ────────────────────────────────────── */
 function renderGallery(items, containerId, emptyMessage = 'No images yet.') {
     const container = document.getElementById(containerId);
     if (!container) return;

@@ -56,6 +56,11 @@ public class Registration {
     private String referenceCode;
 
     private Integer eventYear;
+    private Long eventEditionId;
+    private String eventTitle;
+    private java.time.LocalDate eventDateSnapshot;
+    private String eventLocationSnapshot;
+    @jakarta.persistence.Column(columnDefinition="TEXT") private String paymentInstructionsSnapshot;
 
     private LocalDateTime registeredAt = LocalDateTime.now();
 

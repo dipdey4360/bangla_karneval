@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
+    java.util.List<Event> findByEventEditionId(Long eventEditionId);
     List<Event> findByEventYear(Integer year);
     List<Event> findByEventYearAndIsHighlight(Integer year, Boolean isHighlight);
 }

@@ -21,7 +21,8 @@ public class PerformerService {
 
     @Transactional
     public PerformerRegistration register(PerformerRegistrationRequest request) {
-        var config = settings.requireActiveYear(request.getEventYear());
+        var config = request.getEventEditionId()==null ? settings.requireActiveYear(request.getEventYear()) : settings.requireActiveEdition(request.getEventEditionId(),request.getEventYear(),request.getEventVersion());
+        if (Boolean.FALSE.equals(config.getPerformerEnabled())) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT,"Registration is closed for this event.");
         PerformerRegistration performer = new PerformerRegistration();
         performer.setName(request.getName());
         performer.setEmail(request.getEmail());
@@ -33,6 +34,11 @@ public class PerformerService {
         performer.setGroupMemberCount(1 + request.getGroupMembers().size());
         performer.setApprovalStatus("PENDING");
         performer.setEventYear(config.getEventYear());
+        performer.setEventEditionId(config.getEventEditionId());
+        performer.setEventTitle(config.getTitle());
+        performer.setEventDateSnapshot(config.getEventDate());
+        performer.setEventLocationSnapshot(config.getEventLocation());
+        performer.setPaymentInstructionsSnapshot(config.getPaymentInstructions());
 
         performer = performerRepository.save(performer);
 
@@ -50,6 +56,7 @@ public class PerformerService {
         return performer;
     }
 
+    public List<PerformerRegistration> getByEdition(Long id) { return performerRepository.findByEventEditionId(id); }
     public List<PerformerRegistration> getAll(int year){
         return performerRepository.findByEventYear(year);
     }
@@ -64,7 +71,7 @@ public class PerformerService {
                 .orElseThrow(() -> new RuntimeException("Performer not found"));
         p.setApprovalStatus(status);
         PerformerRegistration saved = performerRepository.save(p);
-        emailService.sendPerformerStatusEmail(saved.getEmail(), saved.getName(), status, adminNote, saved.getEventYear());
+        emailService.sendPerformerStatusEmail(saved, adminNote);
         return saved;
     }
 

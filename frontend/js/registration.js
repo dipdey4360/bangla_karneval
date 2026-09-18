@@ -1,6 +1,7 @@
 let participantCount = 0;
 let pricePerPerson   = 10;
 let registrationEventYear = null;
+let registrationEditionId = null, registrationEventVersion = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadPrice();
@@ -12,7 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadPrice() {
     try {
         const config   = await getActiveEventConfig();
+        document.querySelectorAll('[data-event-payment]').forEach(el=>el.textContent=config.paymentInstructions || 'Contact the organisers for payment details. Include your registration reference with your payment.');
+        if(config.registrationEnabled===false){document.getElementById('registration-form').hidden=true;showAlert('form-alert','Registration is currently closed for this event.','info');}
         registrationEventYear = config.eventYear;
+        registrationEditionId=config.eventEditionId; registrationEventVersion=config.version;
         pricePerPerson = Number(config.pricePerPerson ?? 10);
         document.getElementById('price-label').textContent = formatCurrency(pricePerPerson);
     } catch (e) { showAlert('form-alert', 'Event details could not be loaded. Refresh before registering.', 'error'); }
@@ -212,6 +216,7 @@ function setupForm() {
 
             const payload = {
                 eventYear: registrationEventYear,
+                eventEditionId: registrationEditionId, eventVersion: registrationEventVersion,
                 primaryName:            document.getElementById('primary-name').value.trim(),
                 email:                  document.getElementById('primary-email').value.trim(),
                 primaryDateOfBirth:     document.getElementById('primary-dob').value,

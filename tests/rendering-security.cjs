@@ -9,6 +9,7 @@ class Element {
 }
 const elements=new Map();const get=id=>{if(!elements.has(id))elements.set(id,new Element('div'));return elements.get(id);};
 const context={URL,console,document:{getElementById:get,createElement:tag=>new Element(tag),createTextNode:text=>({textContent:text}),addEventListener(){}},window:{location:{origin:'http://localhost:8084'},addEventListener(){}},Sortable:{create:()=>({destroy(){}})},localStorage:{getItem:()=>null}};
+context.location={pathname:'/index.html',search:''};
 vm.createContext(context);
 for(const file of ['common','admin_dashboard','admin_sponsors','home','footer'])vm.runInContext(fs.readFileSync(`frontend/js/${file}.js`,'utf8'),context);
 function all(node){return [node,...node.children.flatMap(n=>n.children?all(n):[n])];}
@@ -22,7 +23,7 @@ function all(node){return [node,...node.children.flatMap(n=>n.children?all(n):[n
  all(get('sponsor-list')).find(n=>n.title==='Delete').events.click();assert.equal(deleted[1],attack);
  context.apiFetch=async()=>[sponsor];await context.loadFooterSponsors();
  assert.equal(all(get('footer-sponsor-cards')).filter(n=>n.tag==='a'||n.tag==='img').length,0);
- context.apiFetch=async()=>[{title:attack,description:attack,iconUrl:'javascript:alert(1)'}];await context.loadEventCards();
+ context.apiFetch=async url=>url==='/api/config/current'?{eventEditionId:1,eventYear:2026}:[{title:attack,description:attack,iconUrl:'javascript:alert(1)'}];await context.loadEventCards();
  assert.equal(all(get('event-cards')).find(n=>n.tag==='h3').textContent,attack);
  assert.equal(context.safeWebUrl('JaVaScRiPt:alert(1)'),'');assert.equal(context.safeWebUrl('data:text/html,test'),'');
  assert.equal(context.safeWebUrl('/uploads/test.png'),'http://localhost:8084/uploads/test.png');

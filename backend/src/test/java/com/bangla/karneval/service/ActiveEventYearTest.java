@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ActiveEventYearTest {
     @Mock ApplicationSettingsRepository settings;
     @Mock EventConfigRepository configs;
+    @Mock ProgrammeService programmes;
     @InjectMocks ApplicationSettingsService service;
     @Test void upgradeCopiesMembershipSettingsOnlyOnce() {
         var old=new EventConfig(); old.setMembershipCoupleFee(new BigDecimal("39.00")); old.setMembershipBenefits("Existing benefit");
@@ -31,6 +32,9 @@ class ActiveEventYearTest {
     @Test void activatingExistingYearPreservesMembershipAndRejectsStaleForms() {
         var row=new ApplicationSettings(); row.setActiveEventYear(2026); row.setMembershipSingleFee(new BigDecimal("25.00"));
         var future=new EventConfig(); future.setEventYear(2027);
+        future.setLegacyEventYear(2027);
+        when(programmes.legacyId(2027)).thenReturn(7L);
+        when(programmes.get(7L)).thenReturn(future);
         when(settings.lockSettings()).thenReturn(Optional.of(row)); when(configs.findByEventYear(2027)).thenReturn(Optional.of(future));
         assertSame(future,service.activate(2027)); assertEquals(2027,row.getActiveEventYear());
         assertEquals(new BigDecimal("25.00"),row.getMembershipSingleFee());

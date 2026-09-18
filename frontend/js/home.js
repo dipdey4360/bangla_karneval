@@ -50,9 +50,7 @@ function initBurgerMenu() {
 /* ── Show/hide hero buttons based on admin config ──────────── */
 async function applyHeroButtonVisibility() {
     try {
-        const res = await fetch('/api/config/button-status');
-        if (!res.ok) return;
-        const { registrationEnabled, performerEnabled } = await res.json();
+        const { registrationEnabled, performerEnabled } = await getActiveEventConfig();
 
         // Hero "Register Now" button
         const registerBtn = document.getElementById('hero-register-btn');
@@ -72,6 +70,11 @@ async function applyHeroButtonVisibility() {
 async function loadEventConfig() {
     try {
         const config = await getActiveEventConfig();
+        const poster=document.querySelector('.hero-bg-img');
+        showEventPoster(poster, config);
+        const tagline=document.querySelector('.hero-tagline'); if(tagline) tagline.textContent=config.tagline || config.title;
+        const description=document.getElementById('event-description'); if(description) description.textContent=config.aboutText || '';
+        const venue=document.getElementById('event-venue'); if(venue) venue.textContent=config.eventLocation || '';
 
         const dateEl = document.getElementById('event-date');
         if (dateEl && config.eventDate) {
@@ -101,7 +104,7 @@ async function loadEventCards() {
 
     try {
         const config = await getActiveEventConfig();
-        const events = await apiFetch(`/api/events/${config.eventYear}`);
+        const events = await apiFetch(`/api/editions/${config.eventEditionId}/activities`);
         grid.innerHTML = '';
 
         if (!events || events.length === 0) {

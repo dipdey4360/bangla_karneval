@@ -23,7 +23,7 @@ public class EmailService {
     public void sendRegistrationConfirmation(Registration reg) {
         sendHtmlEmail(
             reg.getEmail(),
-            "🎉 Registration Confirmed — Bangla Karneval " + reg.getEventYear(),
+            "🎉 Registration Confirmed — " + emailTemplateUtil.eventTitle(reg),
             emailTemplateUtil.buildRegistrationConfirmationEmail(reg)
         );
     }
@@ -32,7 +32,7 @@ public class EmailService {
     public void sendPaymentConfirmation(Registration reg) {
         sendHtmlEmail(
             reg.getEmail(),
-            "✅ Payment Confirmed — Bangla Karneval " + reg.getEventYear(),
+            "✅ Payment Confirmed — " + emailTemplateUtil.eventTitle(reg),
             emailTemplateUtil.buildPaymentConfirmationEmail(reg)
         );
     }
@@ -41,7 +41,7 @@ public class EmailService {
     public void sendPaymentReminder(Registration reg) {
         sendHtmlEmail(
             reg.getEmail(),
-            "⏰ Payment Reminder — Bangla Karneval " + reg.getEventYear(),
+            "⏰ Payment Reminder — " + emailTemplateUtil.eventTitle(reg),
             emailTemplateUtil.buildPaymentReminderEmail(reg)
         );
     }
@@ -75,8 +75,8 @@ public class EmailService {
     @Async
     public void sendRegistrationStatusEmail(Registration reg, String adminNote) {
         String subject = reg.getPaymentStatus().name().equals("CONFIRMED")
-                ? "✅ Registration Confirmed — Bangla Karneval " + reg.getEventYear()
-                : "❌ Registration Update — Bangla Karneval " + reg.getEventYear();
+                ? "✅ Registration Confirmed — " + emailTemplateUtil.eventTitle(reg)
+                : "❌ Registration Update — " + emailTemplateUtil.eventTitle(reg);
         sendHtmlEmail(
                 reg.getEmail(),
                 subject,
@@ -84,6 +84,11 @@ public class EmailService {
         );
     }
 
+    @Async
+    public void sendPerformerStatusEmail(com.bangla.karneval.model.PerformerRegistration p,String note) {
+        String title=p.getEventTitle()==null?"Bangla Karneval "+p.getEventYear():p.getEventTitle();
+        sendHtmlEmail(p.getEmail(),"Performer application update — "+title,emailTemplateUtil.buildPerformerStatusEmail(p,note));
+    }
     // ── Performer status with admin note ─────────────────────────
     @Async
     public void sendPerformerStatusEmail(String toEmail, String name,

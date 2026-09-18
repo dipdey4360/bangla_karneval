@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface PerformerRegistrationRepository extends JpaRepository<PerformerRegistration, Long> {
+    java.util.List<PerformerRegistration> findByEventEditionId(Long eventEditionId);
     List<PerformerRegistration> findByEventYear(Integer year);
     List<PerformerRegistration> findByApprovalStatus(String status);
 }

@@ -81,9 +81,7 @@ function initHamburger() {
 ─────────────────────────────────────────────────────────────── */
 async function applyButtonVisibility() {
     try {
-        const res = await fetch('/api/config/button-status');
-        if (!res.ok) return;
-        const { registrationEnabled, performerEnabled } = await res.json();
+        const { registrationEnabled, performerEnabled } = await getActiveEventConfig();
 
         // ── Performer nav link ──────────────────────────────
         setNavItemVisible('performer', performerEnabled);

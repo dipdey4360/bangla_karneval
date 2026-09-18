@@ -1,54 +1,39 @@
-let adminSelectedYear = null;
-let adminYearsPromise;
-function updateManagedYearLabels() {
-    document.querySelectorAll('[data-managed-year]').forEach(node => node.textContent = adminSelectedYear ?? '');
+let adminSelectedYear=null, adminSelectedEdition=null, adminEditions=[], adminYearsPromise;
+function updateManagedYearLabels(){
+ const current=adminEditions.find(e=>e.eventEditionId===adminSelectedEdition);
+ adminSelectedYear=current?.eventYear ?? null;
+ document.querySelectorAll('[data-managed-year]').forEach(el=>el.textContent=adminSelectedYear??'');
+ document.querySelectorAll('[data-managed-title]').forEach(el=>el.textContent=current?.title??'');
 }
-async function ensureAdminYears(refresh = false) {
-    if (!refresh && adminYearsPromise) return adminYearsPromise;
-    adminYearsPromise = (async () => {
-        const [config, years] = await Promise.all([
-            getActiveEventConfig(refresh), apiFetchWithAuth('/api/admin/gallery/years', {cache:'no-store'})
-        ]);
-        if (!Array.isArray(years)) throw new Error('Please sign in again to load event years.');
-        const values = [...new Set(years.map(Number))].sort((a,b)=>b-a);
-        if (!values.includes(Number(config.eventYear))) values.unshift(Number(config.eventYear));
-        if (adminSelectedYear === null || !values.includes(adminSelectedYear)) adminSelectedYear = Number(config.eventYear);
-        for (const id of ['admin-year-filter','active-event-year']) {
-            const select = document.getElementById(id); select.replaceChildren();
-            values.forEach(year => {
-                const option = contentNode('option', `${year}${year === Number(config.eventYear) ? ' (active)' : ''}`);
-                option.value = year; select.append(option);
-            });
-            select.value = id === 'admin-year-filter' ? adminSelectedYear : config.eventYear;
-        }
-        document.getElementById('active-year-current').textContent = config.eventYear;
-        updateManagedYearLabels();
-        await updateEventYearLabels();
-        return adminSelectedYear;
-    })().catch(error => { adminYearsPromise=null; throw error; });
-    return adminYearsPromise;
+async function ensureAdminYears(refresh=false){
+ if(!refresh&&adminYearsPromise)return adminYearsPromise;
+ adminYearsPromise=(async()=>{
+ const [active,editions]=await Promise.all([getActiveEventConfig(refresh),apiFetchWithAuth('/api/admin/editions',{cache:'no-store'})]);
+ if(!Array.isArray(editions))throw Error('Please sign in again to load events.');
+ adminEditions=editions;
+ if(!editions.some(e=>e.eventEditionId===adminSelectedEdition))adminSelectedEdition=active.eventEditionId;
+ for(const id of ['admin-year-filter','active-event-year']){
+  const select=document.getElementById(id);select.replaceChildren();
+  for(const e of editions){const option=contentNode('option',e.title+(e.eventEditionId===active.eventEditionId?' (active)':''));option.value=e.eventEditionId;select.append(option);}
+  select.value=id==='admin-year-filter'?adminSelectedEdition:active.eventEditionId;
+ }
+ document.getElementById('active-year-current').textContent=active.title;
+ updateManagedYearLabels();return adminSelectedEdition;
+ })().catch(e=>{adminYearsPromise=null;throw e;});return adminYearsPromise;
 }
-function adminYearQuery() { return adminSelectedYear === null ? '' : `?year=${adminSelectedYear}`; }
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('admin-year-filter').addEventListener('change', async event => {
-        adminSelectedYear = Number(event.target.value);
-        updateManagedYearLabels();
-        await Promise.all([loadDashboardStats(), loadRegistrations(), loadPerformers(), loadEvents(), loadConfig()]);
-    });
-    document.getElementById('activate-event-year').addEventListener('click', async event => {
-        const button = event.currentTarget, message = document.getElementById('active-year-message');
-        button.disabled = true; message.textContent = 'Activating event year…';
-        try {
-            const year = Number(document.getElementById('active-event-year').value);
-            const saved = await apiFetchWithAuth('/api/admin/config/active-year', {
-                method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({eventYear:year})
-            });
-            if (!saved?.eventYear) throw new Error('The year change was not confirmed. Sign in again and retry.');
-            adminSelectedYear = Number(saved.eventYear);
-            await ensureAdminYears(true);
-            await Promise.all([loadConfig(),loadDashboardStats(),loadRegistrations(),loadPerformers(),loadEvents(),loadButtonVisibility(),loadGalleryYears()]);
-            message.textContent = `${saved.eventYear} is now active. Existing registrations and membership settings are unchanged.`;
-        } catch (error) { message.textContent = error.message; }
-        finally { button.disabled = false; }
-    });
+function adminYearQuery(){return adminSelectedEdition===null?'':'?eventEditionId='+adminSelectedEdition;}
+async function refreshManagedEvent(){await Promise.all([loadDashboardStats(),loadRegistrations(),loadPerformers(),loadEvents(),loadConfig(),loadGalleryYears()]);}
+document.addEventListener('DOMContentLoaded',()=>{
+ document.getElementById('admin-year-filter').addEventListener('change',async e=>{
+  adminSelectedEdition=Number(e.target.value);updateManagedYearLabels();
+  try{await refreshManagedEvent();}catch(err){showAlert('config-alert',err.message,'error');}
+ });
+ document.getElementById('activate-event-year').addEventListener('click',async e=>{
+  const id=Number(document.getElementById('active-event-year').value),edition=adminEditions.find(e=>e.eventEditionId===id);
+  if(!edition||!confirm('Make '+edition.title+' the public event? Visitors will see its theme and registration details.'))return;
+  const button=e.currentTarget,message=document.getElementById('active-year-message');button.disabled=true;message.textContent='Activating event…';
+  try{const saved=await apiFetchWithAuth('/api/admin/editions/'+id+'/activate',{method:'PUT'});if(!saved?.eventEditionId)throw Error('Activation was not confirmed. Sign in again.');
+   adminSelectedEdition=id;await ensureAdminYears(true);await refreshManagedEvent();message.textContent=saved.title+' is now active.';
+  }catch(err){message.textContent=err.message;}finally{button.disabled=false;}
+ });
 });
