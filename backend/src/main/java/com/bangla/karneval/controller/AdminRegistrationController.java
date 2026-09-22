@@ -53,7 +53,7 @@ public class AdminRegistrationController {
             @PathVariable Long id,
             @RequestParam String status) {
         registrationService.updatePaymentStatus(id, PaymentStatus.valueOf(status));
-        return ResponseEntity.ok(ApiResponse.ok("Payment status updated"));
+        return ResponseEntity.ok(ApiResponse.ok("Donation status updated"));
     }
 
     @DeleteMapping("/registrations/{id}")
@@ -69,7 +69,7 @@ public class AdminRegistrationController {
         PrintWriter  pw = new PrintWriter(sw);
 
         pw.println("Reference Code,Name,Email,Phone,Date of Birth,Age,Participants," +
-                "Amount,Payment Method,Payment Status,Address,Registered At");
+                "Amount,Donation Method,Donation Status,Address,Registered At");
 
         for (Registration r : all) {
             int age = 0;

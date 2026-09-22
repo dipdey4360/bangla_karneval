@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 dateOfBirth:            document.getElementById('p-dob').value || null,
                 address:                document.getElementById('p-address').value.trim(),
                 performanceType,
+                consent: document.getElementById('performer-consent').checked,
                 performanceDescription: document.getElementById('p-description').value.trim(),
                 groupMemberCount:       parseInt(document.getElementById('p-group-count').value) || 1,
                 groupMembers

@@ -29,8 +29,8 @@ public class MembershipEmailService {
         message.setSubject("Bangla Karneval — Membership " + (approved ? "approved" : "application update"));
         message.setText("Hello " + m.getName() + ",\n\n" + (approved
             ? "Your membership application has been approved. Welcome to Bangla Karneval!\n"
-            : "Your membership application has been rejected. Please contact the organisers regarding any payment already made.\n")
-            + "\nMembership: " + m.getMembershipType() + "\nAnnual fee: EUR " + m.getAnnualFee()
+            : "Your membership application has been rejected. Please contact the organisers regarding any donation already made.\n")
+            + "\nMembership: " + m.getMembershipType() + "\nAnnual donation: EUR " + m.getAnnualFee()
             + (m.getAdminNote() == null || m.getAdminNote().isBlank() ? "" : "\n\nMessage from the board:\n" + m.getAdminNote())
             + "\n\nKind regards,\nBangla Karneval");
         try { mail.send(message); m.setEmailDelivery(Member.Delivery.SENT); }

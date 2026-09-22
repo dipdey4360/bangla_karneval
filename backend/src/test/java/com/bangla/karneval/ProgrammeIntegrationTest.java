@@ -57,7 +57,7 @@ class ProgrammeIntegrationTest {
  }
  JsonNode create(Map<String,Object> r) throws Exception {return json.readTree(mvc.perform(post("/api/admin/editions").with(user("admin").roles("ADMIN")).contentType("application/json").content(json.writeValueAsString(r))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());}
  String registration(long id,long version) {return """
- {"eventEditionId":%d,"eventVersion":%d,"eventYear":2026,"primaryName":"Test attendee","email":"test@example.invalid","primaryDateOfBirth":"1990-01-01","paymentMethod":"BANK_TRANSFER","additionalParticipants":[]}
+ {"eventEditionId":%d,"eventVersion":%d,"eventYear":2026,"primaryName":"Test attendee","email":"test@example.invalid","primaryDateOfBirth":"1990-01-01","paymentMethod":"BANK_TRANSFER","additionalParticipants":[],"consent":true}
  """.formatted(id,version);}
  @Test void adminManagesThemesAndSameYearRecordsStaySeparate() throws Exception {
   var old=new EventConfig();old.setEventYear(2026);old.setEventDate(LocalDate.of(2026,5,15));old.setEventLocation("Original hall");old.setAboutText("Original event description");configs.save(old);
@@ -81,7 +81,7 @@ class ProgrammeIntegrationTest {
   mvc.perform(post("/api/register/general").contentType("application/json").content(registration(bangla,0))).andExpect(status().isConflict());
   mvc.perform(post("/api/register/general").contentType("application/json").content(registration(id,version).replace("\"eventEditionId\":"+id+",", ""))).andExpect(status().isConflict());
   mvc.perform(post("/api/register/general").contentType("application/json").content(registration(id,version))).andExpect(status().isOk());
-  mvc.perform(post("/api/register/performer").contentType("application/json").content("{\"eventEditionId\":"+id+",\"eventVersion\":"+version+",\"eventYear\":2026,\"name\":\"Artist\",\"email\":\"artist@example.invalid\",\"performanceType\":\"DANCE\",\"groupMembers\":[]}")).andExpect(status().isOk());
+  mvc.perform(post("/api/register/performer").contentType("application/json").content("{\"eventEditionId\":"+id+",\"eventVersion\":"+version+",\"eventYear\":2026,\"name\":\"Artist\",\"email\":\"artist@example.invalid\",\"performanceType\":\"DANCE\",\"groupMembers\":[],\"consent\":true}")).andExpect(status().isOk());
   mvc.perform(get("/api/admin/registrations?eventEditionId="+id).with(user("admin").roles("ADMIN"))).andExpect(jsonPath("$.length()").value(1));
   mvc.perform(get("/api/admin/registrations?eventEditionId="+bangla).with(user("admin").roles("ADMIN"))).andExpect(jsonPath("$.length()").value(0));
   mvc.perform(get("/api/admin/performers?eventEditionId="+id).with(user("admin").roles("ADMIN"))).andExpect(jsonPath("$.length()").value(1));

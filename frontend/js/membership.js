@@ -40,7 +40,7 @@
             grid.replaceChildren();
             const demoNames = ['Arif Rahman', 'Nadia Ahmed', 'Tanvir Hasan', 'Farhana Islam', 'Rafiq Chowdhury', 'Samira Akter', 'Imran Hossain', 'Nusrat Jahan', 'Sajid Karim', 'Mithila Roy'];
             if (!members.length) {
-                grid.append(element('p', 'Demo members — these sample names will be replaced by approved members.', 'membership-empty'));
+                grid.append(element('p', 'Sample names are shown until approved members are available.', 'membership-empty'));
             }
             const displayedMembers = members.length ? members : demoNames.map(name => ({name}));
             displayedMembers.forEach(m => grid.append(element('div', m.name, 'member-name-card')));

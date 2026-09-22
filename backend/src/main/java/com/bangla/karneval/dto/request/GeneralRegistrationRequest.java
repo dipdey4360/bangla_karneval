@@ -31,6 +31,10 @@ public class GeneralRegistrationRequest {
     @NotBlank
     private String paymentMethod;
 
+    @NotNull(message = "Data storage consent is required")
+    @AssertTrue(message = "Data storage consent is required")
+    private Boolean consent;
+
     @NotNull
     private List<@NotNull @Valid AdditionalParticipantRequest> additionalParticipants = new ArrayList<>();
 

@@ -16,6 +16,7 @@ import java.util.List;
 
 @Service
 public class RegistrationService {
+    public static final String CONSENT = "I consent to the storage and use of the submitted personal data to process and manage this event registration.";
 
     @Autowired private RegistrationRepository          registrationRepository;
     @Autowired private AdditionalParticipantRepository additionalParticipantRepository;
@@ -26,6 +27,8 @@ public class RegistrationService {
 
     @Transactional
     public RegistrationResponse registerParticipant(GeneralRegistrationRequest request) {
+        if (!Boolean.TRUE.equals(request.getConsent()))
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "Data storage consent is required");
         EventConfig config = request.getEventEditionId()==null ? settings.requireActiveYear(request.getEventYear()) : settings.requireActiveEdition(request.getEventEditionId(),request.getEventYear(),request.getEventVersion());
         if (Boolean.FALSE.equals(config.getRegistrationEnabled())) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT,"Registration is closed for this event.");
 
@@ -43,6 +46,8 @@ public class RegistrationService {
         String referenceCode = ReferenceCodeGenerator.generate(config.getEventYear());
 
         Registration registration = new Registration();
+        registration.setConsentAt(java.time.LocalDateTime.now());
+        registration.setConsentText(CONSENT);
         registration.setPrimaryName(request.getPrimaryName());
         registration.setEmail(request.getEmail());
         registration.setPrimaryDateOfBirth(request.getPrimaryDateOfBirth()); // ← DOB
@@ -76,7 +81,7 @@ public class RegistrationService {
 
         return new RegistrationResponse(
                 registration.getId(), totalAmount, referenceCode,
-                "Registration successful! Check your email for payment instructions."
+                "Registration successful! Check your email for donation instructions."
         );
     }
 

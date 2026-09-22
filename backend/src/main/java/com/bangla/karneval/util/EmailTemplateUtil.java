@@ -4,16 +4,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailTemplateUtil {
  public String eventTitle(Registration r) { return r.getEventTitle()==null?"Bangla Karneval"+(r.getEventYear()==null?"":" "+r.getEventYear()):r.getEventTitle(); }
- public String buildRegistrationConfirmationEmail(Registration r) { return registration(r,"Registration received","Your registration has been received. Please follow the payment instructions below."); }
- public String buildPaymentConfirmationEmail(Registration r) { return registration(r,"Payment confirmed","Your payment has been confirmed. We look forward to seeing you."); }
- public String buildPaymentReminderEmail(Registration r) { return registration(r,"Payment reminder","Your payment is still pending. Please complete your payment to confirm your place."); }
+ public String buildRegistrationConfirmationEmail(Registration r) { return registration(r,"Registration received","Your registration has been received. Please follow the donation instructions below."); }
+ public String buildPaymentConfirmationEmail(Registration r) { return registration(r,"Donation confirmed","Your donation has been confirmed. We look forward to seeing you."); }
+ public String buildPaymentReminderEmail(Registration r) { return registration(r,"Donation reminder","Your donation is still pending. Please complete your donation to confirm your place."); }
  public String buildRegistrationStatusEmail(Registration r,String note) { return registration(r,"Registration update","Status: "+r.getPaymentStatus()+"\n"+(note==null?"":note)); }
  private String registration(Registration r,String heading,String message) {
   return base(heading,"<p>Hello "+esc(r.getPrimaryName())+",</p><h2>"+esc(eventTitle(r))+"</h2><p>"+lines(message)+"</p>"
    +details(r.getEventDateSnapshot(),r.getEventLocationSnapshot())
    +"<p><strong>Reference:</strong> "+esc(r.getReferenceCode())+"<br><strong>Participants:</strong> "+r.getParticipantCount()
-   +"<br><strong>Amount:</strong> EUR "+r.getCalculatedAmount()+"<br><strong>Payment method:</strong> "+esc(String.valueOf(r.getPaymentMethod()))+"</p>"
-   +"<h3>Payment instructions</h3><p>"+lines(r.getPaymentInstructionsSnapshot()==null||r.getPaymentInstructionsSnapshot().isBlank()?"Contact the organisers for payment details. Include your registration reference with your payment.":r.getPaymentInstructionsSnapshot())+"</p>");
+   +"<br><strong>Donation:</strong> EUR "+r.getCalculatedAmount()+"<br><strong>Donation method:</strong> "+esc(String.valueOf(r.getPaymentMethod()))+"</p>"
+   +"<h3>Donation instructions</h3><p>"+lines(r.getPaymentInstructionsSnapshot()==null||r.getPaymentInstructionsSnapshot().isBlank()?"Contact the organisers for donation details. Include your registration reference with your donation.":r.getPaymentInstructionsSnapshot())+"</p>");
  }
  public String buildPerformerStatusEmail(String name,String status,String note,Integer year) { return performer(name,status,note,"Bangla Karneval "+year,null,null); }
  public String buildPerformerStatusEmail(PerformerRegistration p,String note) { return performer(p.getName(),p.getApprovalStatus(),note,p.getEventTitle()==null?"Bangla Karneval "+p.getEventYear():p.getEventTitle(),p.getEventDateSnapshot(),p.getEventLocationSnapshot()); }

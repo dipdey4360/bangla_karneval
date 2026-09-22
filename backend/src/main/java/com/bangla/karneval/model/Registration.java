@@ -64,6 +64,11 @@ public class Registration {
 
     private LocalDateTime registeredAt = LocalDateTime.now();
 
+    // Nullable for registrations submitted before consent recording was introduced.
+    private LocalDateTime consentAt;
+    @Column(length = 500)
+    private String consentText;
+
     @OneToMany(mappedBy = "registration", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<AdditionalParticipant> additionalParticipants = new ArrayList<>();

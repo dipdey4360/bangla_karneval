@@ -13,17 +13,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // ── Frontend validation before sending ────────────────────
         if (!payload.name || !payload.email || !payload.message) {
-            showAlert('contact-alert', '⚠️ Please fill in all fields.', 'error');
+            showAlert('contact-alert', 'Please complete all required fields.', 'error');
             setLoading(btn, false);
             return;
         }
         if (payload.message.length < 10) {
-            showAlert('contact-alert', '⚠️ Message must be at least 10 characters.', 'error');
+            showAlert('contact-alert', 'Please enter a message of at least 10 characters.', 'error');
             setLoading(btn, false);
             return;
         }
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
-            showAlert('contact-alert', '⚠️ Please enter a valid email address.', 'error');
+            showAlert('contact-alert', 'Please enter a valid email address.', 'error');
             setLoading(btn, false);
             return;
         }
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 headers: { 'Content-Type': 'application/json' },
                 body:    JSON.stringify(payload)
             });
-            showAlert('contact-alert', '✅ Message sent! We\'ll get back to you soon.', 'success');
+            showAlert('contact-alert', 'Your message has been sent. We will respond soon.', 'success');
             e.target.reset();
             setLoading(btn, false);
         } catch (err) {

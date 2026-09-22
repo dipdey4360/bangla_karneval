@@ -14,7 +14,7 @@ import java.util.*;
 
 @Service
 public class MembershipService {
-    public static final String CONSENT = "I give permission to store my submitted data to process and manage my membership. Public display of my name (and my partner's name for a couple membership) follows my selected name visibility preference.";
+    public static final String CONSENT = "I consent to the storage and use of the submitted personal data to manage my membership. Public display of members’ names follows my visibility preference.";
     public record DecisionEmail(Long memberId) {}
     public record PublicMember(String name) {}
     private final MemberRepository repository;
@@ -29,7 +29,7 @@ public class MembershipService {
             c.getMembershipBenefits() == null ? "Voting rights\nEligibility to become a board member\nDiscounts at all events" : c.getMembershipBenefits(),
             c.getMembershipSingleFee() == null ? new BigDecimal("25.00") : c.getMembershipSingleFee(),
             c.getMembershipCoupleFee() == null ? new BigDecimal("30.00") : c.getMembershipCoupleFee(),
-            c.getMembershipPaymentInstructions() == null ? "Please contact the organisers for bank transfer or PayPal details before paying. Include your name and ‘Membership’ as the payment reference." : c.getMembershipPaymentInstructions());
+            c.getMembershipPaymentInstructions() == null ? "Please contact the organisers for bank transfer or PayPal details before donating. Include your name and ‘Membership’ as the donation reference." : c.getMembershipPaymentInstructions());
     }
     @Transactional
     public MembershipSettingsRequest updateSettings(MembershipSettingsRequest request) {
@@ -44,7 +44,7 @@ public class MembershipService {
         if (request.listed() == null)
             throw new ResponseStatusException(BAD_REQUEST, "Please choose whether to display your name publicly");
         if (!Boolean.TRUE.equals(request.consent()) || !Boolean.TRUE.equals(request.paymentDeclared()))
-            throw new ResponseStatusException(BAD_REQUEST, "Consent and payment declaration are required");
+            throw new ResponseStatusException(BAD_REQUEST, "Consent and donation declaration are required");
         if (request.membershipType() == Member.Type.COUPLE && (request.partnerName() == null || request.partnerName().isBlank()))
             throw new ResponseStatusException(BAD_REQUEST, "Please enter your partner's name for couple membership");
         if (request.membershipType() == Member.Type.COUPLE && (request.partnerDateOfBirth() == null
@@ -87,7 +87,7 @@ public class MembershipService {
         Member m = locked(id);
         if (m.getStatus() == request.status()) return m; // Repeated clicks do not send duplicate emails.
         if (request.status() == Member.Status.APPROVED && !request.paymentVerified())
-            throw new ResponseStatusException(BAD_REQUEST, "Verify payment before approving membership");
+            throw new ResponseStatusException(BAD_REQUEST, "Verify the donation before approving membership");
         m.setStatus(request.status()); m.setPaymentVerified(request.paymentVerified());
         m.setAdminNote(request.adminNote()); m.setReviewedAt(LocalDateTime.now());
         m.setEmailDelivery(Member.Delivery.PENDING);

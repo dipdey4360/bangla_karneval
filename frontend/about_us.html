@@ -32,8 +32,8 @@
                             <h2>Our Story</h2>
                             <p id="about-text">Bangla Karneval e.V. celebrates Bengali culture with traditional performances,
                                 food, and community in the heart of Germany.</p>
-                            <p>Every year we bring together Bengali families from across North Rhine-Westphalia to
-                                celebrate our shared heritage, language, and traditions.</p>
+                            <p>We bring Bengali families across North Rhine-Westphalia together to
+                                celebrate our heritage, language, and traditions.</p>
                             <div style="margin-top:var(--spacing-lg)">
                                 <h3>Current event: <span data-event-title></span></h3><p>📅 <strong>Event Date:</strong> <span id="about-event-date">Loading...</span></p>
                                 <p>📍 <strong>Location:</strong> <span id="about-event-location">Loading...</span></p>
@@ -50,7 +50,7 @@
 
             <section class="board-section" aria-labelledby="board-heading">
                 <div class="container">
-                    <h2 class="section-title" id="board-heading">Our Board Members</h2>
+                    <h2 class="section-title" id="board-heading">Our Board</h2>
                     <p class="membership-intro">Meet the people helping our community grow.</p>
                     <div id="board-grid" class="board-grid" aria-live="polite"><p>Loading board members…</p></div>
                 </div>
@@ -64,8 +64,8 @@
                         <h3>Benefits of Membership</h3>
                         <ul id="membership-benefits-list"></ul>
                         <div class="membership-prices">
-                            <p><strong id="single-fee">€25.00</strong> / year <span>Single membership</span></p>
-                            <p><strong id="couple-fee">€30.00</strong> / year <span>Couple membership</span></p>
+                            <p><strong id="single-fee">€25.00</strong> / year <span>Single membership donation</span></p>
+                            <p><strong id="couple-fee">€30.00</strong> / year <span>Couple membership donation</span></p>
                         </div>
                         <button type="button" class="btn btn-primary" id="membership-apply" disabled>Apply for Membership</button>
                         <p id="membership-settings-message" role="status">Loading membership details…</p>
@@ -89,7 +89,7 @@
                         </div>
                         <div class="stat-item">
                             <div class="stat-number">20+</div>
-                            <div class="stat-label">Volunteer Team Members</div>
+                            <div class="stat-label">Volunteers</div>
                         </div>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
             <h2 id="membership-dialog-title">Apply for Membership</h2>
             <button type="button" class="membership-close" id="membership-close" aria-label="Close membership form">×</button>
         </div>
-        <p>Submit your details for board review. We will email you with the decision.</p>
+        <p>Apply for board review. We will email you the decision.</p>
         <form id="membership-form">
             <div class="membership-form-grid">
                 <div class="form-group"><label class="form-label" for="m-name">Full name *</label><input class="form-input" id="m-name" name="name" maxlength="100" autocomplete="name" required></div>
@@ -125,12 +125,12 @@
                 </div>
                 <div class="form-group"><label class="form-label" for="m-partner-address">Partner’s address *</label><textarea class="form-textarea" id="m-partner-address" name="partnerAddress" maxlength="500" rows="2" autocomplete="section-partner street-address" required></textarea></div>
             </fieldset>
-            <p class="membership-fee-line">Annual membership fee: <strong id="m-fee"></strong></p>
+            <p class="membership-fee-line">Annual membership donation: <strong id="m-fee"></strong></p>
             <p id="m-payment-instructions" class="membership-payment-instructions"></p>
-            <div class="form-group"><label class="form-label" for="m-payment">Payment method used *</label><select class="form-select" id="m-payment" name="paymentMethod" required><option value="">Select a payment method</option><option value="BANK_TRANSFER">Bank transfer</option><option value="PAYPAL">PayPal</option></select></div>
-            <label class="membership-check"><input type="checkbox" id="m-paid" required><span>I have paid the membership fee using the selected method. The admin will verify my payment.</span></label>
-            <div class="form-group"><label class="form-label" for="m-listed">Name visibility *</label><select class="form-select" id="m-listed" name="listed" required aria-describedby="m-listed-help"><option value="">Select an option</option><option value="false">I do not want to show my name</option><option value="true">I want to show my name</option></select><p id="m-listed-help">This controls the public member list after approval. For couple membership, your choice applies to both partners’ names.</p></div>
-            <label class="membership-check"><input type="checkbox" id="m-consent" required><span>I give permission to store my submitted data to process and manage my membership. Public display of my name (and my partner’s name for a couple membership) follows my selected name visibility preference. *</span></label>
+            <div class="form-group"><label class="form-label" for="m-payment">Donation method used *</label><select class="form-select" id="m-payment" name="paymentMethod" required><option value="">Select a donation method</option><option value="BANK_TRANSFER">Bank transfer</option><option value="PAYPAL">PayPal</option></select></div>
+            <label class="membership-check"><input type="checkbox" id="m-paid" required><span>I have made the membership donation using the selected method, subject to verification.</span></label>
+            <div class="form-group"><label class="form-label" for="m-listed">Name visibility *</label><select class="form-select" id="m-listed" name="listed" required aria-describedby="m-listed-help"><option value="">Select an option</option><option value="false">Keep my name private</option><option value="true">Display my name publicly</option></select><p id="m-listed-help">Applies to the public member list after approval, including both partners for couple memberships.</p></div>
+            <label class="membership-check"><input type="checkbox" id="m-consent" required><span>I consent to the storage and use of the submitted personal data to manage my membership. Public display of members’ names follows my visibility preference. *</span></label>
             <div id="membership-form-message" role="status" aria-live="polite"></div>
             <button type="submit" class="btn btn-primary" id="membership-submit">Submit application</button>
         </form>
@@ -139,7 +139,7 @@
     <script src="js/header.js?v=programmes-1"></script>
     <script src="js/footer.js?v=programmes-1"></script>
     <script src="js/about.js?v=programmes-1"></script>
-    <script src="js/membership.js?v=programmes-1"></script>
+    <script src="js/membership.js?v=donation-1"></script>
 </body>
 
 </html>

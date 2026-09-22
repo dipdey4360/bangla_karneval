@@ -43,10 +43,10 @@ class ActiveYearIntegrationTest {
     @MockBean EmailService oldEmail;
     @MockBean PaymentReminderScheduler scheduler;
     String registration(int year) { return """
-        {"eventYear":%d,"primaryName":"Test","email":"test@example.invalid","primaryDateOfBirth":"1990-01-01","paymentMethod":"PAYPAL","additionalParticipants":[]}
+        {"eventYear":%d,"primaryName":"Test","email":"test@example.invalid","primaryDateOfBirth":"1990-01-01","paymentMethod":"PAYPAL","additionalParticipants":[],"consent":true}
         """.formatted(year); }
     String performer(int year) { return """
-        {"eventYear":%d,"name":"Performer","email":"test@example.invalid","performanceType":"DANCE","groupMembers":[]}
+        {"eventYear":%d,"name":"Performer","email":"test@example.invalid","performanceType":"DANCE","groupMembers":[],"consent":true}
         """.formatted(year); }
     @Test void switchYearPersistsAndLeavesHistoricalRecordsAndMembershipUntouched() throws Exception {
         for(int year:new int[]{2026,2027}) {var c=new EventConfig(); c.setEventYear(year); c.setPricePerPerson(new BigDecimal(year==2026?"10.00":"15.00")); configs.save(c);}

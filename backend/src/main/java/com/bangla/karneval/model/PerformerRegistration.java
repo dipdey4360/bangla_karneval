@@ -44,4 +44,9 @@ public class PerformerRegistration {
     @jakarta.persistence.Column(columnDefinition="TEXT") private String paymentInstructionsSnapshot;
 
     private LocalDateTime registeredAt = LocalDateTime.now();
+
+    // Nullable for applications submitted before consent recording was introduced.
+    private LocalDateTime consentAt;
+    @Column(length = 500)
+    private String consentText;
 }

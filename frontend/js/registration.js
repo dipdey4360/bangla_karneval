@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadPrice() {
     try {
         const config   = await getActiveEventConfig();
-        document.querySelectorAll('[data-event-payment]').forEach(el=>el.textContent=config.paymentInstructions || 'Contact the organisers for payment details. Include your registration reference with your payment.');
+        document.querySelectorAll('[data-event-payment]').forEach(el=>el.textContent=config.paymentInstructions || 'Contact the organisers for donation details. Include your registration reference with your donation.');
         if(config.registrationEnabled===false){document.getElementById('registration-form').hidden=true;showAlert('form-alert','Registration is currently closed for this event.','info');}
         registrationEventYear = config.eventYear;
         registrationEditionId=config.eventEditionId; registrationEventVersion=config.version;
@@ -43,7 +43,7 @@ function onPrimaryDobChange() {
     updatePriceSummary();
 }
 
-// ── Payment method expand/collapse ────────────────────────────────────────────
+// ── Donation method expand/collapse ────────────────────────────────────────────
 function onPaymentMethodChange() {
     document.getElementById('paypal-details').style.display = 'none';
     document.getElementById('bank-details').style.display   = 'none';
@@ -106,7 +106,7 @@ function addParticipant() {
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">Relation</label>
+                <label class="form-label">Relationship</label>
                 <select class="form-select participant-relation">
                     <option value="">— Select —</option>
                     <option value="FAMILY">Family Member</option>
@@ -179,6 +179,7 @@ function setupForm() {
     document.getElementById('registration-form')
         ?.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!e.target.reportValidity()) return;
             if (registrationEventYear === null) { showAlert('form-alert', 'Refresh the page to load the event year before registering.', 'error'); return; }
             const btn = e.target.querySelector('[type="submit"]');
             setLoading(btn, true);
@@ -200,7 +201,7 @@ function setupForm() {
             });
 
             if (!valid) {
-                showAlert('form-alert', 'Please fill in all participant details.', 'error');
+                showAlert('form-alert', 'Please enter a name and date of birth for each participant.', 'error');
                 setLoading(btn, false);
                 return;
             }
@@ -209,7 +210,7 @@ function setupForm() {
                 'input[name="paymentMethod"]:checked'
             )?.value;
             if (!paymentMethod) {
-                showAlert('form-alert', 'Please select a payment method.', 'error');
+                showAlert('form-alert', 'Please select a donation method.', 'error');
                 setLoading(btn, false);
                 return;
             }
@@ -224,6 +225,7 @@ function setupForm() {
                 phone:                  document.getElementById('primary-phone').value.trim(),
                 address:                document.getElementById('primary-address').value.trim(),
                 paymentMethod,
+                consent: document.getElementById('registration-consent').checked,
                 additionalParticipants
             };
 
@@ -240,7 +242,7 @@ function setupForm() {
                 success.classList.add('show');
                 document.getElementById('success-ref-code').textContent  = data.referenceCode;
                 document.getElementById('success-amount').textContent    = formatCurrency(data.totalAmount);
-                document.getElementById('success-payment').textContent   = paymentMethod.replace('_', ' ');
+                document.getElementById('success-payment').textContent   = paymentMethod === 'PAYPAL' ? 'PayPal' : 'Bank transfer';
                 success.scrollIntoView({ behavior: 'smooth' });
 
             } catch (err) {

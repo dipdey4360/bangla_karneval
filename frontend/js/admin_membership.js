@@ -110,8 +110,8 @@
         reviewingId=m.id;
         const details=byId('membership-review-details'); details.replaceChildren();
         const fields={Name:m.name,Partner:m.partnerName,'Partner date of birth':m.partnerDateOfBirth,'Partner address':m.partnerAddress,'Partner phone':m.partnerPhone,'Partner email':m.partnerEmail,'Date of birth':m.dateOfBirth,Address:m.address,Phone:m.phone,Email:m.email,
-            Membership:m.membershipType,'Annual fee':formatCurrency(m.annualFee),'Payment method':m.paymentMethod,
-            'Applicant reports paid':m.paymentDeclared?'Yes':'No','Payment verified':m.paymentVerified?'Yes':'No',
+            Membership:m.membershipType,'Annual donation':formatCurrency(m.annualFee),'Donation method':m.paymentMethod,
+            'Applicant reports donation sent':m.paymentDeclared?'Yes':'No','Donation verified':m.paymentVerified?'Yes':'No',
             'Public name visibility':m.listed?'Show name(s) after approval':'Keep name(s) private',
             'Consent recorded':formatDateTime(m.consentAt),'Consent wording':m.consentText,Status:m.status,'Previous admin note':m.adminNote};
         Object.entries(fields).forEach(([key,value])=> { if(value) { const row=node('div',undefined,'membership-detail'); row.append(node('strong',key),node('span',value)); details.append(row); } });
@@ -161,7 +161,7 @@
         byId('membership-review-form').addEventListener('submit',async e=> {
             e.preventDefault();
             if (byId('membership-decision').value === 'APPROVED' && !byId('membership-payment-verified').checked) {
-                byId('membership-review-message').textContent = 'Approval has not been saved. Verify the payment, tick the payment checkbox, then save again.';
+                byId('membership-review-message').textContent = 'Approval has not been saved. Verify the donation, tick the donation checkbox, then save again.';
                 byId('membership-payment-verified').focus();
                 return;
             }

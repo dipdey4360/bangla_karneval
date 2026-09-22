@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS registrations (
     admin_note            TEXT,                          -- ← ADDED (was missing)
     event_year            INT,
     registered_at         TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+    consent_at            TIMESTAMP,
+    consent_text          VARCHAR(500),
     FOREIGN KEY (event_year) REFERENCES event_config(event_year)
     );
 
@@ -81,6 +83,8 @@ CREATE TABLE IF NOT EXISTS performer_registrations (
     admin_note              TEXT,                        -- ← ADDED (was missing)
     event_year              INT,
     registered_at           TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+    consent_at              TIMESTAMP,
+    consent_text            VARCHAR(500),
     FOREIGN KEY (event_year) REFERENCES event_config(event_year)
     );
 

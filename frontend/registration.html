@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/common.css?v=mobile-1">
     <link rel="stylesheet" href="css/header.css?v=mobile-1">
     <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/registration.css">
+    <link rel="stylesheet" href="css/registration.css?v=consent-1">
     <link rel="icon" href="assets/images/favicon.ico">
 <link rel="stylesheet" href="css/programmes.css?v=programmes-1">
 </head>
@@ -19,7 +19,7 @@
         <section class="registration-hero">
             <div class="container">
                 <h1>Register for <span data-event-title>Bangla Karneval</span></h1>
-                <p>Secure your spot — children under 18 attend for free!</p>
+                <p>Register yourself and your guests. Additional participants under 18 attend free.</p>
             </div>
         </section>
 
@@ -30,11 +30,11 @@
                 <!-- Success overlay -->
                 <div class="success-overlay" id="success-overlay">
                     <div class="success-icon">🎉</div>
-                    <h2>Registration Successful!</h2>
-                    <p>Check your email for payment instructions.</p>
+                    <h2>Registration Complete</h2>
+                    <p>Check your email for donation instructions.</p>
                     <div class="reference-code-box" id="success-ref-code"></div>
-                    <p><strong>Total Amount:</strong> <span id="success-amount"></span></p>
-                    <p><strong>Payment Method:</strong> <span id="success-payment"></span></p>
+                    <p><strong>Total Donation:</strong> <span id="success-amount"></span></p>
+                    <p><strong>Donation Method:</strong> <span id="success-payment"></span></p>
                     <a href="index.html" class="btn btn-primary mt-3">Back to Home</a>
                 </div>
 
@@ -88,7 +88,7 @@
                                 <div class="form-group">
                                     <label class="form-label" for="primary-address">Address</label>
                                     <input type="text" id="primary-address" class="form-input"
-                                           placeholder="City, Country">
+                                           placeholder="City, country">
                                 </div>
                             </div>
 
@@ -97,8 +97,8 @@
                                 👨‍👩‍👧 Additional Participants
                             </div>
                             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:var(--spacing-md)">
-                                Children under 18 are <strong>free</strong>.
-                                Adults pay <strong id="price-label">€10.00</strong> each.
+                                Children under 18 attend <strong>free</strong>.
+                                Donation per adult: <strong id="price-label">€10.00</strong>.
                             </p>
                             <div id="additional-participants-container"></div>
                             <button type="button" id="add-participant-btn"
@@ -106,14 +106,19 @@
                                 + Add Participant
                             </button>
 
-                            <!-- Payment method -->
+                            <!-- Donation method -->
                             <div class="form-section-title" style="margin-top:var(--spacing-xl)">
-                                💳 Payment Method
+                                💳 Donation Method
                             </div>
                             <div class="payment-methods">
   <div class="payment-option"><input type="radio" name="paymentMethod" id="pay-paypal" value="PAYPAL" onchange="onPaymentMethodChange()"><label for="pay-paypal">PayPal</label><div class="payment-details" id="paypal-details"><p data-event-payment style="white-space:pre-wrap"></p></div></div>
   <div class="payment-option"><input type="radio" name="paymentMethod" id="pay-bank" value="BANK_TRANSFER" onchange="onPaymentMethodChange()"><label for="pay-bank">Bank Transfer</label><div class="payment-details" id="bank-details"><p data-event-payment style="white-space:pre-wrap"></p></div></div>
 </div>
+
+                            <label class="registration-check" for="registration-consent">
+                                <input type="checkbox" id="registration-consent" name="consent" required>
+                                <span>I consent to the storage and use of the submitted personal data to process and manage this event registration. *</span>
+                            </label>
 
                             <button type="submit" class="btn btn-primary"
                                     style="width:100%;margin-top:var(--spacing-lg);
@@ -126,7 +131,7 @@
 
                     <!-- Price summary -->
                     <div class="price-summary" id="price-summary-card">
-                        <h3>💰 Price Summary</h3>
+                        <h3>💰 Donation Summary</h3>
                         <div id="price-summary-body">
                             <div class="price-row">
                                 <span>Primary registrant</span>
@@ -134,11 +139,12 @@
                             </div>
                         </div>
                         <div class="price-row total">
-                            <span>Total Amount</span>
+                            <span>Total Donation</span>
                             <span id="total-amount">€10.00</span>
                         </div>
                         <p style="font-size:12px;color:var(--text-secondary);margin-top:var(--spacing-md)">
-                            Payment instructions will be sent to your email after registration.
+                            The donation amount for the primary registrant applies regardless of age.
+                            Donation instructions will be emailed after registration.
                         </p>
                     </div>
                 </div>
@@ -151,7 +157,7 @@
 <script src="js/common.js?v=programmes-1"></script>
 <script src="js/header.js?v=programmes-1"></script>
 <script src="js/footer.js?v=programmes-1"></script>
-<script src="js/registration.js?v=programmes-1"></script>
+<script src="js/registration.js?v=donation-1"></script>
 <script>
     document.getElementById('primary-dob').max = new Date().toISOString().split('T')[0];
 </script>

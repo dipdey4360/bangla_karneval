@@ -7,6 +7,46 @@ VALUES (
     'ADMIN'
 ) ON CONFLICT (email) DO NOTHING;
 
+INSERT INTO admin_users (name, email, password_hash, role)
+VALUES (
+           'G M Mahmudul Hasan',
+           'hasanbd@live.com',
+           crypt('1234abcd', gen_salt('bf', 12)),
+           'ADMIN'
+       ) ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO admin_users (name, email, password_hash, role)
+VALUES (
+           'Prithiwi Lahiri',
+           'lahiriprithwi@gmail.com',
+           crypt('1234abcd', gen_salt('bf', 12)),
+           'ADMIN'
+       ) ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO admin_users (name, email, password_hash, role)
+VALUES (
+           'Turnab Islam',
+           'turnabislam@gmail.com',
+           crypt('1234abcd', gen_salt('bf', 12)),
+           'ADMIN'
+       ) ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO admin_users (name, email, password_hash, role)
+VALUES (
+           'Sushmita Majumdar',
+           'sushm1t4@gmail.com',
+           crypt('1234abcd', gen_salt('bf', 12)),
+           'ADMIN'
+       ) ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO admin_users (name, email, password_hash, role)
+VALUES (
+           'Bikram Mukherjee',
+           'Biks.mukherjee@gmail.com',
+           crypt('1234abcd', gen_salt('bf', 12)),
+           'ADMIN'
+       ) ON CONFLICT (email) DO NOTHING;
+
 -- Event config for 2026
 INSERT INTO event_config (
     event_year, price_per_person, event_date, event_location,

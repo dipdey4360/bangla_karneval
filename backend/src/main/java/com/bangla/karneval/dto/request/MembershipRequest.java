@@ -17,7 +17,7 @@ public record MembershipRequest(
     @NotBlank @Email @Size(max = 150) String email,
     @NotNull Member.Type membershipType,
     @NotNull PaymentMethod paymentMethod,
-    @NotNull @AssertTrue(message = "Please confirm you have paid the membership fee") Boolean paymentDeclared,
+    @NotNull @AssertTrue(message = "Please confirm you have made the membership donation") Boolean paymentDeclared,
     @NotNull @AssertTrue(message = "Consent is required to submit an application") Boolean consent,
     @NotNull(message = "Please choose whether to display your name publicly") Boolean listed
 ) {}

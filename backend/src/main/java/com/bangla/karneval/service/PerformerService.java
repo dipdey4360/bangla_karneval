@@ -13,6 +13,7 @@ import java.util.List;
 
 @Service
 public class PerformerService {
+    public static final String CONSENT = "I consent to the storage and use of the submitted personal data to process and manage this performer application.";
 
     @Autowired private PerformerRegistrationRepository performerRepository;
     @Autowired private PerformerGroupMemberRepository  groupMemberRepository;
@@ -21,9 +22,13 @@ public class PerformerService {
 
     @Transactional
     public PerformerRegistration register(PerformerRegistrationRequest request) {
+        if (!Boolean.TRUE.equals(request.getConsent()))
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "Data storage consent is required");
         var config = request.getEventEditionId()==null ? settings.requireActiveYear(request.getEventYear()) : settings.requireActiveEdition(request.getEventEditionId(),request.getEventYear(),request.getEventVersion());
         if (Boolean.FALSE.equals(config.getPerformerEnabled())) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT,"Registration is closed for this event.");
         PerformerRegistration performer = new PerformerRegistration();
+        performer.setConsentAt(java.time.LocalDateTime.now());
+        performer.setConsentText(CONSENT);
         performer.setName(request.getName());
         performer.setEmail(request.getEmail());
         performer.setPhone(request.getPhone());

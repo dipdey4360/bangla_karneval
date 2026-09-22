@@ -32,7 +32,7 @@ public class EmailService {
     public void sendPaymentConfirmation(Registration reg) {
         sendHtmlEmail(
             reg.getEmail(),
-            "✅ Payment Confirmed — " + emailTemplateUtil.eventTitle(reg),
+            "✅ Donation Confirmed — " + emailTemplateUtil.eventTitle(reg),
             emailTemplateUtil.buildPaymentConfirmationEmail(reg)
         );
     }
@@ -41,7 +41,7 @@ public class EmailService {
     public void sendPaymentReminder(Registration reg) {
         sendHtmlEmail(
             reg.getEmail(),
-            "⏰ Payment Reminder — " + emailTemplateUtil.eventTitle(reg),
+            "⏰ Donation Reminder — " + emailTemplateUtil.eventTitle(reg),
             emailTemplateUtil.buildPaymentReminderEmail(reg)
         );
     }

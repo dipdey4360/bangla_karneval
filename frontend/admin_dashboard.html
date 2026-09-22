@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">New Password <small style="font-weight:400;color:var(--text-secondary)">(min 8 characters)</small></label>
+                <label class="form-label">New Password <small style="font-weight:400;color:var(--text-secondary)">(at least 8 characters)</small></label>
                 <div class="cp-input-wrap">
                     <input type="password" id="cp-new" class="form-input" placeholder="Enter new password">
                     <span class="cp-eye" onclick="toggleCpVisibility('cp-new', this)">👁</span>
@@ -138,7 +138,7 @@
     <!-- Main content -->
     <main class="dashboard-main">
         <div class="section-card" style="margin-bottom:20px">
-            <label class="form-label" for="admin-year-filter">View / manage event</label>
+            <label class="form-label" for="admin-year-filter">Manage Event</label>
             <select class="form-select" id="admin-year-filter" style="max-width:260px"><option value="">Loading events…</option></select>
             <p>Filters registrations, dashboard totals, performers, event cards, and event configuration. Board members and memberships are shared across all programmes.</p>
         </div>
@@ -158,7 +158,7 @@
                 <div class="stat-card paid">
                     <span class="stat-icon">✅</span>
                     <div class="stat-value" id="stat-paid">—</div>
-                    <div class="stat-label">Confirmed Payments</div>
+                    <div class="stat-label">Confirmed Donations</div>
                 </div>
                 <div class="stat-card unpaid">
                     <span class="stat-icon">⏳</span>
@@ -168,7 +168,7 @@
                 <div class="stat-card revenue">
                     <span class="stat-icon">💶</span>
                     <div class="stat-value" id="stat-revenue">—</div>
-                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-label">Total Donations</div>
                 </div>
             </div>
             <div class="section-card" style="margin-bottom:var(--spacing-xl)">
@@ -289,7 +289,7 @@
             <div class="section-card">
                 <!-- Upload form -->
                 <div style="background:#f9f5ef;border-radius:var(--radius-md);padding:var(--spacing-xl);margin-bottom:var(--spacing-xl)">
-                    <h3 style="margin-bottom:var(--spacing-lg);font-size:1rem;color:var(--accent-maroon)">Upload New Image</h3>
+                    <h3 style="margin-bottom:var(--spacing-lg);font-size:1rem;color:var(--accent-maroon)">Add Gallery Media</h3>
                     <form id="gallery-upload-form">
                         <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--spacing-md)">
                             <div class="form-group">
@@ -329,12 +329,12 @@
                                 <label class="form-label">Mark as Highlight?</label>
                                 <div style="display:flex;align-items:center;gap:var(--spacing-sm);margin-top:12px">
                                     <input type="checkbox" id="upload-highlight" style="width:20px;height:20px;cursor:pointer">
-                                    <label for="upload-highlight" style="cursor:pointer;font-weight:400">Yes, feature this image</label>
+                                    <label for="upload-highlight" style="cursor:pointer;font-weight:400">Yes, feature this media</label>
                                 </div>
                             </div>
                         </div>
                         <div id="gallery-upload-alert"></div>
-                        <button type="submit" class="btn btn-retro">⬆️ Upload Image</button>
+                        <button type="submit" class="btn btn-retro">⬆️ Add Media</button>
                     </form>
                 </div>
                 <!-- Gallery list -->
@@ -347,7 +347,7 @@
                 </h3>
                 <div id="gallery-admin-grid"
                      style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--spacing-md)">
-                    <p style="color:var(--text-secondary);grid-column:1/-1">Select an event to load gallery.</p>
+                    <p style="color:var(--text-secondary);grid-column:1/-1">Select an event to view its gallery.</p>
                 </div>
             </div>
         </div>
@@ -378,7 +378,7 @@
         <div id="tab-messages" class="tab-pane">
             <div class="dashboard-header">
                 <h1>📬 Messages</h1>
-                <span class="admin-info">Contact Inquiries</span>
+                <span class="admin-info">Contact Enquiries</span>
             </div>
             <div class="section-card">
                 <div id="messages-list">
@@ -409,7 +409,7 @@
             <div class="dashboard-header"><h1>Memberships</h1><button class="btn btn-outline" type="button" id="members-refresh">Refresh applications</button></div>
             <div class="section-card">
                 <h2>Applications and approved members</h2>
-                <p>Only approved members who chose to display their names appear publicly. Name visibility is selected by the applicant. Verify the bank transfer or PayPal payment before approval.</p>
+                <p>Only approved members who opt in appear publicly. Verify the donation before approving an application.</p>
                 <label class="form-label" for="membership-status-filter">Status</label><select class="form-select" id="membership-status-filter"><option value="ALL">All applications</option><option value="PENDING">Pending</option><option value="APPROVED">Approved</option><option value="REJECTED">Rejected</option></select>
                 <div id="membership-admin-message" class="membership-admin-message" role="status"></div>
                 <div id="membership-applications"></div>
@@ -417,11 +417,11 @@
             <div class="section-card">
                 <form id="membership-settings-form" class="membership-admin-form">
                     <h2>Public membership information</h2>
-                    <div class="form-group"><label class="form-label" for="membership-benefits-edit">Benefits (one bullet per line) *</label><textarea class="form-textarea" id="membership-benefits-edit" maxlength="4000" required></textarea></div>
-                    <div class="form-group"><label class="form-label" for="membership-single-edit">Single membership (€ / year) *</label><input class="form-input" id="membership-single-edit" type="number" min="0.01" max="99999999.99" step="0.01" required></div>
-                    <div class="form-group"><label class="form-label" for="membership-couple-edit">Couple membership (€ / year) *</label><input class="form-input" id="membership-couple-edit" type="number" min="0.01" max="99999999.99" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label" for="membership-benefits-edit">Benefits (one per line) *</label><textarea class="form-textarea" id="membership-benefits-edit" maxlength="4000" required></textarea></div>
+                    <div class="form-group"><label class="form-label" for="membership-single-edit">Single membership donation (€ / year) *</label><input class="form-input" id="membership-single-edit" type="number" min="0.01" max="99999999.99" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label" for="membership-couple-edit">Couple membership donation (€ / year) *</label><input class="form-input" id="membership-couple-edit" type="number" min="0.01" max="99999999.99" step="0.01" required></div>
                     <div class="form-group"><label class="form-label" for="membership-payment-edit">Bank transfer / PayPal instructions</label><textarea class="form-textarea" id="membership-payment-edit" maxlength="2000" placeholder="Enter your bank and PayPal details, plus the reference applicants should use."></textarea></div>
-                    <p>Fee changes apply to new applications. Existing applications keep their submitted fee.</p>
+                    <p>Donation changes apply to new applications. Existing applications retain their original donation amount.</p>
                     <div id="membership-settings-admin-message" class="membership-admin-message" role="status"></div>
                     <button type="submit" class="btn btn-primary">Save membership information</button>
                 </form>
@@ -439,10 +439,10 @@
  <form id="programme-form"><div class="programme-form-grid">
  <div class="form-group"><label class="form-label" for="cfg-programme">Programme *</label><select id="cfg-programme" class="form-select" required></select></div>
  <div class="form-group"><label class="form-label" for="cfg-year">Year *</label><input id="cfg-year" class="form-input" type="number" required min="2000" max="2200"></div><div class="form-group"><label class="form-label" for="cfg-title">Event title *</label><input id="cfg-title" class="form-input" type="text" required maxlength="255"></div><div class="form-group"><label class="form-label" for="cfg-tagline">Tagline</label><input id="cfg-tagline" class="form-input" type="text" maxlength="500"></div>
- <div class="form-group"><label class="form-label" for="cfg-date">Event date</label><input id="cfg-date" class="form-input" type="date" ></div><div class="form-group"><label class="form-label" for="cfg-location">Venue</label><input id="cfg-location" class="form-input" type="text" maxlength="255"></div><div class="form-group"><label class="form-label" for="cfg-price">Admission per adult (€) *</label><input id="cfg-price" class="form-input" type="number" required step="0.01" min="0" max="99999"></div>
+ <div class="form-group"><label class="form-label" for="cfg-date">Event date</label><input id="cfg-date" class="form-input" type="date" ></div><div class="form-group"><label class="form-label" for="cfg-location">Venue</label><input id="cfg-location" class="form-input" type="text" maxlength="255"></div><div class="form-group"><label class="form-label" for="cfg-price">Donation per adult (€) *</label><input id="cfg-price" class="form-input" type="number" required step="0.01" min="0" max="99999"></div>
  <div class="form-group"><label class="form-label" for="cfg-theme">Theme *</label><select id="cfg-theme" class="form-select" required></select></div>
  <div class="form-group"><label class="form-label" for="cfg-accent">Accent colour</label><input id="cfg-accent" class="form-input" type="color" value="#7b241c"></div>
- </div><div class="form-group"><label class="form-label" for="cfg-about">Event description</label><textarea id="cfg-about" class="form-textarea" rows="4" maxlength="10000"></textarea></div><div class="form-group"><label class="form-label" for="cfg-payment">Payment instructions for this event</label><textarea id="cfg-payment" class="form-textarea" rows="4" maxlength="4000"></textarea></div>
+ </div><div class="form-group"><label class="form-label" for="cfg-about">Event description</label><textarea id="cfg-about" class="form-textarea" rows="4" maxlength="10000"></textarea></div><div class="form-group"><label class="form-label" for="cfg-payment">Donation instructions for this event</label><textarea id="cfg-payment" class="form-textarea" rows="4" maxlength="4000"></textarea></div>
  <p>Enter the correct bank transfer and PayPal details here. These instructions appear on the registration page and in confirmation emails.</p>
  <label class="membership-check"><input id="cfg-registration" type="checkbox"> Open attendee registration</label>
  <label class="membership-check"><input id="cfg-performer" type="checkbox"> Open performer registration</label>
@@ -474,7 +474,7 @@
                 <strong id="edit-name" style="color:var(--accent-maroon)"></strong>
             </div>
             <div class="form-group">
-                <label class="form-label">Payment Status</label>
+                <label class="form-label">Donation Status</label>
                 <select id="edit-status" class="form-select">
                     <option value="PENDING">⏳ Pending</option>
                     <option value="CONFIRMED">✅ Confirmed</option>
@@ -497,7 +497,7 @@
                 <label class="form-label">Message to Registrant <small style="font-weight:400;
            color:var(--text-secondary)">(optional — sent with status email)</small></label>
                 <textarea id="edit-admin-note" class="form-textarea" rows="3"
-                          placeholder="e.g. Your payment was not received. Please resubmit."></textarea>
+                          placeholder="e.g. Your donation was not received. Please resubmit."></textarea>
             </div>
 
             <div class="modal-footer">
@@ -649,8 +649,8 @@
     <div id="membership-review-details"></div>
     <form id="membership-review-form">
         <div class="form-group"><label class="form-label" for="membership-decision">Decision</label><select id="membership-decision" class="form-select"><option value="APPROVED">Accept membership</option><option value="REJECTED">Reject application</option></select></div>
-        <label class="membership-verification"><input type="checkbox" id="membership-payment-verified"> I have verified the membership payment.</label>
-        <p>To approve: verify the payment, tick the checkbox above, then click “Save decision and send email”. Selecting a decision alone does not save it. Names appear after approval only when the applicant chose public visibility.</p>
+        <label class="membership-verification"><input type="checkbox" id="membership-payment-verified"> I have verified the membership donation.</label>
+        <p>To approve: verify the donation, tick the checkbox above, then click “Save decision and send email”. Selecting a decision alone does not save it. Names appear after approval only when the applicant chose public visibility.</p>
         <div class="form-group"><label class="form-label" for="membership-decision-note">Message to applicant (included in email)</label><textarea class="form-textarea" id="membership-decision-note" maxlength="2000" rows="3"></textarea></div>
         <div id="membership-review-message" class="membership-admin-message" role="status"></div>
         <button class="btn btn-primary" type="submit">Save decision and send email</button>
@@ -662,7 +662,7 @@
 <script src="js/admin_dashboard.js?v=programmes-1"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script src="js/admin_sponsors.js?v=programmes-1"></script>
-<script src="js/admin_membership.js?v=programmes-1"></script>
+<script src="js/admin_membership.js?v=donation-1"></script>
 
 <script>
     /* ══════════════════════════════════════════════════════════════

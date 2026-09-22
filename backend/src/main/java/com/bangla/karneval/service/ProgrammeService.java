@@ -52,7 +52,7 @@ public class ProgrammeService {
   jdbc.queryForObject("SELECT id FROM application_settings WHERE id=1 FOR UPDATE",Integer.class);
   var event=get(id);
   if(event.getEventDate()==null || event.getEventLocation()==null || event.getEventLocation().isBlank() || event.getPricePerPerson()==null)
-   throw new ResponseStatusException(BAD_REQUEST,"Save the event date, venue and price before activating it.");
+   throw new ResponseStatusException(BAD_REQUEST,"Save the event date, venue and donation amount before activating it.");
   jdbc.update("UPDATE application_settings SET active_event_edition_id=?,active_event_year=? WHERE id=1",id,event.getEventYear()); return event;
  }
  @Transactional public boolean toggle(boolean performer) {

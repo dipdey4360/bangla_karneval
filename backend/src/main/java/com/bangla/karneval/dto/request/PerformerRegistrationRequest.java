@@ -31,6 +31,9 @@ public class PerformerRegistrationRequest {
     private String performanceType;
 
     private String performanceDescription;
+    @NotNull(message = "Data storage consent is required")
+    @AssertTrue(message = "Data storage consent is required")
+    private Boolean consent;
     @Min(1)
     private Integer groupMemberCount;
 

@@ -108,7 +108,7 @@ async function loadEventCards() {
         grid.innerHTML = '';
 
         if (!events || events.length === 0) {
-            grid.innerHTML = '<p class="no-events">No events added yet.</p>';
+            grid.innerHTML = '<p class="no-events">Programme details will be announced soon.</p>';
             return;
         }
 
@@ -129,7 +129,7 @@ async function loadEventCards() {
 
     } catch (e) {
         console.error('Failed to load event cards:', e);
-        grid.innerHTML = '<p class="no-events">Unable to load events.</p>';
+        grid.innerHTML = '<p class="no-events">Unable to load the programme. Please refresh to try again.</p>';
     }
 }
 
