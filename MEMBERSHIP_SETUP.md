@@ -59,6 +59,19 @@ The new migration `20260923_membership_ids` runs through the existing backend st
 
 The partner address field has been removed from the membership application. Existing stored addresses are retained; new applications do not store a separate partner address.
 
-Rebuild and restart the backend after pulling these changes (for the local Docker setup: `docker compose up -d --build backend`). A browser refresh alone does not activate the new verification endpoint. Configure the discount percentage before testing the discount. This version uses approval status and donation verification for eligibility; it does not reintroduce the reverted expiry/reminder implementation.
+Rebuild and restart the backend after pulling these changes (for the local Docker setup: `docker compose up -d --build backend`). A browser refresh alone does not activate the new verification endpoint. Configure the discount percentage before testing the discount. Eligibility requires approval, verified donation, and an unexpired membership.
 
 Membership ID plus name is an eligibility check, not account authentication: sequential IDs are guessable. Keep IDs out of public member listings and avoid using them to authorize access to personal records.
+
+
+## One-year validity and expiry reminders
+
+On first board approval, the membership starts on the current Europe/Berlin date and expires one calendar year later. The expiry date is exclusive: a membership starting 2026-09-23 expires at the start of 2027-09-23. Leap-day approvals expire on February 28 the following year. Repeated approvals or reject/reapprove actions retain the original dates; they do not renew membership.
+
+Admin **Memberships → Review details** shows the start date, expiry date, validity status, reminder due date, and separate reminder sent timestamps for the member and partner. Approved member cards also show expiry. Confirmation emails include validity dates. Expired members cannot verify for event discounts, and the server rechecks validity at registration submission.
+
+The backend checks daily at **09:00 Europe/Berlin**. The reminder is due on `expiry minus one calendar month` (for example March 31 → February 28 in a non-leap year). Missed reminders catch up on the next daily run while membership remains valid. SMTP failures retry on later daily runs; successful recipients are not resent during normal retries. Couple members receive separate messages; a shared email address receives one message. Backend uptime and working SMTP are required. Reminder tracking records SMTP acceptance, not inbox delivery. A server crash after SMTP acceptance but before committing the sent timestamp can cause a duplicate on retry.
+
+Startup migration `20260923_membership_expiry` fills dates for existing approved memberships using `reviewed_at`. It preserves any existing validity/reminder data. If a legacy record has no recorded approval date, dates remain unknown rather than inventing an approval date, and member discounts are unavailable until an administrator corrects the record. Pending applications have no dates until approval. The existing public names list remains governed by approval and visibility settings.
+
+Rebuild the backend with `docker compose up -d --build backend` and refresh the admin page to activate the migration, scheduler, and updated details. No database reset is needed. This change does not add a renewal payment workflow or automatically extend expired memberships; reminders ask members to contact the board.

@@ -62,7 +62,7 @@ class ProgrammeMigrationTest {
         assertEquals("Keep board",jdbc.queryForObject("SELECT name FROM board_members",String.class));
         jdbc.update("UPDATE organisation_profile SET story='Edited organisation story'");
         migrate.run();
-        assertEquals(3,jdbc.queryForObject("SELECT count(*) FROM application_schema_migrations",Integer.class));
+        assertEquals(4,jdbc.queryForObject("SELECT count(*) FROM application_schema_migrations",Integer.class));
         assertEquals("Edited organisation story",jdbc.queryForObject("SELECT story FROM organisation_profile",String.class));
         jdbc.update("UPDATE event_config SET about_text='Event only',price_per_person=18 WHERE event_year=2026");
         assertEquals("Event only",jdbc.queryForObject("SELECT description FROM event_editions WHERE legacy_event_year=2026",String.class));

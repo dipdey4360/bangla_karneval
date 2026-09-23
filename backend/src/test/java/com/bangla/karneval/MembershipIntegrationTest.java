@@ -44,6 +44,7 @@ class MembershipIntegrationTest {
     @Autowired MemberRepository members;
     @Autowired EventConfigRepository configs;
     @Autowired RegistrationRepository registrations;
+    @Autowired com.bangla.karneval.scheduler.MembershipExpiryScheduler expiryScheduler;
     @MockBean JavaMailSender mail;
     @MockBean EmailService oldEmail;
     @MockBean PaymentReminderScheduler scheduler;
@@ -70,8 +71,14 @@ class MembershipIntegrationTest {
         await().atMost(Duration.ofSeconds(10)).until(()->members.findById(id).orElseThrow().getEmailDelivery()==Member.Delivery.SENT);
         String membershipId = members.findById(id).orElseThrow().getMembershipId();
         assertEquals("BKM-00001", membershipId);
+        var today = java.time.LocalDate.now(java.time.ZoneId.of("Europe/Berlin"));
+        assertEquals(today,members.findById(id).orElseThrow().getMembershipStartsOn());
+        assertEquals(today.plusYears(1),members.findById(id).orElseThrow().getMembershipExpiresOn());
+        mvc.perform(get("/api/admin/members").with(user("admin").roles("ADMIN")))
+            .andExpect(status().isOk()).andExpect(jsonPath("$[0].membershipExpiresOn").value(today.plusYears(1).toString()))
+            .andExpect(jsonPath("$[0].validityStatus").value("Active"));
         verify(mail).send(argThat((SimpleMailMessage message) -> message.getText().contains(membershipId)
-            && message.getText().contains("confidential") && message.getTo().length == 2));
+            && message.getText().contains("confidential") && message.getText().contains(today.plusYears(1).toString()) && message.getTo().length == 2));
         assertNull(members.findById(id).orElseThrow().getPartnerAddress());
         mvc.perform(put("/api/admin/membership/settings").with(user("admin").roles("ADMIN"))
             .contentType("application/json").content("""
@@ -111,6 +118,24 @@ class MembershipIntegrationTest {
         mvc.perform(put("/api/admin/members/"+id+"/visibility").with(user("admin").roles("ADMIN"))
             .contentType("application/json").content("{\"listed\":false}" )).andExpect(status().is4xxClientError());
         mvc.perform(get("/api/members")).andExpect(jsonPath("$.length()").value(2));
+        // Simulate two daily runs at the reminder date and verify persisted delivery markers.
+        reset(mail);
+        var reminderDate = today.plusYears(1).minusMonths(1);
+        expiryScheduler.sendDueReminders(reminderDate);
+        expiryScheduler.sendDueReminders(reminderDate.plusDays(1));
+        verify(mail,times(2)).send(any(SimpleMailMessage.class));
+        var reminded = members.findById(id).orElseThrow();
+        assertNotNull(reminded.getExpiryReminderSentAt()); assertNotNull(reminded.getPartnerExpiryReminderSentAt());
+        assertTrue(members.findExpiryReminderCandidates(Member.Status.APPROVED, Member.Type.COUPLE,
+            reminderDate,reminderDate.plusDays(32)).isEmpty());
+        reminded.setMembershipStartsOn(today.minusYears(1)); reminded.setMembershipExpiresOn(today); members.save(reminded);
+        mvc.perform(post("/api/register/verify-membership").contentType("application/json")
+            .content(json.writeValueAsString(java.util.Map.of("membershipId",membershipId,"name","Alice"))))
+            .andExpect(status().isBadRequest());
+        mvc.perform(post("/api/register/general").contentType("application/json").content(partnerOnly))
+            .andExpect(status().isBadRequest());
+        mvc.perform(get("/api/admin/members").with(user("admin").roles("ADMIN")))
+            .andExpect(jsonPath("$[0].validityStatus").value("Expired"));
         reset(mail); doThrow(new MailSendException("Simulated failure")).when(mail).send(any(SimpleMailMessage.class));
         mvc.perform(put("/api/admin/members/"+id+"/decision").with(user("admin").roles("ADMIN"))
             .contentType("application/json").content("{\"status\":\"REJECTED\",\"paymentVerified\":true,\"adminNote\":\"Contact us\"}"))

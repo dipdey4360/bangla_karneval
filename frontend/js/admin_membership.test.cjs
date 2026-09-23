@@ -79,3 +79,28 @@ test('board editor selects a card, saves multipart data, refreshes cards and rep
     assert.equal(get('board-message').dataset.state,'error');
     assert.equal(get('board-message').textContent,'Save failed in test');
 });
+
+test('membership review displays expiry, reminder dates and delivery status', async () => {
+    const elements = new Map();
+    const make = () => ({value:'ALL',children:[],listeners:{},addEventListener(name,fn){this.listeners[name]=fn;},
+        append(...children){this.children.push(...children);},replaceChildren(){this.children=[];},showModal(){this.open=true;}});
+    const get=id=>{if(!elements.has(id)) elements.set(id,make());return elements.get(id);};
+    const member={id:9,name:'Alice',partnerName:'Bob',membershipType:'COUPLE',status:'APPROVED',emailDelivery:'SENT',
+        validityStatus:'Active',membershipId:'BKM-00009',membershipStartsOn:'2026-09-23',membershipExpiresOn:'2027-09-23',
+        expiryReminderDueOn:'2027-08-23',expiryReminderSentAt:'2027-08-23T09:00:00',partnerExpiryReminderSentAt:null};
+    const context={document:{getElementById:get,createElement:make,addEventListener(){}},
+        formatCurrency:()=>'',formatDateTime:value=>value || '',apiFetchWithAuth:async url=>url==='/api/admin/members'?[member]:{}};
+    context.window=context;
+    vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'admin_membership.js'),'utf8'),context);
+    await context.loadMembershipAdmin();
+    const card=get('membership-applications').children[0];
+    assert.ok(card.children.some(child=>child.textContent?.includes('Expires: 2027-09-23')));
+    card.children.at(-1).children.find(child=>child.textContent==='Review details').listeners.click();
+    const details=Object.fromEntries(get('membership-review-details').children.map(row=>row.children.map(child=>child.textContent)));
+    assert.equal(details['Membership starts'],'2026-09-23');
+    assert.equal(details['Membership expires'],'2027-09-23');
+    assert.equal(details['Expiry reminder due'],'2027-08-23');
+    assert.equal(details['Expiry reminder sent'],'2027-08-23T09:00:00');
+    assert.equal(details['Partner expiry reminder sent'],'Not sent');
+    assert.equal(get('membership-review-dialog').open,true);
+});

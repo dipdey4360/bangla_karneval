@@ -90,6 +90,11 @@ public class MembershipService {
             throw new ResponseStatusException(BAD_REQUEST, "Verify the donation before approving membership");
         if (request.status() == Member.Status.APPROVED && m.getMembershipId() == null)
             m.setMembershipId(String.format(Locale.ROOT, "BKM-%05d", repository.nextMembershipNumber()));
+        if (request.status() == Member.Status.APPROVED && m.getMembershipStartsOn() == null) {
+            var today = java.time.LocalDate.now(java.time.ZoneId.of("Europe/Berlin"));
+            m.setMembershipStartsOn(today);
+            m.setMembershipExpiresOn(today.plusYears(1));
+        }
         m.setStatus(request.status()); m.setPaymentVerified(request.paymentVerified());
         m.setAdminNote(request.adminNote()); m.setReviewedAt(LocalDateTime.now());
         m.setEmailDelivery(Member.Delivery.PENDING);

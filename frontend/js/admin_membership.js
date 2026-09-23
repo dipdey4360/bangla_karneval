@@ -62,6 +62,7 @@
                 node('p', `${m.status} · ${m.membershipType} · ${formatCurrency(m.annualFee)} / year`),
                 node('p', `${m.email} · ${formatDateTime(m.appliedAt)}`),
                 node('p', `Decision email: ${m.emailDelivery.replaceAll('_',' ').toLowerCase()}`));
+            if (m.status === 'APPROVED') card.append(node('p', `Membership: ${m.validityStatus || 'Dates unavailable'} · Expires: ${m.membershipExpiresOn || 'Approval date unavailable'}`));
             const actions=node('div',undefined,'membership-admin-actions');
             actions.append(button('Review details',()=>openReview(m)));
             actions.append(button('Delete member', async event => {
@@ -110,7 +111,13 @@
     function openReview(m) {
         reviewingId=m.id;
         const details=byId('membership-review-details'); details.replaceChildren();
-        const fields={'Membership ID':m.membershipId,Name:m.name,Partner:m.partnerName,'Partner date of birth':m.partnerDateOfBirth,'Partner phone':m.partnerPhone,'Partner email':m.partnerEmail,'Date of birth':m.dateOfBirth,Address:m.address,Phone:m.phone,Email:m.email,
+        const fields={'Membership ID':m.membershipId,
+            'Membership validity':m.validityStatus || 'Not approved',
+            'Membership starts':m.membershipStartsOn || (m.status === 'APPROVED' ? 'Approval date unavailable' : 'Set on board approval'),
+            'Membership expires':m.membershipExpiresOn || (m.status === 'APPROVED' ? 'Approval date unavailable' : 'One year after board approval'),
+            'Expiry reminder due':m.expiryReminderDueOn || 'Set on board approval',
+            'Expiry reminder sent':m.expiryReminderSentAt ? formatDateTime(m.expiryReminderSentAt) : 'Not sent',
+            'Partner expiry reminder sent':m.membershipType === 'COUPLE' ? (m.partnerExpiryReminderSentAt ? formatDateTime(m.partnerExpiryReminderSentAt) : 'Not sent') : null,Name:m.name,Partner:m.partnerName,'Partner date of birth':m.partnerDateOfBirth,'Partner phone':m.partnerPhone,'Partner email':m.partnerEmail,'Date of birth':m.dateOfBirth,Address:m.address,Phone:m.phone,Email:m.email,
             Membership:m.membershipType,'Annual donation':formatCurrency(m.annualFee),'Donation method':m.paymentMethod,
             'Applicant reports donation sent':m.paymentDeclared?'Yes':'No','Donation verified':m.paymentVerified?'Yes':'No',
             'Public name visibility':m.listed?'Show name(s) after approval':'Keep name(s) private',

@@ -39,5 +39,27 @@ public class Member {
     @Column(length = 2000) private String adminNote;
     private LocalDateTime appliedAt = LocalDateTime.now();
     private LocalDateTime reviewedAt;
+    private LocalDate membershipStartsOn;
+    private LocalDate membershipExpiresOn;
+    private LocalDateTime expiryReminderSentAt;
+    private LocalDateTime partnerExpiryReminderSentAt;
+
+    public LocalDate getExpiryReminderDueOn() {
+        return membershipExpiresOn == null ? null : membershipExpiresOn.minusMonths(1);
+    }
+
+    public String getValidityStatus() {
+        if (status != Status.APPROVED) return "Not approved";
+        if (membershipStartsOn == null || membershipExpiresOn == null) return "Approval date unavailable";
+        var today = LocalDate.now(java.time.ZoneId.of("Europe/Berlin"));
+        if (!today.isBefore(membershipExpiresOn)) return "Expired";
+        if (today.isBefore(membershipStartsOn)) return "Not yet active";
+        return paymentVerified ? "Active" : "Donation not verified";
+    }
+
+    public boolean isActiveOn(LocalDate date) {
+        return status == Status.APPROVED && paymentVerified && membershipStartsOn != null && membershipExpiresOn != null
+            && !date.isBefore(membershipStartsOn) && date.isBefore(membershipExpiresOn);
+    }
     @Enumerated(EnumType.STRING) @Column(nullable = false, length = 20) private Delivery emailDelivery = Delivery.NOT_REQUESTED;
 }

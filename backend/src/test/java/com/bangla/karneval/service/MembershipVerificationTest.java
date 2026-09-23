@@ -19,6 +19,8 @@ class MembershipVerificationTest {
     @BeforeEach void setup() {
         member = new Member(); member.setName("Alice Smith"); member.setPartnerName("Bob Smith");
         member.setMembershipType(Member.Type.COUPLE); member.setStatus(Member.Status.APPROVED); member.setPaymentVerified(true);
+        member.setMembershipStartsOn(java.time.LocalDate.now(java.time.ZoneId.of("Europe/Berlin")).minusMonths(1));
+        member.setMembershipExpiresOn(member.getMembershipStartsOn().plusYears(1));
         when(members.findByMembershipId("BKM-00001")).thenReturn(Optional.of(member));
     }
     @Test void eitherPartnerCanVerifyWithSharedIdAndNormalizedName() {
@@ -40,5 +42,13 @@ class MembershipVerificationTest {
     @Test void singleMembershipDoesNotQualifyPartner() {
         member.setMembershipType(Member.Type.SINGLE);
         assertThrows(ResponseStatusException.class,()->service.verify("BKM-00001","Bob Smith"));
+    }
+    @Test void expiryDateAndMissingDatesCannotQualifyForDiscount() {
+        member.setMembershipExpiresOn(java.time.LocalDate.now(java.time.ZoneId.of("Europe/Berlin")));
+        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00001","Alice Smith"));
+        assertEquals("Expired",member.getValidityStatus());
+        member.setMembershipExpiresOn(null);
+        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00001","Alice Smith"));
+        verifyNoInteractions(settings);
     }
 }

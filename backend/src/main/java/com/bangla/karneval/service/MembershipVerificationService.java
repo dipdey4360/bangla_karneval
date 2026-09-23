@@ -29,7 +29,7 @@ public class MembershipVerificationService {
         String normalized = normalizeName(name);
         boolean matches = !normalized.isEmpty() && (normalized.equals(normalizeName(m.getName()))
             || (m.getMembershipType() == Member.Type.COUPLE && normalized.equals(normalizeName(m.getPartnerName()))));
-        if (m.getStatus() != Member.Status.APPROVED || !m.isPaymentVerified() || !matches) throw invalid();
+        if (!m.isActiveOn(java.time.LocalDate.now(java.time.ZoneId.of("Europe/Berlin"))) || !matches) throw invalid();
         BigDecimal percent = settings.getSettings().getMemberDiscountPercent();
         if (percent == null) percent = BigDecimal.ZERO;
         return new Verification(true, percent);

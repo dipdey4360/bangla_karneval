@@ -87,6 +87,9 @@ class MembershipServiceTest {
         assertThrows(ResponseStatusException.class,()->service.decide(1L,new MembershipDecisionRequest(Member.Status.APPROVED,false,"")));
         verifyNoInteractions(events);
         service.decide(1L,new MembershipDecisionRequest(Member.Status.APPROVED,true,"Welcome"));
+        assertEquals(java.time.LocalDate.now(java.time.ZoneId.of("Europe/Berlin")),m.getMembershipStartsOn());
+        assertEquals(m.getMembershipStartsOn().plusYears(1),m.getMembershipExpiresOn());
+        var originalExpiry = m.getMembershipExpiresOn();
         assertEquals("BKM-00001",m.getMembershipId());
         assertEquals(Member.Delivery.PENDING,m.getEmailDelivery());
         assertEquals("Welcome",m.getAdminNote());
@@ -94,6 +97,10 @@ class MembershipServiceTest {
         service.decide(1L,new MembershipDecisionRequest(Member.Status.APPROVED,true,"Welcome"));
         verify(events,times(1)).publishEvent(new MembershipService.DecisionEmail(1L));
         verify(repository,times(1)).nextMembershipNumber();
+        assertEquals(originalExpiry,m.getMembershipExpiresOn());
+        service.decide(1L,new MembershipDecisionRequest(Member.Status.REJECTED,true,""));
+        service.decide(1L,new MembershipDecisionRequest(Member.Status.APPROVED,true,""));
+        assertEquals(originalExpiry,m.getMembershipExpiresOn());
     }
     @Test void rejectionDoesNotRequirePaymentAndCannotResetToPending() {
         Member m=new Member(); m.setId(2L);
