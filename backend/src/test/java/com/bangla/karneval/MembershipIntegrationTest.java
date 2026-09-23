@@ -43,15 +43,16 @@ class MembershipIntegrationTest {
     @Autowired ObjectMapper json;
     @Autowired MemberRepository members;
     @Autowired EventConfigRepository configs;
+    @Autowired RegistrationRepository registrations;
     @MockBean JavaMailSender mail;
     @MockBean EmailService oldEmail;
     @MockBean PaymentReminderScheduler scheduler;
 
     @Test void applicationApprovalVisibilityRejectionAndEmailRetryPersist() throws Exception {
-        EventConfig c=new EventConfig(); c.setEventYear(2026); configs.save(c);
+        EventConfig c=new EventConfig(); c.setEventYear(2026); c.setPricePerPerson(new java.math.BigDecimal("20.00")); c.setRegistrationEnabled(true); configs.save(c);
         String application="""
             {"name":"Alice","partnerName":"Bob","dateOfBirth":"1990-01-01","address":"Test address",
-            "partnerDateOfBirth":"1991-02-03","partnerAddress":"Partner street","partnerPhone":"987654","partnerEmail":"bob@example.invalid",
+            "partnerDateOfBirth":"1991-02-03","partnerPhone":"987654","partnerEmail":"bob@example.invalid",
             "phone":"12345","email":"alice@example.invalid","membershipType":"COUPLE",
             "paymentMethod":"BANK_TRANSFER","paymentDeclared":true,"consent":true,"listed":true}
             """;
@@ -67,6 +68,43 @@ class MembershipIntegrationTest {
             .contentType("application/json").content("{\"status\":\"APPROVED\",\"paymentVerified\":true,\"adminNote\":\"Welcome\"}"))
             .andExpect(status().isOk());
         await().atMost(Duration.ofSeconds(10)).until(()->members.findById(id).orElseThrow().getEmailDelivery()==Member.Delivery.SENT);
+        String membershipId = members.findById(id).orElseThrow().getMembershipId();
+        assertEquals("BKM-00001", membershipId);
+        verify(mail).send(argThat((SimpleMailMessage message) -> message.getText().contains(membershipId)
+            && message.getText().contains("confidential") && message.getTo().length == 2));
+        assertNull(members.findById(id).orElseThrow().getPartnerAddress());
+        mvc.perform(put("/api/admin/membership/settings").with(user("admin").roles("ADMIN"))
+            .contentType("application/json").content("""
+                {"benefits":"Discounts","singleFee":25,"coupleFee":30,"paymentInstructions":"Test","memberDiscountPercent":25}
+                """)).andExpect(status().isOk());
+        for (String name : new String[]{"Alice", "Bob"}) {
+            mvc.perform(post("/api/register/verify-membership").contentType("application/json")
+                .content(json.writeValueAsString(java.util.Map.of("membershipId",membershipId,"name",name))))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.verified").value(true))
+                .andExpect(jsonPath("$.discountPercent").value(25)).andExpect(jsonPath("$.email").doesNotExist());
+        }
+        String registration = """
+            {"eventYear":2026,"primaryName":"Alice","primaryDateOfBirth":"1990-01-01","email":"alice@example.invalid",
+            "membershipId":"%s","expectedTotal":30,"paymentMethod":"PAYPAL","consent":true,
+            "additionalParticipants":[{"name":"Bob","dateOfBirth":"1991-02-03","membershipId":"%s"}]}
+            """.formatted(membershipId,membershipId);
+        mvc.perform(post("/api/register/general").contentType("application/json").content(registration))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.totalAmount").value(30));
+        assertEquals(0,registrations.findAll().get(0).getMemberDiscountAmount().compareTo(new java.math.BigDecimal("10.00")));
+        String partnerOnly = """
+            {"eventYear":2026,"primaryName":"Bob","primaryDateOfBirth":"1991-02-03","email":"bob@example.invalid",
+             "membershipId":"%s","expectedTotal":15,"paymentMethod":"PAYPAL","consent":true}
+            """.formatted(membershipId);
+        mvc.perform(post("/api/register/general").contentType("application/json").content(partnerOnly))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.totalAmount").value(15));
+
+        mvc.perform(post("/api/register/general").contentType("application/json").content(registration.replace("\"expectedTotal\":30","\"expectedTotal\":1")))
+            .andExpect(status().isConflict());
+        mvc.perform(post("/api/register/general").contentType("application/json").content(registration.replace("\"name\":\"Bob\"","\"name\":\"Alice\"")))
+            .andExpect(status().isBadRequest());
+        mvc.perform(post("/api/register/verify-membership").contentType("application/json")
+            .content(json.writeValueAsString(java.util.Map.of("membershipId",membershipId,"name","Wrong name"))))
+            .andExpect(status().isBadRequest());
         mvc.perform(get("/api/members")).andExpect(jsonPath("$.length()").value(2))
             .andExpect(jsonPath("$[0].name").value("Alice")).andExpect(jsonPath("$[1].name").value("Bob"))
             .andExpect(jsonPath("$[0].email").doesNotExist()).andExpect(jsonPath("$[0].dateOfBirth").doesNotExist());

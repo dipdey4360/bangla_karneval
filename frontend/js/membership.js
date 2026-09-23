@@ -95,7 +95,6 @@
             if (payload.membershipType === 'COUPLE') {
                 payload.partnerName = byId('m-partner').value.trim();
                 payload.partnerDateOfBirth = byId('m-partner-dob').value;
-                payload.partnerAddress = byId('m-partner-address').value.trim();
                 payload.partnerPhone = byId('m-partner-phone').value.trim();
                 payload.partnerEmail = byId('m-partner-email').value.trim();
             }

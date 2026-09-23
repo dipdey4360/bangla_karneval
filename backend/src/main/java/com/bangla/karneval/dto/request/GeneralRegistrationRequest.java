@@ -16,6 +16,8 @@ public class GeneralRegistrationRequest {
 
     @NotBlank
     private String primaryName;
+    @Size(max = 40) private String membershipId;
+    @DecimalMin("0") private java.math.BigDecimal expectedTotal;
 
     @NotBlank @Email
     private String email;
@@ -42,6 +44,7 @@ public class GeneralRegistrationRequest {
     public static class AdditionalParticipantRequest {
         @NotBlank
         private String name;
+        @Size(max = 40) private String membershipId;
 
         @NotNull @Past
         private LocalDate dateOfBirth;

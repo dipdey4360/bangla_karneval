@@ -18,6 +18,18 @@ public class RegistrationController {
     @Autowired private RegistrationService registrationService;
     @Autowired private PerformerService    performerService;
 
+    @Autowired private com.bangla.karneval.service.MembershipVerificationService membershipVerification;
+    public record MembershipVerificationRequest(
+        @jakarta.validation.constraints.NotBlank @jakarta.validation.constraints.Size(max=40) String membershipId,
+        @jakarta.validation.constraints.NotBlank @jakarta.validation.constraints.Size(max=100) String name) {}
+
+    @PostMapping("/verify-membership")
+    public ResponseEntity<com.bangla.karneval.service.MembershipVerificationService.Verification> verifyMembership(
+            @Valid @RequestBody MembershipVerificationRequest request) {
+        return ResponseEntity.ok().cacheControl(org.springframework.http.CacheControl.noStore())
+            .body(membershipVerification.verify(request.membershipId(), request.name()));
+    }
+
     @PostMapping("/general")
     public ResponseEntity<RegistrationResponse> registerGeneral(
             @Valid @RequestBody GeneralRegistrationRequest request) {

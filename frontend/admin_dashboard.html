@@ -420,6 +420,7 @@
                     <div class="form-group"><label class="form-label" for="membership-benefits-edit">Benefits (one per line) *</label><textarea class="form-textarea" id="membership-benefits-edit" maxlength="4000" required></textarea></div>
                     <div class="form-group"><label class="form-label" for="membership-single-edit">Single membership donation (€ / year) *</label><input class="form-input" id="membership-single-edit" type="number" min="0.01" max="99999999.99" step="0.01" required></div>
                     <div class="form-group"><label class="form-label" for="membership-couple-edit">Couple membership donation (€ / year) *</label><input class="form-input" id="membership-couple-edit" type="number" min="0.01" max="99999999.99" step="0.01" required></div>
+<div class="form-group"><label class="form-label" for="membership-discount-edit">Member event discount (%)</label><input class="form-input" id="membership-discount-edit" type="number" min="0" max="100" step="0.01" value="0" required></div>
                     <div class="form-group"><label class="form-label" for="membership-payment-edit">Bank transfer / PayPal instructions</label><textarea class="form-textarea" id="membership-payment-edit" maxlength="2000" placeholder="Enter your bank and PayPal details, plus the reference applicants should use."></textarea></div>
                     <p>Donation changes apply to new applications. Existing applications retain their original donation amount.</p>
                     <div id="membership-settings-admin-message" class="membership-admin-message" role="status"></div>
@@ -662,7 +663,7 @@
 <script src="js/admin_dashboard.js?v=programmes-1"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script src="js/admin_sponsors.js?v=programmes-1"></script>
-<script src="js/admin_membership.js?v=donation-1"></script>
+<script src="js/admin_membership.js?v=membership-id-1"></script>
 
 <script>
     /* ══════════════════════════════════════════════════════════════

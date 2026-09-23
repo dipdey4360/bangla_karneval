@@ -50,7 +50,7 @@ class MembershipServiceTest {
         assertFalse(couple.isPaymentVerified());
         assertEquals("Bob",couple.getPartnerName());
         assertEquals(LocalDate.of(1991,2,3),couple.getPartnerDateOfBirth());
-        assertEquals("Partner street",couple.getPartnerAddress());
+        assertNull(couple.getPartnerAddress());
         assertEquals("987654",couple.getPartnerPhone());
         assertEquals("bob@example.invalid",couple.getPartnerEmail());
         assertNull(single.getPartnerEmail());
@@ -81,16 +81,19 @@ class MembershipServiceTest {
     }
     @Test void approvalRequiresVerifiedPaymentAndPublishesOneEvent() {
         Member m=new Member(); m.setId(1L);
+        when(repository.nextMembershipNumber()).thenReturn(1L);
         when(repository.findLockedById(1L)).thenReturn(Optional.of(m));
         when(repository.save(m)).thenReturn(m);
         assertThrows(ResponseStatusException.class,()->service.decide(1L,new MembershipDecisionRequest(Member.Status.APPROVED,false,"")));
         verifyNoInteractions(events);
         service.decide(1L,new MembershipDecisionRequest(Member.Status.APPROVED,true,"Welcome"));
+        assertEquals("BKM-00001",m.getMembershipId());
         assertEquals(Member.Delivery.PENDING,m.getEmailDelivery());
         assertEquals("Welcome",m.getAdminNote());
         assertNotNull(m.getReviewedAt());
         service.decide(1L,new MembershipDecisionRequest(Member.Status.APPROVED,true,"Welcome"));
         verify(events,times(1)).publishEvent(new MembershipService.DecisionEmail(1L));
+        verify(repository,times(1)).nextMembershipNumber();
     }
     @Test void rejectionDoesNotRequirePaymentAndCannotResetToPending() {
         Member m=new Member(); m.setId(2L);

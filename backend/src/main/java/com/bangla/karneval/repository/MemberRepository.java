@@ -8,6 +8,9 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findAllByOrderByAppliedAtDesc();
     List<Member> findByStatusAndListedTrueOrderByNameAsc(Member.Status status);
+    Optional<Member> findByMembershipId(String membershipId);
+    @Query(value = "SELECT nextval('membership_number_seq')", nativeQuery = true)
+    Long nextMembershipNumber();
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select m from Member m where m.id = :id")
     Optional<Member> findLockedById(@Param("id") Long id);

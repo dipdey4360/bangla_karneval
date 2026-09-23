@@ -29,7 +29,7 @@ public class MembershipService {
             c.getMembershipBenefits() == null ? "Voting rights\nEligibility to become a board member\nDiscounts at all events" : c.getMembershipBenefits(),
             c.getMembershipSingleFee() == null ? new BigDecimal("25.00") : c.getMembershipSingleFee(),
             c.getMembershipCoupleFee() == null ? new BigDecimal("30.00") : c.getMembershipCoupleFee(),
-            c.getMembershipPaymentInstructions() == null ? "Please contact the organisers for bank transfer or PayPal details before donating. Include your name and ‘Membership’ as the donation reference." : c.getMembershipPaymentInstructions());
+            c.getMembershipPaymentInstructions() == null ? "Please contact the organisers for bank transfer or PayPal details before donating. Include your name and ‘Membership’ as the donation reference." : c.getMembershipPaymentInstructions(), c.getMemberDiscountPercent() == null ? BigDecimal.ZERO : c.getMemberDiscountPercent());
     }
     @Transactional
     public MembershipSettingsRequest updateSettings(MembershipSettingsRequest request) {
@@ -37,7 +37,8 @@ public class MembershipService {
         c.setMembershipBenefits(request.benefits().trim());
         c.setMembershipSingleFee(request.singleFee()); c.setMembershipCoupleFee(request.coupleFee());
         c.setMembershipPaymentInstructions(request.paymentInstructions().trim());
-        return request;
+        if (request.memberDiscountPercent() != null) c.setMemberDiscountPercent(request.memberDiscountPercent());
+        return settings();
     }
     @Transactional
     public Member apply(MembershipRequest request) {
@@ -48,17 +49,16 @@ public class MembershipService {
         if (request.membershipType() == Member.Type.COUPLE && (request.partnerName() == null || request.partnerName().isBlank()))
             throw new ResponseStatusException(BAD_REQUEST, "Please enter your partner's name for couple membership");
         if (request.membershipType() == Member.Type.COUPLE && (request.partnerDateOfBirth() == null
-                || request.partnerAddress() == null || request.partnerAddress().isBlank()
                 || request.partnerPhone() == null || request.partnerPhone().isBlank()
                 || request.partnerEmail() == null || request.partnerEmail().isBlank()))
-            throw new ResponseStatusException(BAD_REQUEST, "Please complete your partner's date of birth, address, phone and email");
+            throw new ResponseStatusException(BAD_REQUEST, "Please complete your partner's date of birth, phone and email");
         var prices = settings();
         Member m = new Member();
         m.setName(request.name().trim());
         m.setPartnerName(request.membershipType() == Member.Type.COUPLE ? request.partnerName().trim() : null);
         if (request.membershipType() == Member.Type.COUPLE) {
             m.setPartnerDateOfBirth(request.partnerDateOfBirth());
-            m.setPartnerAddress(request.partnerAddress().trim());
+            m.setPartnerAddress(null);
             m.setPartnerPhone(request.partnerPhone().trim());
             m.setPartnerEmail(request.partnerEmail().trim().toLowerCase(Locale.ROOT));
         }
@@ -88,6 +88,8 @@ public class MembershipService {
         if (m.getStatus() == request.status()) return m; // Repeated clicks do not send duplicate emails.
         if (request.status() == Member.Status.APPROVED && !request.paymentVerified())
             throw new ResponseStatusException(BAD_REQUEST, "Verify the donation before approving membership");
+        if (request.status() == Member.Status.APPROVED && m.getMembershipId() == null)
+            m.setMembershipId(String.format(Locale.ROOT, "BKM-%05d", repository.nextMembershipNumber()));
         m.setStatus(request.status()); m.setPaymentVerified(request.paymentVerified());
         m.setAdminNote(request.adminNote()); m.setReviewedAt(LocalDateTime.now());
         m.setEmailDelivery(Member.Delivery.PENDING);

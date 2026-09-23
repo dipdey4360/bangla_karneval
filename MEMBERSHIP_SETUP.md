@@ -47,3 +47,18 @@ To remove a membership, go to **Admin → Memberships**, find the record (select
 - Email sending was mocked during tests. Actual SMTP delivery must be verified with your configured mail account after deployment.
 
 Active-year update: Membership settings now live independently in application_settings. On upgrade, the existing 2026 fees, benefits and payment instructions are copied once. Event-year changes do not change memberships or their public-name preferences. See ACTIVE_YEAR_SETUP.md.
+
+
+## Membership IDs and event discounts
+
+An approved membership receives a unique ID such as `BKM-00001`. A couple shares one ID; either partner verifies using their own full name. Approval emails include the ID and a confidentiality note, and are sent to both distinct couple email addresses. The admin membership details also show the ID.
+
+Set **Memberships → Member event discount (%)** in the admin dashboard (0–100; default 0). Event registration includes **Are you already a member?** for the primary registrant and each additional participant. Selecting Yes reveals the ID field and Verify membership button. Changing the name or ID clears verification. Discounts apply only to that verified participant; children who already attend free remain free. Names match without differences in letter case or spacing. Approved status and verified membership donation are required. The server rechecks membership and calculates the discount on submission, rejecting changed totals instead of silently charging a different amount.
+
+The new migration `20260923_membership_ids` runs through the existing backend startup migration system. It assigns IDs to already approved records without sending unsolicited emails. Existing members' IDs are available in admin details; existing sent confirmation emails are not changed. Pending applications receive an ID on their first approval. IDs survive later decisions and are never reused after deletion. Database sequences can leave gaps after rolled-back approvals. Numbers expand beyond five digits when necessary.
+
+The partner address field has been removed from the membership application. Existing stored addresses are retained; new applications do not store a separate partner address.
+
+Rebuild and restart the backend after pulling these changes (for the local Docker setup: `docker compose up -d --build backend`). A browser refresh alone does not activate the new verification endpoint. Configure the discount percentage before testing the discount. This version uses approval status and donation verification for eligibility; it does not reintroduce the reverted expiry/reminder implementation.
+
+Membership ID plus name is an eligibility check, not account authentication: sequential IDs are guessable. Keep IDs out of public member listings and avoid using them to authorize access to personal records.

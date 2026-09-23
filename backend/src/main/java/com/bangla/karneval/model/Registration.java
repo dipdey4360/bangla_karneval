@@ -16,6 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "registrations")
 public class Registration {
+    @Column(precision = 10, scale = 2) private BigDecimal memberDiscountAmount = BigDecimal.ZERO;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

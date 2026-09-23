@@ -26,10 +26,16 @@ public class MembershipEmailService {
         boolean approved = m.getStatus() == Member.Status.APPROVED;
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(sender); message.setTo(m.getEmail());
+        if (approved && m.getMembershipType() == Member.Type.COUPLE && m.getPartnerEmail() != null
+                && !m.getPartnerEmail().isBlank() && !m.getEmail().equalsIgnoreCase(m.getPartnerEmail()))
+            message.setTo(m.getEmail(), m.getPartnerEmail());
         message.setSubject("Bangla Karneval — Membership " + (approved ? "approved" : "application update"));
         message.setText("Hello " + m.getName() + ",\n\n" + (approved
             ? "Your membership application has been approved. Welcome to Bangla Karneval!\n"
             : "Your membership application has been rejected. Please contact the organisers regarding any donation already made.\n")
+            + (approved ? "\nMembership ID: " + m.getMembershipId()
+                + "\nKeep your membership ID confidential. You may need it to register for events throughout the year."
+                + (m.getMembershipType() == Member.Type.COUPLE ? "\nThis ID is valid for both named members. Each partner should use their own full name when registering." : "") : "")
             + "\nMembership: " + m.getMembershipType() + "\nAnnual donation: EUR " + m.getAnnualFee()
             + (m.getAdminNote() == null || m.getAdminNote().isBlank() ? "" : "\n\nMessage from the board:\n" + m.getAdminNote())
             + "\n\nKind regards,\nBangla Karneval");

@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 @org.hibernate.annotations.DynamicUpdate
 @Table(name = "application_settings")
 public class ApplicationSettings {
+    @Column(precision = 5, scale = 2) private BigDecimal memberDiscountPercent = BigDecimal.ZERO;
     @Id private Integer id = 1;
     @Column(nullable = false) private Integer activeEventYear;
     private Long activeEventEditionId;

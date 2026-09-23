@@ -24,6 +24,7 @@ public class RegistrationService {
     @Autowired private PriceCalculationService         priceCalculationService;
     @Autowired private EmailService                    emailService;
     @Autowired private ApplicationSettingsService settings;
+    @Autowired private MembershipVerificationService membershipVerification;
 
     @Transactional
     public RegistrationResponse registerParticipant(GeneralRegistrationRequest request) {
@@ -43,6 +44,17 @@ public class RegistrationService {
                 request.getPrimaryDateOfBirth(), additionalDobs, pricePerPerson
         );
 
+        BigDecimal undiscounted = totalAmount;
+        java.util.Set<String> claimedMembers = new java.util.HashSet<>();
+        totalAmount = totalAmount.subtract(memberSaving(request.getMembershipId(), request.getPrimaryName(), pricePerPerson, claimedMembers));
+        for (var participant : request.getAdditionalParticipants()) {
+            BigDecimal base = java.time.Period.between(participant.getDateOfBirth(), LocalDate.now()).getYears() < 18 ? BigDecimal.ZERO : pricePerPerson;
+            totalAmount = totalAmount.subtract(memberSaving(participant.getMembershipId(), participant.getName(), base, claimedMembers));
+        }
+        if (request.getExpectedTotal() != null && request.getExpectedTotal().compareTo(totalAmount) != 0)
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT,
+                "The donation total has changed. Refresh the page and verify your membership again before registering.");
+
         String referenceCode = ReferenceCodeGenerator.generate(config.getEventYear());
 
         Registration registration = new Registration();
@@ -55,6 +67,7 @@ public class RegistrationService {
         registration.setPhone(request.getPhone());
         registration.setParticipantCount(1 + request.getAdditionalParticipants().size());
         registration.setCalculatedAmount(totalAmount);
+        registration.setMemberDiscountAmount(undiscounted.subtract(totalAmount));
         registration.setPaymentMethod(PaymentMethod.valueOf(request.getPaymentMethod()));
         registration.setReferenceCode(referenceCode);
         registration.setEventYear(config.getEventYear());
@@ -83,6 +96,15 @@ public class RegistrationService {
                 registration.getId(), totalAmount, referenceCode,
                 "Registration successful! Check your email for donation instructions."
         );
+    }
+
+    private BigDecimal memberSaving(String id, String name, BigDecimal base, java.util.Set<String> claimed) {
+        if (id == null || id.isBlank()) return BigDecimal.ZERO;
+        var verification = membershipVerification.verify(id, name);
+        String key = id.strip().toUpperCase(java.util.Locale.ROOT) + ":" + MembershipVerificationService.normalizeName(name);
+        if (!claimed.add(key)) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST,
+            "A member discount can only be used once per person in this registration.");
+        return base.multiply(verification.discountPercent()).divide(new BigDecimal("100"), 2, java.math.RoundingMode.HALF_UP);
     }
 
     public List<Registration> searchRegistrations(String search, PaymentStatus status, int year) {

@@ -19,6 +19,7 @@ public class ProgrammeFoundationMigration {
         jdbc.execute("CREATE TABLE IF NOT EXISTS application_schema_migrations (version VARCHAR(100) PRIMARY KEY, applied_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)");
         apply("20260918_programme_foundation");
         apply("20260918_programme_management");
+        apply("20260923_membership_ids");
     }
     private void apply(String version) throws IOException {
         if (Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM application_schema_migrations WHERE version=?)",Boolean.class,version))) return;

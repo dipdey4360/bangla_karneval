@@ -103,13 +103,14 @@
             byId('membership-benefits-edit').value=s.benefits;
             byId('membership-single-edit').value=s.singleFee;
             byId('membership-couple-edit').value=s.coupleFee;
+            byId('membership-discount-edit').value=s.memberDiscountPercent ?? 0;
             byId('membership-payment-edit').value=s.paymentInstructions;
         } catch(e) { byId('membership-admin-message').textContent=e.message; }
     };
     function openReview(m) {
         reviewingId=m.id;
         const details=byId('membership-review-details'); details.replaceChildren();
-        const fields={Name:m.name,Partner:m.partnerName,'Partner date of birth':m.partnerDateOfBirth,'Partner address':m.partnerAddress,'Partner phone':m.partnerPhone,'Partner email':m.partnerEmail,'Date of birth':m.dateOfBirth,Address:m.address,Phone:m.phone,Email:m.email,
+        const fields={'Membership ID':m.membershipId,Name:m.name,Partner:m.partnerName,'Partner date of birth':m.partnerDateOfBirth,'Partner phone':m.partnerPhone,'Partner email':m.partnerEmail,'Date of birth':m.dateOfBirth,Address:m.address,Phone:m.phone,Email:m.email,
             Membership:m.membershipType,'Annual donation':formatCurrency(m.annualFee),'Donation method':m.paymentMethod,
             'Applicant reports donation sent':m.paymentDeclared?'Yes':'No','Donation verified':m.paymentVerified?'Yes':'No',
             'Public name visibility':m.listed?'Show name(s) after approval':'Keep name(s) private',
@@ -182,7 +183,7 @@
             try {
                 const saved=await apiFetchWithAuth('/api/admin/membership/settings',jsonOptions('PUT',{
                     benefits:byId('membership-benefits-edit').value.trim(),singleFee:Number(byId('membership-single-edit').value),
-                    coupleFee:Number(byId('membership-couple-edit').value),paymentInstructions:byId('membership-payment-edit').value.trim()
+                    memberDiscountPercent:Number(byId('membership-discount-edit').value),coupleFee:Number(byId('membership-couple-edit').value),paymentInstructions:byId('membership-payment-edit').value.trim()
                 }));
                 if(saved) byId('membership-settings-admin-message').textContent='Membership information saved.';
             } catch(err) { byId('membership-settings-admin-message').textContent=err.message; }
