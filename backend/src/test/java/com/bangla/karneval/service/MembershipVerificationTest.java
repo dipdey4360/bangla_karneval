@@ -21,34 +21,34 @@ class MembershipVerificationTest {
         member.setMembershipType(Member.Type.COUPLE); member.setStatus(Member.Status.APPROVED); member.setPaymentVerified(true);
         member.setMembershipStartsOn(java.time.LocalDate.now(java.time.ZoneId.of("Europe/Berlin")).minusMonths(1));
         member.setMembershipExpiresOn(member.getMembershipStartsOn().plusYears(1));
-        when(members.findByMembershipId("BKM-00001")).thenReturn(Optional.of(member));
+        when(members.findByMembershipId("BKM-00007")).thenReturn(Optional.of(member));
     }
     @Test void eitherPartnerCanVerifyWithSharedIdAndNormalizedName() {
         var config = new ApplicationSettings(); config.setMemberDiscountPercent(new BigDecimal("12.50"));
         when(settings.getSettings()).thenReturn(config);
-        assertEquals(new BigDecimal("12.50"),service.verify(" bkm-00001 ","  ALICE   Smith ").discountPercent());
-        assertTrue(service.verify("BKM-00001","Bob Smith").verified());
+        assertEquals(new BigDecimal("12.50"),service.verify(" bkm-00007 ","  ALICE   Smith ").discountPercent());
+        assertTrue(service.verify("BKM-00007","Bob Smith").verified());
     }
     @Test void wrongNameUnknownIdAndInactiveMembershipDoNotRevealDetails() {
-        var wrong = assertThrows(ResponseStatusException.class,()->service.verify("BKM-00001","Someone else"));
+        var wrong = assertThrows(ResponseStatusException.class,()->service.verify("BKM-00007","Someone else"));
         var missing = assertThrows(ResponseStatusException.class,()->service.verify("BKM-99999","Alice Smith"));
         assertEquals(wrong.getReason(),missing.getReason());
         member.setStatus(Member.Status.REJECTED);
-        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00001","Alice Smith"));
+        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00007","Alice Smith"));
         member.setStatus(Member.Status.APPROVED); member.setPaymentVerified(false);
-        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00001","Alice Smith"));
+        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00007","Alice Smith"));
         verifyNoInteractions(settings);
     }
     @Test void singleMembershipDoesNotQualifyPartner() {
         member.setMembershipType(Member.Type.SINGLE);
-        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00001","Bob Smith"));
+        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00007","Bob Smith"));
     }
     @Test void expiryDateAndMissingDatesCannotQualifyForDiscount() {
         member.setMembershipExpiresOn(java.time.LocalDate.now(java.time.ZoneId.of("Europe/Berlin")));
-        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00001","Alice Smith"));
+        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00007","Alice Smith"));
         assertEquals("Expired",member.getValidityStatus());
         member.setMembershipExpiresOn(null);
-        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00001","Alice Smith"));
+        assertThrows(ResponseStatusException.class,()->service.verify("BKM-00007","Alice Smith"));
         verifyNoInteractions(settings);
     }
 }

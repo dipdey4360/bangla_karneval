@@ -46,6 +46,8 @@
                 const member = board.find(m => m.id === slot), card = node('div', undefined, 'admin-board-card');
                 if (member?.imageUrl?.startsWith('/uploads/board/')) { const img=node('img'); img.src=member.imageUrl; img.alt=member.name; card.append(img); }
                 card.append(node('h3', `${slot}. ${member?.name || 'Empty position'}`), node('p', member?.designation || 'Board member'), button('Edit', () => chooseSlot(slot, true)));
+                card.append(node('p', `Membership ID: BKM-${String(slot).padStart(5, '0')}`),
+                    node('p', member ? 'Valid for the current occupant. Update this position to transfer the ID.' : 'Reserved; inactive until this position is filled.'));
                 grid.append(card);
             }
             chooseSlot(byId('board-slot').value);
@@ -112,6 +114,7 @@
         reviewingId=m.id;
         const details=byId('membership-review-details'); details.replaceChildren();
         const fields={'Membership ID':m.membershipId,
+            'Previous ID (replaced by board reservation)':m.previousMembershipId,
             'Membership validity':m.validityStatus || 'Not approved',
             'Membership starts':m.membershipStartsOn || (m.status === 'APPROVED' ? 'Approval date unavailable' : 'Set on board approval'),
             'Membership expires':m.membershipExpiresOn || (m.status === 'APPROVED' ? 'Approval date unavailable' : 'One year after board approval'),

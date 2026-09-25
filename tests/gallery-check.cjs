@@ -17,7 +17,7 @@ context.apiFetch=async url=>{requests.push(url);if(url==='/api/config/current')r
 (async()=>{
  await context.initGallery();
  assert.deepEqual(get('year-tabs').children.map(n=>n.textContent),['Puja 2026','Bangla Karneval 2026']);
- assert.ok(requests.includes('/api/editions/2/gallery'));assert.ok(requests.includes('/api/editions/2/gallery?highlight=true'));
+ assert.ok(requests.includes('/api/editions/2/gallery'));assert.ok(!requests.some(url=>url.includes('highlight=true')));
  const card=get('year-gallery-grid').children[0];assert.equal(card.children[0].tag,'video');card.events.click();
  assert.equal(get('lightbox-video').hidden,false);assert.equal(get('lightbox-image').hidden,true);
  assert.equal(get('lightbox-video').src,'http://localhost:8084/assets/test.mp4');

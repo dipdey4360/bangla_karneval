@@ -2,12 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('footer-container');
     if (!container) return;
 
-    fetch('/components/footer.html')
+    fetch('/components/footer.html', {cache:'no-store'})
         .then(res => res.text())
         .then(html => {
             container.innerHTML = html;
             updateEventYearLabels();
             loadFooterSponsors();
+            loadClubSocialLinks();
         })
         .catch(err => console.error('Footer load error:', err));
 });
@@ -45,4 +46,15 @@ async function loadFooterSponsors() {
     } catch (e) {
         grid.closest('.footer-sponsors').style.display = 'none';
     }
+}
+
+async function loadClubSocialLinks() {
+    const year=document.getElementById('club-copyright-year');if(year)year.textContent=new Date().getFullYear();
+    try {
+        const organisation=await apiFetch('/api/organisation');
+        for(const [id,key] of [['club-facebook','contactFacebook'],['club-instagram','contactInstagram']]) {
+            const link=document.getElementById(id),url=safeWebUrl(organisation?.[key]);
+            if(link && url){link.href=url;link.hidden=false;}
+        }
+    } catch(error){console.warn('Social links could not be loaded',error);}
 }

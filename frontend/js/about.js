@@ -1,17 +1,27 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    await loadAboutConfig();
-});
+document.addEventListener('DOMContentLoaded', loadAboutConfig);
 
 async function loadAboutConfig() {
     try {
-        const [config, organisation] = await Promise.all([getActiveEventConfig(), apiFetch('/api/organisation')]);
-        const aboutText = document.getElementById('about-text');
-        const eventDate = document.getElementById('about-event-date');
-        const eventLoc = document.getElementById('about-event-location');
-        if (aboutText) aboutText.textContent = organisation.story || 'Bangla Karneval e.V. brings our community together through culture and shared celebrations.';
-        if (eventDate) eventDate.textContent = formatDate(config.eventDate);
-        if (eventLoc) eventLoc.textContent = config.eventLocation || '';
-    } catch (e) {
-        console.error('Failed to load about config:', e);
+        const organisation = await apiFetch('/api/organisation');
+        const container = document.getElementById('about-text');
+        if (!container || !organisation?.story?.trim()) return;
+        // Plain text from the admin editor becomes separate, safe paragraphs.
+        const paragraphs = organisation.story.trim().split(/\n\s*\n/).map(text => {
+            const paragraph = document.createElement('p');
+            const emphasis = 'Bangla Karneval e.V.—with you, and for you.';
+            const index = text.indexOf(emphasis);
+            if (index < 0) paragraph.textContent = text;
+            else {
+                const strong = document.createElement('strong');
+                strong.textContent = emphasis;
+                paragraph.append(document.createTextNode(text.slice(0, index)), strong,
+                    document.createTextNode(text.slice(index + emphasis.length)));
+            }
+            return paragraph;
+        });
+        container.replaceChildren(...paragraphs);
+    } catch (error) {
+        // Keep the approved story visible if organisation settings cannot be loaded.
+        console.warn('Organisation story could not be loaded', error);
     }
 }

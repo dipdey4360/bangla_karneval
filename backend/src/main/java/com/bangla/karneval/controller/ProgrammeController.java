@@ -26,6 +26,13 @@ public class ProgrammeController {
   return programmes.list().stream().filter(c->c.getEventEditionId().equals(active) || !gallery.findByEventEditionIdOrderByDisplayOrderAsc(c.getEventEditionId()).isEmpty())
    .map(c->Map.of("eventEditionId",c.getEventEditionId(),"title",c.getTitle(),"eventYear",c.getEventYear())).toList();
  }
+ // Explicit public projection: no payment instructions or internal contact/admin fields.
+ public record HomeEvent(Long eventEditionId, String programmeCode, String title, String tagline,
+     java.time.LocalDate eventDate, String eventLocation, Integer eventYear, String posterPath, boolean registrationEnabled) {}
+ @GetMapping("/api/editions/home") public List<HomeEvent> homeEvents() {
+  return programmes.list().stream().map(c -> new HomeEvent(c.getEventEditionId(),c.getProgrammeCode(),c.getTitle(),
+   c.getTagline(),c.getEventDate(),c.getEventLocation(),c.getEventYear(),c.getPosterPath(),Boolean.TRUE.equals(c.getRegistrationEnabled()))).toList();
+ }
  @GetMapping("/api/editions/{id}/activities") public List<Event> activities(@PathVariable long id) { programmes.get(id); return events.findByEventEditionId(id); }
  @GetMapping("/api/editions/{id}/gallery") public List<GalleryItem> gallery(@PathVariable long id,@RequestParam(defaultValue="false") boolean highlight) {
   programmes.get(id); return gallery.findByEventEditionIdOrderByDisplayOrderAsc(id).stream().filter(i->!highlight || Boolean.TRUE.equals(i.getIsHighlight())).toList();

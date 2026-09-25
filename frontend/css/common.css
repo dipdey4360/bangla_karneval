@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Lato:wght@300;400;700&family=Noto+Serif+Bengali:wght@400;600&display=swap');
 
+/* Shared decorative watermark, including admin and sign-in pages. */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url('/assets/images/cologne-cathedral.svg?v=dom-2') right 2vw bottom / auto 88vh no-repeat;
+    opacity: .05;
+    pointer-events: none;
+    z-index: 1;
+}
 :root {
     --primary-red:    #D63031;
     --primary-gold:   #F39C12;

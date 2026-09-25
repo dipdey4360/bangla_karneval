@@ -21,6 +21,9 @@ public class ProgrammeFoundationMigration {
         apply("20260918_programme_management");
         apply("20260923_membership_ids");
         apply("20260923_membership_expiry");
+        apply("20260924_club_homepage");
+        apply("20260924_organisation_story");
+        apply("20260924_board_membership_ids");
     }
     private void apply(String version) throws IOException {
         if (Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM application_schema_migrations WHERE version=?)",Boolean.class,version))) return;

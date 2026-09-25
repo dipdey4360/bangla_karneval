@@ -17,6 +17,7 @@ public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
     @Version private Long version;
     @Column(unique = true, length = 40) private String membershipId;
+    @Column(length = 40) private String previousMembershipId;
     @Column(nullable = false, length = 100) private String name;
     @Column(length = 100) private String partnerName;
     private LocalDate partnerDateOfBirth;

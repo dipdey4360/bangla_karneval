@@ -50,8 +50,11 @@ class ProgrammeMigrationTest {
         Runnable migrate=()->tx.executeWithoutResult(status->{try {migration.migrate();} catch(Exception e) {throw new RuntimeException(e);}});
         migrate.run();
         assertEquals(6,jdbc.queryForObject("SELECT count(*) FROM programmes",Integer.class));
-        assertEquals(3,jdbc.queryForObject("SELECT count(*) FROM event_editions",Integer.class));
-        assertEquals("Original story",jdbc.queryForObject("SELECT story FROM organisation_profile",String.class));
+        assertEquals(7,jdbc.queryForObject("SELECT count(*) FROM event_editions",Integer.class));
+        assertEquals(4,jdbc.queryForObject("SELECT count(*) FROM event_editions WHERE slug LIKE 'club-%' AND event_date IS NULL AND registration_enabled=false",Integer.class));
+        jdbc.update("UPDATE event_editions SET tagline='Keep custom wording' WHERE slug='club-eid-2026'");
+
+        assertTrue(jdbc.queryForObject("SELECT story FROM organisation_profile",String.class).startsWith("Our journey began in a small pub in Cologne"));
         assertEquals("Bangla Karneval e.V.",jdbc.queryForObject("SELECT name FROM organisation_profile",String.class));
         assertEquals(2,jdbc.queryForObject("SELECT count(*) FROM registrations WHERE event_edition_id IS NOT NULL",Integer.class));
         assertEquals("UNKNOWN-YEAR",jdbc.queryForObject("SELECT reference_code FROM registrations WHERE event_edition_id IS NULL",String.class));
@@ -62,7 +65,10 @@ class ProgrammeMigrationTest {
         assertEquals("Keep board",jdbc.queryForObject("SELECT name FROM board_members",String.class));
         jdbc.update("UPDATE organisation_profile SET story='Edited organisation story'");
         migrate.run();
-        assertEquals(4,jdbc.queryForObject("SELECT count(*) FROM application_schema_migrations",Integer.class));
+        assertEquals(7,jdbc.queryForObject("SELECT count(*) FROM application_schema_migrations",Integer.class));
+        assertEquals("Keep custom wording",jdbc.queryForObject("SELECT tagline FROM event_editions WHERE slug='club-eid-2026'",String.class));
+        assertEquals(7,jdbc.queryForObject("SELECT count(*) FROM event_editions",Integer.class));
+
         assertEquals("Edited organisation story",jdbc.queryForObject("SELECT story FROM organisation_profile",String.class));
         jdbc.update("UPDATE event_config SET about_text='Event only',price_per_person=18 WHERE event_year=2026");
         assertEquals("Event only",jdbc.queryForObject("SELECT description FROM event_editions WHERE legacy_event_year=2026",String.class));
@@ -76,7 +82,7 @@ class ProgrammeMigrationTest {
         jdbc.update("INSERT INTO event_editions(programme_id,slug,title,event_year,theme_key) SELECT id,'bbq-spring-2026','Spring BBQ',2026,'bbq' FROM programmes WHERE code='bbq'");
         jdbc.update("INSERT INTO event_editions(programme_id,slug,title,event_year,theme_key) SELECT id,'bbq-summer-2026','Summer BBQ',2026,'bbq' FROM programmes WHERE code='bbq'");
         jdbc.update("INSERT INTO registrations(event_year,event_edition_id,reference_code) SELECT 2026,id,'PUJA' FROM event_editions WHERE slug='puja-2026'");
-        assertEquals(4,jdbc.queryForObject("SELECT count(*) FROM event_editions WHERE event_year=2026",Integer.class));
+        assertEquals(8,jdbc.queryForObject("SELECT count(*) FROM event_editions WHERE event_year=2026",Integer.class));
         assertThrows(org.springframework.dao.DataIntegrityViolationException.class,()->jdbc.update("INSERT INTO registrations(event_year,event_edition_id) SELECT 2025,id FROM event_editions WHERE slug='puja-2026'"));
         assertThrows(org.springframework.dao.DataIntegrityViolationException.class,()->jdbc.update("DELETE FROM event_editions WHERE legacy_event_year=2025"));
         assertEquals(5,jdbc.queryForObject("SELECT count(*) FROM registrations",Integer.class));

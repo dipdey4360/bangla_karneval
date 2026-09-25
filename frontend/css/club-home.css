@@ -1,0 +1,292 @@
+.club-welcome {
+    text-align:center;
+    padding-top:96px;
+    padding-bottom:96px
+}
+.club-eyebrow {
+    color:var(--primary-red);
+    text-transform:uppercase;
+    letter-spacing:2.6px;
+    font-size:12px;
+    font-weight:700
+}
+.club-welcome h1 {
+    font-size:clamp(36px,4.8vw,60px);
+    line-height:1.12;
+    margin:24px 0 28px
+}
+.club-welcome h1 span {
+    color:var(--primary-red)
+}
+.club-intro {
+    max-width:540px;
+    margin:auto;
+    color:var(--text-secondary);
+    font-size:16px;
+    line-height:1.85
+}
+.carousel-heading-row {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    margin-bottom:36px
+}
+.carousel-heading-row h2 {
+    font-size:28px;
+    margin:0 0 5px
+}
+.carousel-heading-row p {
+    font-size:13px;
+    color:var(--text-secondary)
+}
+.carousel-controls {
+    display:flex;
+    gap:8px;
+    flex-shrink:0
+}
+.carousel-controls button {
+    border:1px solid var(--club-line);
+    border-radius:50%;
+    background:var(--bg-cream);
+    color:var(--text-primary);
+    height:44px;
+    width:44px;
+    font-size:22px;
+    cursor:pointer
+}
+.carousel-controls button:disabled {
+    opacity:.3;
+    cursor:default
+}
+.event-carousel {
+    position:relative;
+    max-width:1060px;
+    margin:auto;
+    height:clamp(280px,42vw,460px);
+    overflow:hidden;
+    touch-action:pan-y
+}
+.event-slide {
+    position:absolute;
+    left:15%;
+    width:70%;
+    height:calc(100% - 24px);
+    top:8px;
+    border-radius:14px;
+    background:#fffcef;
+    overflow:hidden;
+    box-shadow:0 8px 24px #30292118;
+    transition:transform .45s ease,opacity .45s ease
+}
+.event-slide img {
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain
+}
+.event-slide-label {
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    background:transparent;
+    padding:16px;
+    color:var(--text-primary)
+}
+.event-slide-label strong {
+    display:none;
+    font:24px Georgia,serif;
+    color:inherit
+}
+.event-slide-label small {
+    display:inline-block;
+    padding:6px 10px;
+    background:#fffaf0ed;
+    border-radius:4px;
+    letter-spacing:2px;
+    font-size:11px
+}
+.event-artwork-fallback {
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-content:center;
+    text-align:center;
+    padding:50px;
+    font:28px Georgia,serif;
+    color:var(--primary-red)
+}
+.carousel-loading {
+    text-align:center;
+    padding:70px 20px;
+    color:var(--text-secondary)
+}
+.selected-event {
+    text-align:center;
+    padding-top:32px
+}
+.selected-event h3 {
+    font-size:32px;
+    margin:12px 0
+}
+.event-organiser {
+    font-size:13px;
+    color:var(--text-secondary)
+}
+.event-tagline {
+    font:17px/1.7 var(--font-body);
+    color:var(--text-secondary);
+    max-width:560px;
+    margin:16px auto
+}
+.event-facts {
+    display:flex;
+    gap:48px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin:28px 0 32px;
+    font-size:14px;
+    font-weight:600
+}
+.club-register {
+    min-width:190px
+}
+.club-register span {
+    margin-left:22px
+}
+#event-registration-status {
+    font-size:13px;
+    color:var(--text-secondary)
+}
+.event-selector {
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+    padding-top:12px;
+    padding-bottom:0
+}
+.event-selector button {
+    font:14px var(--font-body);
+    border:0;
+    border-bottom:2px solid transparent;
+    background:transparent;
+    color:var(--text-secondary);
+    padding:12px 16px;
+    min-height:44px;
+    cursor:pointer
+}
+.event-selector button[aria-pressed=true] {
+    border-color:var(--primary-red);
+    color:var(--primary-red)
+}
+.club-home .highlights-section {
+    padding-top:72px;
+    padding-bottom:clamp(80px,8vw,112px);
+    border-top:1px solid var(--club-line)
+}
+.club-home .event-cards {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:28px
+}
+.club-home .highlights-section .section-header {
+    margin-bottom:clamp(36px,4vw,52px);
+}
+.club-home .highlights-section .section-header p {
+    margin-top:16px;
+}
+.club-home .event-card {
+    padding:32px;
+    border:1px solid var(--club-line);
+    border-radius:12px;
+    background:var(--bg-white)
+}
+.club-home .event-card h3 {
+    font-size:23px;
+    margin:12px 0
+}
+.club-home .event-card p {
+    color:var(--text-secondary)
+}
+.club-home .event-icon img {
+    width:64px;
+    height:64px;
+    object-fit:contain
+}
+@media(max-width:600px) {
+    .club-welcome {
+        padding-top:56px;
+        padding-bottom:64px
+    }
+    .club-intro {
+        font-size:14px
+    }
+    .club-intro br {
+        display:none
+    }
+    .carousel-heading-row h2 {
+        font-size:24px
+    }
+    .event-carousel {
+        height:clamp(250px,68vw,390px)
+    }
+    .event-slide {
+        width:90%;
+        left:5%
+    }
+    .event-slide-label strong {
+        font-size:20px
+    }
+    .event-slide-label {
+        padding:26px 16px 10px
+    }
+    .event-facts {
+        flex-direction:column;
+        gap:20px
+    }
+    .event-tagline {
+        font-size:16px
+    }
+    .carousel-heading-row {
+        align-items:flex-start
+    }
+    .event-selector {
+        gap:0
+    }
+    .event-selector button {
+        font-size:13px;
+        padding:10px
+    }
+    .selected-event h3 {
+        font-size:22px
+    }
+}
+.club-home .container { max-width:1040px; }
+.event-fact-label {
+    display:block;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    font-weight:400;
+    color:var(--text-secondary);
+    margin-bottom:8px;
+}
+.event-browse { text-align:center; padding-top:48px; padding-bottom:64px; }
+.event-browse > p { font-size:12px; color:var(--text-secondary); letter-spacing:.5px; }
+.club-home .highlights-section .section-header { text-align:center; }
+.club-home #event-description { max-width:600px; line-height:1.8; }
+.club-home .event-card p { line-height:1.8; }
+#event-registration-status:empty { display:none; }
+@media(max-width:600px) {
+    .club-home .event-cards { grid-template-columns:1fr; gap:20px; }
+    .club-home .event-card { padding:24px; }
+    .club-home .highlights-section { padding-top:48px; }
+    .event-browse { padding-top:36px; padding-bottom:48px; }
+}
+@media(prefers-reduced-motion:reduce) {
+    .event-slide {
+        transition:none
+    }
+}

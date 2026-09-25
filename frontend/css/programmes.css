@@ -9,12 +9,5 @@
 .preview-banner { padding:16px;text-align:center;background:#fff3c8;color:#312500; }
 .preview-banner a { margin-left:12px;text-decoration:underline; }
 [hidden] { display:none !important; }
-:root:not([data-theme="bangla-karneval"])[data-theme] { --primary-red:var(--event-accent,#7b241c);--accent-maroon:var(--event-accent,#7b241c); }
-:root:not([data-theme="bangla-karneval"])[data-theme] .site-header { background:var(--event-accent); }
-:root:not([data-theme="bangla-karneval"])[data-theme] :is(.about-hero,.registration-hero,.performer-hero,.gallery-hero,.contact-hero) { background:var(--event-accent);color:white; }
-:root:not([data-theme="bangla-karneval"])[data-theme] .hero-register-btn { background:var(--event-accent);border-color:#fff;color:#fff; }
-:root:not([data-theme="bangla-karneval"])[data-theme] .hero-fullscreen::before { background:linear-gradient(transparent,rgba(0,0,0,.35) 40%,rgba(0,0,0,.85)); }
-:root:not([data-theme="bangla-karneval"])[data-theme] .hero-bg-img { object-fit:cover; }
-:root:not([data-theme="bangla-karneval"])[data-theme] .hero-title { color:white; }
 @media(max-width:768px){.programme-form-grid{grid-template-columns:minmax(0,1fr)}.header-logo-text .logo-title{font-size:.95rem}.header-logo{gap:6px}#tab-config .btn{white-space:normal}.year-tabs{flex-wrap:wrap}}
 .hero-organiser { color:#fff;font-size:.9rem;margin:0 0 12px;text-shadow:0 1px 6px #000; }

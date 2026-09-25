@@ -7,13 +7,10 @@ document.addEventListener('DOMContentLoaded',async()=>{await initGallery();setup
 async function initGallery(){
  try {
  const c=await getActiveEventConfig(); currentEventYear=c.eventYear;
- document.getElementById('highlights-title').textContent=c.title+' Highlights';
- const items=await apiFetch('/api/editions/'+c.eventEditionId+'/gallery?highlight=true');
- renderGallery(items,'highlights-grid','No highlights added for this event yet.');
  const editions=await apiFetch('/api/editions'), tabs=document.getElementById('year-tabs'); tabs.replaceChildren();
  for(const e of editions){const tab=contentNode('button',e.title,'year-tab');tab.type='button';tab.dataset.edition=e.eventEditionId;tab.addEventListener('click',()=>loadEditionGallery(e.eventEditionId));tabs.append(tab);}
  await loadEditionGallery(c.eventEditionId);
- }catch(e){document.getElementById('highlights-grid').textContent='Unable to load gallery. Please refresh.';}
+ }catch(e){document.getElementById('year-gallery-grid').textContent='Unable to load gallery. Please refresh.';}
 }
 async function loadEditionGallery(id){
  const request=++galleryLoadId;

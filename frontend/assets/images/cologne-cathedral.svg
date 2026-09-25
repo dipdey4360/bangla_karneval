@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 720" fill="none" stroke="#82664a" stroke-linejoin="round">
+<title>Kölner Dom — decorative twin-spire silhouette</title>
+<defs><g id="tower">
+<path fill="#82664a" fill-opacity=".55" stroke-width="3" d="M82 698V355h8V265h12v-65h8L151 28l41 172h8v65h12v90h8v343Z"/>
+<path stroke-width="4" d="M151 12v27m-10-15h20M151 42v216M110 200h82M102 231h98M90 265h122M90 292h122M82 355h138M82 382h138M82 495h138M82 525h138M90 355V208l12-28 12 28v57m74 0v-57l12-28 12 28v147M74 698V525l8-28 8 28m122 173V525l8-28 8 28"/>
+<path stroke-width="3" d="M118 222l33-154 33 154M124 174h54m-46-37h38m-29-35h20M112 340v-33l15-26 15 26v33Zm48 0v-33l15-26 15 26v33ZM106 477v-65l18-29 18 29v65Zm54 0v-65l18-29 18 29v65ZM106 613v-56l18-30 18 30v56Zm54 0v-56l18-30 18 30v56Z"/>
+<path fill="#fffaf0" fill-opacity=".6" stroke-width="3" d="M111 698v-43q40-91 80 0v43ZM123 698v-40q28-62 56 0v40Z"/>
+<path stroke-width="2" d="m106 183 45-15 45 15m-82-39 37-14 37 14m-64-39 27-12 27 12M124 412v65m54-65v65m-54 80v56m54-56v56"/>
+</g></defs>
+<use href="#tower"/><use href="#tower" transform="translate(298 0)"/>
+<path fill="#82664a" fill-opacity=".45" stroke-width="3" d="M220 698V446l80-107 80 107v252ZM229 445h142M220 526h160M220 612h160"/>
+<path stroke-width="4" d="M213 452l87-127 87 127M300 305v34m-10-24h20M240 424v-44l9-22 9 22m84 44v-44l9-22 9 22"/>
+<path fill="#fffaf0" fill-opacity=".6" stroke-width="3" d="M246 512v-45l54-58 54 58v45ZM246 698v-45q54-103 108 0v45ZM258 698v-43q42-78 84 0v43Z"/>
+<circle cx="300" cy="565" r="34" stroke-width="4"/><circle cx="300" cy="565" r="12" stroke-width="3"/>
+<path stroke-width="3" d="M300 531v22m0 24v22m-34-34h22m24 0h22m-58-24 16 16m16 16 16 16m0-48-16 16m-16 16-16 16M56 698h488M48 708h504"/>
+</svg>

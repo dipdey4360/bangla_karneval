@@ -4,16 +4,22 @@ let registrationEventYear = null;
 let registrationEditionId = null, registrationEventVersion = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadPrice();
     mountMembershipCheck(document.getElementById('primary-membership'), document.getElementById('primary-name'));
     setupForm();
     document.getElementById('add-participant-btn')
         ?.addEventListener('click', addParticipant);
+    await loadPrice();
 });
 
 async function loadPrice() {
     try {
         const config   = await getActiveEventConfig();
+        const requestedEdition = new URLSearchParams(location.search).get('edition');
+        if (requestedEdition && requestedEdition !== String(config.eventEditionId)) {
+            document.getElementById('registration-form').hidden = true;
+            showAlert('form-alert', 'This event is no longer active. Please return to Home and select the current event.', 'info');
+            return;
+        }
         document.querySelectorAll('[data-event-payment]').forEach(el=>el.textContent=config.paymentInstructions || 'Contact the organisers for donation details. Include your registration reference with your donation.');
         if(config.registrationEnabled===false){document.getElementById('registration-form').hidden=true;showAlert('form-alert','Registration is currently closed for this event.','info');}
         registrationEventYear = config.eventYear;
@@ -301,6 +307,9 @@ function mountMembershipCheck(host, nameInput) {
         reset();
     });
     input.addEventListener('input', reset); nameInput.addEventListener('input', reset);
+    input.addEventListener('keydown', event => {
+        if (event.key === 'Enter') { event.preventDefault(); if (!button.disabled) button.click(); }
+    });
     button.addEventListener('click', async () => {
         reset();
         if (!nameInput.value.trim() || !input.value.trim()) { status.textContent = 'Enter your full name and membership ID first.'; return; }
@@ -309,6 +318,7 @@ function mountMembershipCheck(host, nameInput) {
         try {
             const result = await apiFetch('/api/register/verify-membership', {
                 method:'POST', headers:{'Content-Type':'application/json'}, cache:'no-store',
+                signal: typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined,
                 body:JSON.stringify({name:nameInput.value.trim(), membershipId:input.value.trim()})
             });
             if (sequence !== state.sequence || key !== membershipKey(state) || choice.value !== 'yes') return;
@@ -318,7 +328,9 @@ function mountMembershipCheck(host, nameInput) {
             status.textContent = percent > 0 ? `Membership verified. A ${percent}% discount applies to this participant’s donation.` : 'Membership verified. No member discount is currently offered.';
             updatePriceSummary();
         } catch (error) {
-            if (sequence === state.sequence) status.textContent = error.message || 'Verification failed. Please try again.';
+            if (sequence === state.sequence) status.textContent = error.name === 'TimeoutError'
+                ? 'Verification timed out. Please check your connection and try again.'
+                : error.message || 'Verification failed. Please try again.';
         } finally { if (sequence === state.sequence) button.disabled = false; }
     });
 }

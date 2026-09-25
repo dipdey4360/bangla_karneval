@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('header-container');
     if (!container) return;
     try {
-        const res = await fetch('/components/header.html');
+        const res = await fetch('/components/header.html', {cache:'no-store'});
         container.innerHTML = await res.text();
         updateEventYearLabels();
         initNavigation();
@@ -81,17 +81,17 @@ function initHamburger() {
 ─────────────────────────────────────────────────────────────── */
 async function applyButtonVisibility() {
     try {
-        const { registrationEnabled, performerEnabled } = await getActiveEventConfig();
+        const { performerEnabled } = await getActiveEventConfig();
+
+        if (location.pathname.endsWith('/event_preview.html')) { setNavItemVisible('performer',false);return; }
 
         // ── Performer nav link ──────────────────────────────
         setNavItemVisible('performer', performerEnabled);
 
-        // ── Register Now nav link ───────────────────────────
-        setNavItemVisible('register', registrationEnabled);
 
     } catch (e) {
         console.warn('Could not fetch button status:', e);
-        // Both buttons remain visible on failure — safe default
+        // Keep the performer link available if settings cannot be loaded
     }
 }
 

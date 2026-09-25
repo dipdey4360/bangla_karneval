@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Performer Registration — Bangla Karneval</title>
-    <link rel="stylesheet" href="css/common.css?v=mobile-1">
+    <link rel="stylesheet" href="css/common.css?v=dom-4">
     <link rel="stylesheet" href="css/header.css?v=mobile-1">
     <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/performer.css?v=consent-1">
+    <link rel="stylesheet" href="css/performer.css?v=club-fixes-2">
     <link rel="icon" href="assets/images/favicon.ico">
-<link rel="stylesheet" href="css/programmes.css?v=programmes-1">
+<link rel="stylesheet" href="css/programmes.css?v=club-1">
+<link rel="stylesheet" href="css/club-theme.css?v=spacing-3">
 </head>
-<body>
+<body class="club-site">
 <div class="page-wrapper">
     <div id="header-container"></div>
     <main class="page-content">
@@ -19,7 +20,7 @@
         <section class="performer-hero">
             <div class="container">
                 <h1>Perform at <span data-event-title>Bangla Karneval</span></h1>
-                <p>Share your talent with our community. Registration is free.</p>
+                <p>Bring your talent to our stage. Performer registration is free.</p>
             </div>
         </section>
 
@@ -32,7 +33,7 @@
                      style="display:none;text-align:center;padding:var(--spacing-xxl);
                       background:var(--bg-white);border-radius:var(--radius-lg);
                       box-shadow:var(--shadow-md)">
-                    <div style="font-size:4rem;margin-bottom:var(--spacing-md)">🌟</div>
+                    <div style="font-size:4rem;margin-bottom:var(--spacing-md)"></div>
                     <h2>Application Submitted</h2>
                     <p style="margin-top:var(--spacing-md);color:var(--text-secondary)">
                         Thank you for applying to perform at <span data-event-title>Bangla Karneval</span>.
@@ -51,7 +52,7 @@
                     <form id="performer-form" novalidate>
 
                         <!-- Performance type -->
-                        <div class="form-section-title">🎤 Performance Type *</div>
+                        <div class="form-section-title">Performance Type *</div>
                         <div class="performance-types">
                             <div class="performance-type-option">
                                 <input type="radio" name="performanceType" id="type-dance" value="DANCE">
@@ -67,13 +68,13 @@
                             </div>
                             <div class="performance-type-option">
                                 <input type="radio" name="performanceType" id="type-other" value="OTHER">
-                                <label for="type-other"><span class="type-icon">🌟</span>Other</label>
+                                <label for="type-other"><span class="type-icon" aria-hidden="true">✦</span>Other</label>
                             </div>
                         </div>
 
                         <!-- Personal details -->
                         <div class="form-section-title" style="margin-top:var(--spacing-xl)">
-                            👤 Personal Details
+                            Personal Details
                         </div>
                         <div class="form-row">
                             <div class="form-group">
@@ -163,9 +164,9 @@
     </main>
     <div id="footer-container"></div>
 </div>
-<script src="js/common.js?v=programmes-1"></script>
-<script src="js/header.js?v=programmes-1"></script>
-<script src="js/footer.js?v=programmes-1"></script>
+<script src="js/common.js?v=club-fixes-2"></script>
+<script src="js/header.js?v=club-fixes-2"></script>
+<script src="js/footer.js?v=club-fixes-2"></script>
 <script src="js/performer.js?v=consent-1"></script>
 <script>
     document.getElementById('p-dob').max = new Date().toISOString().split('T')[0];

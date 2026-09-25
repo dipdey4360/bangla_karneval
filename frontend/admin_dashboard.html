@@ -17,12 +17,12 @@
     <noscript>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     </noscript>
-    <link rel="stylesheet" href="css/common.css?v=mobile-1">
+    <link rel="stylesheet" href="css/common.css?v=dom-4">
     <link rel="stylesheet" href="css/admin_dashboard.css?v=mobile-1">
     <link rel="stylesheet" href="css/admin_sponsors.css">
     <link rel="stylesheet" href="css/admin_membership.css?v=member-visibility-1">
     <link rel="icon" href="assets/images/favicon.ico">
-<link rel="stylesheet" href="css/programmes.css?v=programmes-1">
+<link rel="stylesheet" href="css/programmes.css?v=club-1">
 </head>
 <!-- ── Change Password Modal ──────────────────────────────── -->
 <!-- ── Change Password Modal ──────────────────────────────── -->
@@ -439,7 +439,7 @@
  <p>Select an event using the dropdown above to edit its details. Save before previewing or activating.</p><div id="config-alert" role="status"></div>
  <form id="programme-form"><div class="programme-form-grid">
  <div class="form-group"><label class="form-label" for="cfg-programme">Programme *</label><select id="cfg-programme" class="form-select" required></select></div>
- <div class="form-group"><label class="form-label" for="cfg-year">Year *</label><input id="cfg-year" class="form-input" type="number" required min="2000" max="2200"></div><div class="form-group"><label class="form-label" for="cfg-title">Event title *</label><input id="cfg-title" class="form-input" type="text" required maxlength="255"></div><div class="form-group"><label class="form-label" for="cfg-tagline">Tagline</label><input id="cfg-tagline" class="form-input" type="text" maxlength="500"></div>
+ <div class="form-group"><label class="form-label" for="cfg-year">Year *</label><input id="cfg-year" class="form-input" type="number" required min="2000" max="2200"></div><div class="form-group"><label class="form-label" for="cfg-title">Event title *</label><input id="cfg-title" class="form-input" type="text" required maxlength="255"></div><div class="form-group"><label class="form-label" for="cfg-tagline">Event tagline (shown below the homepage poster)</label><input id="cfg-tagline" class="form-input" type="text" maxlength="500"></div>
  <div class="form-group"><label class="form-label" for="cfg-date">Event date</label><input id="cfg-date" class="form-input" type="date" ></div><div class="form-group"><label class="form-label" for="cfg-location">Venue</label><input id="cfg-location" class="form-input" type="text" maxlength="255"></div><div class="form-group"><label class="form-label" for="cfg-price">Donation per adult (€) *</label><input id="cfg-price" class="form-input" type="number" required step="0.01" min="0" max="99999"></div>
  <div class="form-group"><label class="form-label" for="cfg-theme">Theme *</label><select id="cfg-theme" class="form-select" required></select></div>
  <div class="form-group"><label class="form-label" for="cfg-accent">Accent colour</label><input id="cfg-accent" class="form-input" type="color" value="#7b241c"></div>
@@ -657,13 +657,13 @@
         <button class="btn btn-primary" type="submit">Save decision and send email</button>
     </form>
 </dialog>
-<script src="js/common.js?v=posters-2"></script>
-<script src="js/admin_programmes.js?v=posters-2"></script>
+<script src="js/common.js?v=club-fixes-2"></script>
+<script src="js/admin_programmes.js?v=club-fixes-2"></script>
 <script src="js/admin_year.js?v=programmes-1"></script>
 <script src="js/admin_dashboard.js?v=programmes-1"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script src="js/admin_sponsors.js?v=programmes-1"></script>
-<script src="js/admin_membership.js?v=membership-expiry-1"></script>
+<script src="js/admin_membership.js?v=board-ids-1"></script>
 
 <script>
     /* ══════════════════════════════════════════════════════════════

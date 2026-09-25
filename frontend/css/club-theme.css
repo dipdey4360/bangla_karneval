@@ -1,0 +1,349 @@
+/* Shared public identity. Event colours do not replace the club's visual identity. */
+body.club-site {
+    --primary-red:var(--event-accent, #a82c37);
+    --primary-gold:#b98b43;
+    --primary-pink:var(--event-accent, #a82c37);
+    --accent-maroon:#302921;
+    --accent-orange:var(--event-accent, #a82c37);
+    --bg-cream:#fffaf0;
+    --bg-white:#fffdf8;
+    --text-primary:#302921;
+    --text-secondary:#736957;
+    --club-line:#e6ddcb;
+    --font-body:Arial,'Hind Siliguri',sans-serif;
+    --font-heading:Georgia,'Noto Serif Bengali',serif;
+    --shadow-sm:0 2px 8px #30292108;
+    --shadow-md:0 6px 24px #3029210c;
+    --shadow-lg:0 12px 32px #30292114;
+    background:var(--bg-cream);
+    color:var(--text-primary)
+}
+.club-site h1,.club-site h2,.club-site h3,.club-site h4 {
+    font-weight:400;
+    letter-spacing:-.02em
+}
+.club-site .container {
+    max-width:1160px
+}
+.club-site :focus-visible {
+    outline:3px solid #a82c37;
+    outline-offset:4px
+}
+.club-site .site-header {
+    background:var(--bg-cream);
+    border-bottom:1px solid var(--club-line);
+    box-shadow:none;
+    backdrop-filter:none
+}
+.club-site .header-inner {
+    min-height:90px;
+    max-width:1160px
+}
+.club-site .header-logo img,.club-site .header-logo:hover img {
+    filter:none;
+    height:62px;
+    width:62px;
+    object-fit:contain
+}
+.club-site .logo-title {
+    background:none;
+    -webkit-text-fill-color:var(--text-primary);
+    color:var(--text-primary);
+    font:600 17px var(--font-body)
+}
+.club-site .logo-subtitle {
+    color:var(--text-secondary);
+    font-size:10px;
+    letter-spacing:1.5px;
+    margin-top:5px
+}
+.club-site .main-nav a {
+    font:13px var(--font-body);
+    text-transform:none;
+    letter-spacing:0;
+    min-width:0;
+    padding:12px 11px;
+    border-radius:0;
+    color:var(--text-primary);
+    background:transparent;
+    border:0;
+    border-bottom:2px solid transparent
+}
+.club-site .main-nav a i {
+    display:none
+}
+.club-site .main-nav a:hover,.club-site .main-nav a.active {
+    color:var(--primary-red);
+    background:transparent;
+    border-color:var(--primary-red);
+    box-shadow:none
+}
+.club-site .main-nav a.nav-register-btn {
+    background:var(--primary-red);
+    color:#fff;
+    border-radius:6px;
+    padding:12px 16px;
+    box-shadow:none
+}
+.club-site .hamburger,.club-site .hamburger:hover {
+    border-color:var(--club-line);
+    background:transparent;
+    box-shadow:none
+}
+.club-site .hamburger span,.club-site .hamburger:hover span {
+    background:var(--text-primary)
+}
+.club-site :is(.about-hero,.registration-hero,.performer-hero,.gallery-hero,.contact-hero) {
+    background:var(--bg-cream);
+    color:var(--text-primary);
+    padding:56px 0 38px;
+    border-bottom:1px solid var(--club-line)
+}
+.club-site :is(.about-hero,.registration-hero,.performer-hero,.gallery-hero,.contact-hero) h1 {
+    color:var(--primary-red);
+    font-size:clamp(30px,4vw,46px);
+    text-shadow:none
+}
+.club-site :is(.about-hero,.registration-hero,.performer-hero,.gallery-hero,.contact-hero) p {
+    color:var(--text-secondary);
+    font-size:16px;
+    max-width:700px;
+    margin:12px auto 0
+}
+.club-site .section-title::after {
+    height:1px;
+    background:var(--club-line);
+    width:80px
+}
+.club-site .section-header {
+    margin-bottom:28px
+}
+.club-site .section-header p {
+    color:var(--text-secondary);
+    margin-top:8px
+}
+.club-site .btn {
+    border-radius:6px;
+    font-weight:600;
+    box-shadow:none
+}
+.club-site .btn-primary,.club-site .btn-sponsor {
+    background:var(--primary-red);
+    color:#fff;
+    box-shadow:none;
+    border:1px solid var(--primary-red)
+}
+.club-site .btn-primary:hover,.club-site .btn-sponsor:hover {
+    background:#85232c;
+    transform:none;
+    color:#fff
+}
+.club-site .btn-outline {
+    border:1px solid var(--club-line);
+    color:var(--primary-red);
+    background:transparent
+}
+.club-site .btn-outline:hover {
+    background:#f2e9db;
+    color:var(--primary-red)
+}
+.club-site :is(.form-input,.form-select,.form-textarea) {
+    background:var(--bg-white);
+    border-color:var(--club-line);
+    color:var(--text-primary);
+    border-radius:6px
+}
+.club-site :is(.form-input,.form-select,.form-textarea):focus {
+    border-color:var(--primary-red);
+    box-shadow:0 0 0 3px #a82c3710
+}
+.club-site .form-label {
+    font-weight:600;
+    font-size:14px
+}
+.club-site input {
+    accent-color:var(--primary-red)
+}
+.club-site :is(.registration-form-card,.performer-form-card,.contact-form-card,.price-summary,.membership-benefits,.board-card,.member-name-card) {
+    background:var(--bg-white);
+    border:1px solid var(--club-line);
+    box-shadow:var(--shadow-sm)
+}
+.club-site :is(.additional-participant-card,.membership-payment-instructions,.payment-option label:hover) {
+    background:#f7f0e4
+}
+.club-site .membership-dialog {
+    background:var(--bg-cream)
+}
+.club-site .board-section {
+    background:var(--bg-white)
+}
+.club-site .members-section {
+    background:var(--bg-cream)
+}
+.club-site .about-stats {
+    background:#f1e7d7
+}
+.club-site .stat-item .stat-number {
+    color:var(--primary-red);
+    font-weight:400
+}
+.club-site .stat-item .stat-label {
+    color:var(--text-secondary)
+}
+.club-site .contact-info-icon {
+    background:#f2e7db;
+    color:var(--primary-red)
+}
+.club-site .contact-info-icon i {
+    color:var(--primary-red)!important
+}
+.club-site .site-footer {
+    background:var(--bg-cream);
+    border:0;
+    border-top:1px solid var(--club-line);
+    border-image:none
+}
+.club-site .footer-sponsors {
+    background:var(--bg-white)
+}
+.club-site .sponsors-label {
+    background:none;
+    color:var(--text-primary);
+    -webkit-text-fill-color:var(--text-primary);
+    font-weight:400
+}
+.club-site .sponsors-label i {
+    display:none
+}
+.club-site .sponsor-card {
+    border-color:var(--club-line);
+    box-shadow:none;
+    background:var(--bg-white)
+}
+.club-site .become-sponsor {
+    background:transparent;
+    border-color:var(--club-line)
+}
+.club-site .footer-copy-strip,.club-site .footer-bottom {
+    background:#efe6d6;
+    color:var(--text-secondary);
+    border:0
+}
+.club-site .footer-links a,.club-site .footer-copy {
+    color:var(--text-secondary)
+}
+.club-site #page-transition-overlay {
+    background:#fffaf0f5!important
+}
+.club-site .pt-logo {
+    color:var(--primary-red);
+    background:none;
+    -webkit-text-fill-color:var(--primary-red);
+    text-shadow:none
+}
+.club-site .pt-bar {
+    background:var(--primary-red)
+}
+@media(max-width:1024px) {
+    .club-site .header-inner {
+        gap:12px
+    }
+    .club-site .main-nav a {
+        padding:12px 8px;
+        font-size:12px
+    }
+}
+@media(max-width:768px) {
+    .club-site .main-nav {
+        background:var(--bg-cream);
+        border-color:var(--club-line);
+        box-shadow:var(--shadow-md)
+    }
+    .club-site .main-nav a {
+        font-size:15px;
+        min-height:44px
+    }
+    .club-site .header-inner {
+        min-height:78px
+    }
+    .club-site .logo-title {
+        font-size:15px
+    }
+    .club-site .logo-subtitle {
+        font-size:9px;
+        letter-spacing:.6px
+    }
+    .club-site .header-logo img {
+        width:48px;
+        height:48px
+    }
+    .club-site .container {
+        padding-left:20px;
+        padding-right:20px
+    }
+    .club-site :is(.about-hero,.registration-hero,.performer-hero,.gallery-hero,.contact-hero) {
+        padding:36px 0 28px
+    }
+    .club-site .registration-form-card,.club-site .performer-form-card,.club-site .contact-form-card {
+        padding:22px
+    }
+    .club-site :is(.form-input,.form-select,.form-textarea) {
+        font-size:16px
+    }
+    .club-site .header-logo {
+        flex-shrink:1;
+        min-width:0
+    }
+    .club-site .logo-title {
+        white-space:normal
+    }
+}
+@media(prefers-reduced-motion:reduce) {
+    .club-site * {
+        scroll-behavior:auto!important;
+        animation:none!important;
+        transition:none!important
+    }
+}
+.club-site .club-footer-social {
+    display:flex;
+    justify-content:center;
+    gap:24px;
+    background:#efe6d6;
+    padding:16px 20px 0;
+    font-size:13px
+}
+.club-site .club-footer-social a {
+    color:var(--text-secondary)
+}
+/* Override the legacy header button's !important skin without changing its layout. */
+.club-site .main-nav a.nav-register-btn {
+    background:var(--primary-red)!important;
+    color:#fff!important;
+    border:1px solid var(--primary-red)!important;
+    border-radius:6px!important;
+    box-shadow:none!important;
+    text-transform:none!important;
+    letter-spacing:0!important;
+    font-size:13px!important;
+    transform:none!important
+}
+.club-site .main-nav a.nav-register-btn:hover {
+    background:#85232c!important;
+    border-color:#85232c!important
+}
+
+/* Centered page layout, with a compact sponsor area. */
+.club-site .footer-sponsors > .container { max-width:580px; }
+.club-site .sponsor-cards { flex-wrap:wrap; }
+.club-site .header-logo { cursor:default; }
+/* Reduce vertical bulk without hiding sponsor details. */
+.club-site .footer-sponsors { padding:16px 0; }
+.club-site .sponsors-header { margin-bottom:12px; }
+.club-site .sponsor-cards { gap:12px; margin-bottom:12px; }
+.club-site .sponsor-card { padding:12px; gap:4px; }
+.club-site .sponsor-logo-box { width:48px; height:48px; margin-bottom:0; }
+.club-site .sponsor-name { font-size:14px; line-height:1.35; }
+.club-site .sponsor-address { font-size:12px; line-height:1.4; }
+.club-site .become-sponsor { padding:8px 12px; gap:10px; }

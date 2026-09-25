@@ -10,6 +10,9 @@
     margin-bottom: var(--spacing-sm);
 }
 
+.club-site .gallery-hero { border-bottom:0; }
+.club-site .archive-section { padding-top:12px; }
+
 .highlights-section {
     padding: var(--spacing-xxl) 0;
 }

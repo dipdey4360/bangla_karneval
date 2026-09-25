@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register — Bangla Karneval</title>
-    <link rel="stylesheet" href="css/common.css?v=mobile-1">
+    <link rel="stylesheet" href="css/common.css?v=dom-4">
     <link rel="stylesheet" href="css/header.css?v=mobile-1">
     <link rel="stylesheet" href="css/footer.css">
     <link rel="stylesheet" href="css/registration.css?v=consent-1">
     <link rel="icon" href="assets/images/favicon.ico">
-<link rel="stylesheet" href="css/programmes.css?v=programmes-1">
+<link rel="stylesheet" href="css/programmes.css?v=club-1">
+<link rel="stylesheet" href="css/club-theme.css?v=spacing-3">
 </head>
-<body>
+<body class="club-site">
 <div class="page-wrapper">
     <div id="header-container"></div>
     <main class="page-content">
@@ -43,7 +44,7 @@
                         <form id="registration-form" novalidate>
 
                             <!-- Primary registrant -->
-                            <div class="form-section-title">👤 Primary Registrant</div>
+                            <div class="form-section-title">Primary Registrant</div>
                             <div class="form-row">
                                 <div class="form-group">
                                     <label class="form-label" for="primary-name">Full Name *</label>
@@ -96,7 +97,7 @@
 
                             <!-- Additional participants -->
                             <div class="form-section-title" style="margin-top:var(--spacing-xl)">
-                                👨‍👩‍👧 Additional Participants
+                                Additional Participants
                             </div>
                             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:var(--spacing-md)">
                                 Children under 18 attend <strong>free</strong>.
@@ -110,7 +111,7 @@
 
                             <!-- Donation method -->
                             <div class="form-section-title" style="margin-top:var(--spacing-xl)">
-                                💳 Donation Method
+                                Donation Method
                             </div>
                             <div class="payment-methods">
   <div class="payment-option"><input type="radio" name="paymentMethod" id="pay-paypal" value="PAYPAL" onchange="onPaymentMethodChange()"><label for="pay-paypal">PayPal</label><div class="payment-details" id="paypal-details"><p data-event-payment style="white-space:pre-wrap"></p></div></div>
@@ -133,7 +134,7 @@
 
                     <!-- Price summary -->
                     <div class="price-summary" id="price-summary-card">
-                        <h3>💰 Donation Summary</h3>
+                        <h3>Donation Summary</h3>
                         <div id="price-summary-body">
                             <div class="price-row">
                                 <span>Primary registrant</span>
@@ -156,10 +157,10 @@
     </main>
     <div id="footer-container"></div>
 </div>
-<script src="js/common.js?v=programmes-1"></script>
-<script src="js/header.js?v=programmes-1"></script>
-<script src="js/footer.js?v=programmes-1"></script>
-<script src="js/registration.js?v=membership-id-1"></script>
+<script src="js/common.js?v=club-fixes-2"></script>
+<script src="js/header.js?v=club-fixes-2"></script>
+<script src="js/footer.js?v=club-fixes-2"></script>
+<script src="js/registration.js?v=club-fixes-2"></script>
 <script>
     document.getElementById('primary-dob').max = new Date().toISOString().split('T')[0];
 </script>

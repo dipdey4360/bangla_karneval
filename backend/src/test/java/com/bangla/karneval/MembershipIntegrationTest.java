@@ -70,7 +70,7 @@ class MembershipIntegrationTest {
             .andExpect(status().isOk());
         await().atMost(Duration.ofSeconds(10)).until(()->members.findById(id).orElseThrow().getEmailDelivery()==Member.Delivery.SENT);
         String membershipId = members.findById(id).orElseThrow().getMembershipId();
-        assertEquals("BKM-00001", membershipId);
+        assertEquals("BKM-00007", membershipId);
         var today = java.time.LocalDate.now(java.time.ZoneId.of("Europe/Berlin"));
         assertEquals(today,members.findById(id).orElseThrow().getMembershipStartsOn());
         assertEquals(today.plusYears(1),members.findById(id).orElseThrow().getMembershipExpiresOn());

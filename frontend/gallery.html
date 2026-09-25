@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery — Bangla Karneval</title>
-    <link rel="stylesheet" href="css/common.css?v=mobile-1">
+    <link rel="stylesheet" href="css/common.css?v=dom-4">
     <link rel="stylesheet" href="css/header.css?v=mobile-1">
     <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/gallery.css?v=gallery-media-1">
+    <link rel="stylesheet" href="css/gallery.css?v=gallery-simple-2">
     <link rel="icon" href="assets/images/favicon.ico">
-<link rel="stylesheet" href="css/programmes.css?v=programmes-1">
+<link rel="stylesheet" href="css/programmes.css?v=club-1">
+<link rel="stylesheet" href="css/club-theme.css?v=spacing-3">
 </head>
 
-<body>
+<body class="club-site">
 <div class="page-wrapper">
     <div id="header-container"></div>
     <main class="page-content">
@@ -25,25 +26,9 @@
             </div>
         </section>
 
-        <!-- ── Current Year Highlights ───────────────────────── -->
-        <section class="highlights-section">
-            <div class="container">
-                <h2 class="section-title" id="highlights-title">Highlights</h2>
-                <div class="gallery-grid" id="highlights-grid">
-                    <!-- skeleton placeholders -->
-                    <div class="gallery-item skeleton"></div>
-                    <div class="gallery-item skeleton"></div>
-                    <div class="gallery-item skeleton"></div>
-                    <div class="gallery-item skeleton"></div>
-                </div>
-            </div>
-        </section>
-
         <!-- ── Previous Years Archive ────────────────────────── -->
-        <section class="archive-section">
+        <section class="archive-section" aria-label="Event galleries">
             <div class="container">
-                <h2 class="section-title">Gallery by Event</h2>
-
                 <!-- Year tabs — populated dynamically -->
                 <div class="year-tabs" id="year-tabs">
                     <!-- skeleton tab placeholders -->
@@ -72,9 +57,9 @@
     </div>
 </div>
 
-<script src="js/common.js?v=programmes-1"></script>
-<script src="js/header.js?v=programmes-1"></script>
-<script src="js/footer.js?v=programmes-1"></script>
-<script src="js/gallery.js?v=programmes-1"></script>
+<script src="js/common.js?v=club-fixes-2"></script>
+<script src="js/header.js?v=club-fixes-2"></script>
+<script src="js/footer.js?v=club-fixes-2"></script>
+<script src="js/gallery.js?v=club-fixes-2"></script>
 </body>
 </html>

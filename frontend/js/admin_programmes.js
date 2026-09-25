@@ -32,9 +32,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   populateProgrammeEditor({programmeCode:'bangla-karneval',eventYear:new Date().getFullYear(),title:'Bangla Karneval '+new Date().getFullYear(),themeKey:'bangla-karneval',accentColor:'#7b241c',pricePerPerson:10,tagline:'Celebrating culture and community',registrationEnabled:false,performerEnabled:false});
   document.getElementById('config-alert').textContent='New event: fill in the details and save.';document.getElementById('cfg-programme').focus();
  });
- const newDefaults=()=>{if(programmeEditor?.eventEditionId)return;const code=document.getElementById('cfg-programme').value;document.getElementById('cfg-title').value=programmeChoices.find(p=>p.code===code).name+' '+document.getElementById('cfg-year').value;document.getElementById('cfg-theme').value=code;document.getElementById('cfg-accent').value=programmeColours[code];};
+ const newDefaults=()=>{if(programmeEditor?.eventEditionId)return;const code=document.getElementById('cfg-programme').value;document.getElementById('cfg-title').value=programmeChoices.find(p=>p.code===code).name+' '+document.getElementById('cfg-year').value;document.getElementById('cfg-theme').value=code;document.getElementById('cfg-accent').value=programmeColours[code];document.getElementById('cfg-tagline').value=eventTagline({programmeCode:code});};
  const refreshPoster=()=>showEventPoster(document.getElementById('programme-poster-preview'),{...programmeEditor,title:document.getElementById('cfg-title').value});
  document.getElementById('cfg-title').addEventListener('input',refreshPoster);
+ document.getElementById('cfg-theme').addEventListener('change',e=>{
+  document.getElementById('cfg-accent').value=programmeColours[e.target.value] || '#a82c37';
+ });
  document.getElementById('cfg-programme').addEventListener('change',()=>{newDefaults();refreshPoster();});document.getElementById('cfg-year').addEventListener('change',()=>{newDefaults();refreshPoster();});
  document.getElementById('programme-form').addEventListener('submit',async e=>{
   e.preventDefault();if(programmeEditor?.eventEditionId && programmeEditor.eventEditionId!==adminSelectedEdition){showAlert('config-alert','Wait for the selected event to load before saving.','error');return;}if(!programmeEditor){showAlert('config-alert','Load or create an event first.','error');return;}

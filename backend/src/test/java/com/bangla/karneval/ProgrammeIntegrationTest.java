@@ -69,6 +69,17 @@ class ProgrammeIntegrationTest {
   assertNotEquals(create(request("bbq","Spring BBQ")).get("eventEditionId"),create(request("bbq","Summer BBQ")).get("eventEditionId"));
   mvc.perform(get("/api/config/current")).andExpect(jsonPath("$.eventEditionId").value(bangla));
   mvc.perform(get("/api/admin/editions/"+id).with(user("admin").roles("ADMIN"))).andExpect(jsonPath("$.themeKey").value("puja"));
+  var catalogue=json.readTree(mvc.perform(get("/api/editions/home")).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+  boolean found=false;
+  for(var entry:catalogue) {
+   assertFalse(entry.has("paymentInstructions")); assertFalse(entry.has("contactEmail")); assertFalse(entry.has("version"));
+   if(entry.get("eventEditionId").asLong()==id) {
+    found=true;assertEquals("Our community celebration",entry.get("tagline").asText());
+    assertEquals("2026-10-15",entry.get("eventDate").asText());assertEquals("Test community hall",entry.get("eventLocation").asText());
+   }
+  }
+  assertTrue(found);
+
   mvc.perform(post("/api/admin/events").with(user("admin").roles("ADMIN")).contentType("application/json")
    .content("{\"eventEditionId\":"+id+",\"eventYear\":2026,\"category\":\"FOOD\",\"title\":\"Puja food\"}")).andExpect(status().isOk());
   mvc.perform(multipart("/api/admin/gallery").param("eventEditionId",Long.toString(id)).param("url","/assets/images/test-puja.png").param("caption","Puja photo").with(user("admin").roles("ADMIN"))).andExpect(status().isOk());

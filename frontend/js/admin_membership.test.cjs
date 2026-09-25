@@ -64,6 +64,7 @@ test('board editor selects a card, saves multipart data, refreshes cards and rep
     context.window=context;
     vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'admin_membership.js'),'utf8'),context);
     initialize(); await context.loadBoardAdmin();
+    assert.equal(get('admin-board-grid').children[1].children[3].textContent,'Membership ID: BKM-00002');
     get('admin-board-grid').children[1].children[2].listeners.click();
     assert.equal(get('board-name').value,'Original');
     assert.ok(get('board-member-form').scrolled);

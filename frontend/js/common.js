@@ -8,7 +8,8 @@ function eventPosterUrl(config) {
         .replace(/[-_]+/g, ' ').replace(/\s+/g, ' ')
         .replace(/\s+\d{4}$/, '').trim();
     const posters = {
-        'bangla karneval': 'bangla-karneval.svg',
+        'bangla karneval': '../home_background.jpg',
+        'bbq':'bbq.png', 'barbecue':'bbq.png', 'noboborsho':'Bangla_Noboborsho.svg',
         'puja': 'puja.svg', 'durga puja': 'puja.svg',
         'eid': 'Eid.svg', 'eid ul fitr': 'Eid.svg', 'eid ul adha': 'Eid.svg',
         'bangla noboborsho': 'Bangla_Noboborsho.svg'
@@ -41,11 +42,12 @@ async function updateEventYearLabels() {
         document.querySelectorAll('[data-event-year]').forEach(node => node.textContent = config.eventYear);
         const base = document.documentElement.dataset.baseTitle || document.title;
         document.documentElement.dataset.baseTitle = base;
-        document.title = location.pathname.endsWith('index.html') || location.pathname === '/' ? config.title + ' | Bangla Karneval e.V.' : base.replace('Bangla Karneval','Bangla Karneval e.V.');
+        document.title = location.pathname.endsWith('index.html') || location.pathname === '/' ? 'Bangla Karneval e.V. | Culture, heritage & community' : base.replace(/Bangla Karneval(?! e\.V\.)/,'Bangla Karneval e.V.');
         document.querySelectorAll('[data-event-title]').forEach(node => node.textContent = config.title || ('Bangla Karneval '+config.eventYear));
         const themes=['bangla-karneval','eid','puja','bangla-noboborsho','bbq','game'];
         document.documentElement.dataset.theme=themes.includes(config.themeKey)?config.themeKey:'bangla-karneval';
-        if(/^#[0-9a-fA-F]{6}$/.test(config.accentColor||'')) document.documentElement.style.setProperty('--event-accent',config.accentColor);
+        const palette={'bangla-karneval':'#a82c37',eid:'#146b52',puja:'#a92330','bangla-noboborsho':'#b42c35',bbq:'#a34d16',game:'#245bb3'};
+        document.documentElement.style.setProperty('--event-accent', /^#[0-9a-fA-F]{6}$/.test(config.accentColor||'') ? config.accentColor : palette[document.documentElement.dataset.theme]);
     } catch (error) { console.warn('Active event year could not be loaded', error); }
 }
 document.addEventListener('DOMContentLoaded', updateEventYearLabels);
@@ -238,3 +240,15 @@ function safeWebUrl(value) {
     });
 })();
 
+
+function eventTagline(event) {
+    const defaults = {
+        'eid': 'Celebrate Eid with warmth, togetherness and shared joy.',
+        'puja': 'Come together for devotion, tradition and celebration.',
+        'bangla-noboborsho': 'Welcome the Bengali New Year with colour, music and new beginnings.',
+        'bangla-karneval': 'Experience a day of Bengali music, food and festive spirit.',
+        'bbq': 'Enjoy good food, fresh air and great company.'
+    };
+    const tagline = (event.tagline || '').trim();
+    return tagline && tagline !== 'Celebrating Bengali culture, heritage & community' ? tagline : defaults[event.programmeCode] || 'Come together for a shared celebration.';
+}
