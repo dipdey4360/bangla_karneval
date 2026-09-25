@@ -5,3 +5,7 @@ backend/target/
 .idea/
 *.log
 .backups/
+
+# Test folders
+/tests/
+/backend/src/test/
