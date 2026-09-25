@@ -1,0 +1,9 @@
+.git
+.idea
+.backups
+.env
+.env.*
+**/target
+**/node_modules
+**/*.log
+frontend/assets/images/gallery

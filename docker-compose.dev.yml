@@ -1,0 +1,5 @@
+# Optional local override: see HTML/CSS/JS changes without rebuilding the image.
+services:
+  backend:
+    volumes:
+      - ./frontend:/app/static

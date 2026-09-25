@@ -6,10 +6,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.3</version>
-        <relativePath/>
+        <groupId>com.bangla</groupId>
+        <artifactId>bangla-karneval-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>com.bangla</groupId>
@@ -18,12 +18,17 @@
     <name>bangla-karneval</name>
     <description>Bangla Karneval Event Management System</description>
 
-    <properties>
-        <java.version>17</java.version>
-        <jjwt.version>0.12.5</jjwt.version>
-    </properties>
-
     <dependencies>
+        <dependency>
+            <groupId>com.bangla</groupId>
+            <artifactId>karneval-frontend</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bangla</groupId>
+            <artifactId>karneval-database</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

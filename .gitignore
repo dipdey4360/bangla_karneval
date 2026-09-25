@@ -2,6 +2,9 @@
 .env.*
 !.env.example
 backend/target/
+frontend/target/
+database/target/
+target/
 .idea/
 *.log
 .backups/
@@ -9,3 +12,6 @@ backend/target/
 # Test folders
 /tests/
 /backend/src/test/
+
+# Markdown files in all folders
+*.[mM][dD]

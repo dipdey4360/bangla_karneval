@@ -1,6 +1,8 @@
 services:
   db:
-    image: postgres:16-alpine
+    image: bangla-karneval-database:local
+    build:
+      context: ./database
     container_name: bangla-karneval-db
     environment:
       POSTGRES_DB: banglakarneval
@@ -10,8 +12,6 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/1-init.sql
-      - ./database/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 10s
@@ -22,8 +22,9 @@ services:
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
+    image: bangla-karneval-app:local
     container_name: bangla-karneval-backend
     depends_on:
       db:
@@ -40,7 +41,6 @@ services:
     ports:
       - "8084:8080"
     volumes:
-      - ./frontend:/app/static
       - gallery_uploads:/app/static/assets/images/gallery
       - sponsor_uploads:/app/uploads/sponsors
       - board_uploads:/app/uploads/board
